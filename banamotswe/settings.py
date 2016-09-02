@@ -37,6 +37,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
+    'simple_history',
+    'django_crypto_fields.apps.AppConfig',
+    'django_revision.apps.AppConfig',
+    'edc_base.apps.AppConfig',
+    'edc_metadata.apps.AppConfig',
+    'edc_device.apps.AppConfig',
+    'edc_visit_schedule.apps.AppConfig',
+    'banamotswe.apps.EdcVisitTrackingAppConfig',
+    'banamotswe.apps.EdcProtocolAppConfig',
+    'banamotswe.apps.EdcRegistrationAppConfig',
+    'banamotswe.apps.EdcTimepointAppConfig',
+    'banamotswe.apps.AppConfig',
 ]
 
 MIDDLEWARE = [
@@ -118,3 +131,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'banamotswe', 'static')
+GIT_DIR = BASE_DIR
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

@@ -1,2 +1,2 @@
 # banamotswe
-Banamotswe
+Ba Namotswe Study
