@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django_crypto_fields.apps.AppConfig',
     'django_revision.apps.AppConfig',
     'edc_appointment.apps.AppConfig',
-    'edc_base.apps.AppConfig',
     'edc_device.apps.AppConfig',
     'edc_metadata.apps.AppConfig',
     'edc_visit_schedule.apps.AppConfig',
@@ -50,6 +49,7 @@ INSTALLED_APPS = [
     'ba_namotswe.apps.EdcProtocolAppConfig',
     'ba_namotswe.apps.EdcRegistrationAppConfig',
     'ba_namotswe.apps.EdcTimepointAppConfig',
+    'ba_namotswe.apps.EdcBaseAppConfig',
     'ba_namotswe.apps.AppConfig',
 ]
 
@@ -136,4 +136,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'ba_namotswe', 'static')
 GIT_DIR = BASE_DIR
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 KEY_PATH = os.path.join(BASE_DIR, 'crypto_fields')
-ETC_DIR =  os.path.join(BASE_DIR, 'etc')
+ETC_DIR = os.path.join(BASE_DIR, 'etc')

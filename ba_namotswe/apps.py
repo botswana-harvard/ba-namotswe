@@ -1,5 +1,6 @@
 from django.apps import AppConfig as DjangoAppConfig
 
+from edc_base.apps import AppConfig as EdcBaseAppConfigParent
 from edc_protocol.apps import AppConfig as EdcProtocolAppConfigParent
 from edc_timepoint.apps import AppConfig as EdcTimepointAppConfigParent
 from edc_timepoint.timepoint import Timepoint
@@ -9,6 +10,11 @@ from edc_visit_tracking.apps import AppConfig as EdcVisitTrackingAppConfigParent
 
 class AppConfig(DjangoAppConfig):
     name = 'ba_namotswe'
+
+
+class EdcBaseAppConfig(EdcBaseAppConfigParent):
+    institution = 'Botswana Harvard AIDS Institute Partnership'
+    project_name = 'Ba Namotswe'
 
 
 class EdcProtocolAppConfig(EdcProtocolAppConfigParent):
