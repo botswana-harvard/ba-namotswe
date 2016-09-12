@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 
 class HomeView(EdcBaseViewMixin, TemplateView):
 
-    template_name = 'banamotswe/home.html'
+    template_name = 'ba_namotswe/home.html'
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)

@@ -1,9 +1,14 @@
 from django.contrib import admin
 
-from banamotswe.models import RegisteredSubject, SubjectVisit, Enrollment, CrfOne
+from ba_namotswe.models import (
+    RegisteredSubject, SubjectVisit, Enrollment, Io, Abstraction, Treatment, ARTRegimen, Appointment)
 
 
-admin.register(RegisteredSubject)
-admin.register(SubjectVisit)
-admin.register(Enrollment)
-admin.register(CrfOne)
+admin.site.register(RegisteredSubject)
+admin.site.register(Appointment)
+admin.site.register(SubjectVisit)
+admin.site.register(Enrollment)
+admin.site.register(Abstraction)
+admin.site.register(Treatment)
+admin.site.register(Io)
+admin.site.register(ARTRegimen)

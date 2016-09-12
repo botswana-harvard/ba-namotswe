@@ -13,7 +13,7 @@ from edc_appointment.model_mixins import AppointmentModelMixin
 class RegisteredSubject(RegisteredSubjectModelMixin, BaseUuidModel):
 
     class Meta:
-        app_label = 'banamotswe'
+        app_label = 'ba_namotswe'
 
 
 class Enrollment(RegisteredSubjectMixin, BaseUuidModel):
@@ -27,6 +27,7 @@ class Enrollment(RegisteredSubjectMixin, BaseUuidModel):
         validators=[date_not_future, ])
 
     gender = models.CharField(
+        max_length=25,
         verbose_name='Gender',
         choices=GENDER)
 
@@ -42,6 +43,7 @@ class Enrollment(RegisteredSubjectMixin, BaseUuidModel):
 
     # TODO: skip_logic caregiver_relation_other: display field only if Caregiver/Next of Kin Relationship= OTHER
     caregiver_relation_other = models.CharField(
+        max_length=25,
         verbose_name='Caregiver/Next of Kin Relationship: "Other"')
 
     weight = models.IntegerField(
@@ -62,13 +64,13 @@ class Enrollment(RegisteredSubjectMixin, BaseUuidModel):
         validators=[date_not_future, ])
 
     class Meta:
-        app_label = 'banamotswe'
+        app_label = 'ba_namotswe'
 
 
 class Appointment(AppointmentModelMixin, BaseUuidModel):
 
     class Meta:
-        app_label = 'banamotswe'
+        app_label = 'ba_namotswe'
 
 
 class SubjectVisit(VisitModelMixin, CreatesMetadataModelMixin, PreviousVisitModelMixin, BaseUuidModel):
@@ -76,10 +78,10 @@ class SubjectVisit(VisitModelMixin, CreatesMetadataModelMixin, PreviousVisitMode
     appointment = models.OneToOneField(Appointment)
 
     class Meta:
-        app_label = 'banamotswe'
+        app_label = 'ba_namotswe'
 
 
-class ARTRegimens(BaseUuidModel):
+class ARTRegimen(BaseUuidModel):
 
     name = models.CharField(max_length=10)
 
@@ -89,17 +91,19 @@ class ARTRegimens(BaseUuidModel):
         return self.display_name
 
     class Meta:
-        app_label = 'banamotswe'
+        app_label = 'ba_namotswe'
 
 
 class Treatment(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     perinatal_infection = models.CharField(
+        max_length=25,
         verbose_name='Is this an individual who was perinatally infected? (Dx. Prior to 10 years of age)',
         choices=YES_NO_UNKNOWN)
 
     # TODO: skip_logic pmtct: display field only if perinatally infected= YES
     pmtct = models.CharField(
+        max_length=25,
         verbose_name='Did the mother of the individual receive antiretrovirals during pregnancy?',
         choices=YES_NO_UNKNOWN,
         blank=True,
@@ -107,6 +111,7 @@ class Treatment(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic pmtct_rx: display field only if antiretrovirals in pregnancy=YES
     pmtct_rx = models.CharField(
+        max_length=25,
         verbose_name='Please specify type of antiretrovirals received during pregnancy: ',
         choices=(('azt_monotherapy', 'AZT Monotherapy'), ('dsnvp', 'dsNVP'), ('triple_arv', 'triple ARV')),
         blank=True,
@@ -114,21 +119,24 @@ class Treatment(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic infant_prohylaxis: display field only if perinatally infected = YES
     infant_prohylaxis = models.CharField(
+        max_length=25,
         verbose_name='Did the individual receive infant prophylaxis in the 1st month of life?',
         choices=YES_NO_UNKNOWN)
 
     # TODO: skip_logic infant_prohylaxis_rx: display field only if infant prophylaxis=YES
     infant_prohylaxis_rx = models.CharField(
+        max_length=25,
         verbose_name='Please specify type of infant prophylaxis in the 1st month of life ',
         choices=(('sdnvp', 'sdNVP'), ('azt', 'AZT'), ('extended_nvp', 'Extended NVP')),
         blank=True,
         null=True)
 
     art_history = models.ManyToManyField(
-        ARTRegimens,
+        ARTRegimen,
         verbose_name='Prior History of ARV Treatments')
 
     counseling = models.CharField(
+        max_length=25,
         verbose_name='Did this person receive adherence counseling?',
         choices=YES_NO_UNKNOWN)
 
@@ -140,6 +148,7 @@ class Treatment(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic adherence_partner_rel: display field only if adherence counseling= YES
     adherence_partner_rel = models.CharField(
+        max_length=25,
         verbose_name='Relationship of Adherence Partner to Individual',
         choices=(('mother', 'Mother'), ('father', 'Father'), ('grandmother', 'Grandmother'), ('grandfather', 'Grandfather'), ('aunt', 'Aunt'), ('uncle', 'Uncle'), ('partner_or_spouse', 'Partner or Spouse'), ('sister', 'Sister'), ('brother', 'Brother'), ('friend', 'Friend'), ('legal_guardian', 'Legal Guardian'), ('OTHER', 'Other (describe)'), ('unable_to_ascertain', 'Unable to Ascertain')),
         blank=True,
@@ -147,12 +156,13 @@ class Treatment(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic adherence_partner_rel_other: display field only if relationship to adherence parter= OTHER
     adherence_partner_rel_other = models.CharField(
+        max_length=25,
         verbose_name='Please describe  "Other" relationship',
         blank=True,
         null=True)
 
     class Meta:
-        app_label = 'banamotswe'
+        app_label = 'ba_namotswe'
 
 
 class Io(BaseUuidModel):
@@ -165,7 +175,7 @@ class Io(BaseUuidModel):
         return self.display_name
 
     class Meta:
-        app_label = 'banamotswe'
+        app_label = 'ba_namotswe'
 
 
 class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
@@ -173,6 +183,7 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
     subject_visit = models.ForeignKey(SubjectVisit)
 
     height_measured = models.CharField(
+        max_length=25,
         verbose_name='Was height measured at this clinic visit?',
         choices=YES_NO)
 
@@ -183,6 +194,7 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
         null=True)
 
     weight_measured = models.CharField(
+        max_length=25,
         verbose_name='Was weight measured at this clinic visit?',
         choices=YES_NO)
 
@@ -193,6 +205,7 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
         null=True)
 
     hospitalized = models.CharField(
+        max_length=25,
         verbose_name='Has the patient been hospitalized since last visit?',
         choices=YES_NO_UNKNOWN)
 
@@ -204,21 +217,24 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic hospitalized_reason: display field only  if hospitalization=YES
     hospitalized_reason = models.CharField(
+        max_length=25,
         verbose_name='What was the reason for the hospitalization?',
         blank=True,
         null=True)
 
     art_history = models.ManyToManyField(
-        ARTRegimens,
+        ARTRegimen,
         verbose_name='ARV regimens',
         help_text='Please select all ART regimens since last visit')
 
     tb = models.CharField(
+        max_length=25,
         verbose_name='Has the patient been diagnosed with TB since the last visit?',
         choices=YES_NO)
 
     # TODO: skip_logic tb_type: display field only if TB since last visit=YES
     tb_type = models.CharField(
+        max_length=25,
         verbose_name='Type of TB',
         choices=(('pulmonary_tb', 'Pulmonary TB'), ('non-pulmonary_tb', 'Non-pulmonary TB')),
         blank=True,
@@ -226,6 +242,7 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic tb_method: display field only if TB since last visit=YES
     tb_method = models.CharField(
+        max_length=25,
         verbose_name='Method of TB diagnosis',
         choices=(('culture_positive', 'Culture Positive'), ('cxr', 'CXR'), ('other_imaging_modality', 'Other Imaging Modality'), ('clinical_diagnosis', 'Clinical Diagnosis'), ('other_(describe)', 'Other (describe)')),
         blank=True,
@@ -233,11 +250,13 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic tb_method_other: display field only if Method of TB Diagnosis= OTHER
     tb_method_other = models.CharField(
+        max_length=25,
         verbose_name='Method of TB diagnosis: Other',
         blank=True,
         null=True)
 
     io = models.CharField(
+        max_length=25,
         verbose_name='Non-TB Opportunistic Infections since last visit',
         choices=YES_NO)
 
@@ -247,11 +266,13 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
         verbose_name='Opportunistic Infections Since last visit')
 
     ctx = models.CharField(
+        max_length=25,
         verbose_name='Has this patient used Cotrimoxazole /Dapsone Prophylaxis since last visit?',
         choices=YES_NO)
 
     # TODO: skip_logic ctx_table: display field only if Clotrimoxazole/Dapsone Prophylaxis=YES
     ctx_table = models.CharField(
+        max_length=25,
         verbose_name='Did the patient receive Cotrimoxazole or Dapsone prophylaxis',
         choices=(('cotrimoxazole', 'Cotrimoxazole'), ('dapsone', 'Dapsone')),
         blank=True,
@@ -259,15 +280,18 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic pregnant_and_rx: display field only  if sex= FEMALE
     pregnant_and_rx = models.CharField(
+        max_length=25,
         verbose_name='Has this patient been pregnant while on treatment?',
         choices=YES_NO)
 
     # TODO: skip_logic pregnant_and_rx_table: display field only if pregnancy= YES
     pregnant_and_rx_table = models.CharField(
+        max_length=25,
         verbose_name='Details of pregnancies while on treatment')
 
     # TODO: skip_logic hiv_status_aware: display field only if age _19(ASK LIZ)
     hiv_status_aware = models.CharField(
+        max_length=25,
         verbose_name='Is there evidence that disclosure has been made to the youth/adolescent that they are HIV-infected?',
         choices=YES_NO_UNKNOWN)
 
@@ -278,6 +302,7 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
         null=True)
 
     hiv_disclosed_others = models.CharField(
+        max_length=25,
         verbose_name='Is there evidence that the individual has disclosed their HIV status to others?',
         choices=YES_NO_UNKNOWN,
         blank=True,
@@ -285,19 +310,23 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic hiv_caregiver_disclosed_others: display field only if age _19(ASK LIZ)
     hiv_caregiver_disclosed_others = models.CharField(
+        max_length=25,
         verbose_name='For youth and adolescents, is there evidence that the caregiver has disclosed their HIV status to others?',
         choices=YES_NO_UNKNOWN)
 
     transferred = models.CharField(
+        max_length=25,
         verbose_name='Transfer of Care',
         choices=YES_NO)
 
     # TODO: skip_logic transferred_table: show if transfer of care=YES
     transferred_table = models.CharField(
+        max_length=25,
         verbose_name='Transfer of Care Details')
 
     # TODO: skip_logic transferred_to: show if transfer of care=YES
     transferred_to = models.CharField(
+        max_length=25,
         verbose_name='Location of transfer',
         choices=(('into_idcc', 'Into IDCC'), ('out_of_idcc', 'Out of IDCC'), ('into_private_clinic', 'Into Private Clinic'), ('out_of_private_clinic', 'Out of Private Clinic'), ('into_bipai', 'Into BIPAI'), ('out_of_bipai', 'Out of BIPAI'), ('other_(describe)', 'Other (Describe)')),
         blank=True,
@@ -305,11 +334,13 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic transferred_to_other: show if location of transfer= OTHER
     transferred_to_other = models.CharField(
+        max_length=25,
         verbose_name='Location of transfer: Other',
         blank=True,
         null=True)
 
     deceased = models.CharField(
+        max_length=25,
         verbose_name='Is there documentation of mortality on the patient\'s chart?',
         choices=YES_NO)
 
@@ -322,12 +353,13 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic death_cause: display field only if mortality=YES
     death_cause = models.CharField(
+        max_length=25,
         verbose_name='Cause of Death',
         blank=True,
         null=True)
 
     class Meta:
-        app_label = 'banamotswe'
+        app_label = 'ba_namotswe'
 
 
 class AssessmentHistory(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
@@ -346,6 +378,7 @@ class AssessmentHistory(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidMod
 
     # TODO: skip_logic vl_count: display field only if Date of Initial Visit < May 1st, 2008
     vl_count = models.CharField(
+        max_length=25,
         verbose_name='Viral Load',
         validators=[],  # TODO: accept =/>/< and integer)
         blank=True,
@@ -377,4 +410,4 @@ class AssessmentHistory(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidMod
         null=True)
 
     class Meta:
-        app_label = 'banamotswe'
+        app_label = 'ba_namotswe'

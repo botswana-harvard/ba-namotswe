@@ -17,7 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from edc_base.views import LoginView, LogoutView
-from banamotswe.views import HomeView
+from ba_namotswe.views import HomeView
 
 urlpatterns = [
     url(r'login', LoginView.as_view(), name='login_url'),

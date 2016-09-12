@@ -41,15 +41,16 @@ INSTALLED_APPS = [
     'simple_history',
     'django_crypto_fields.apps.AppConfig',
     'django_revision.apps.AppConfig',
+    'edc_appointment.apps.AppConfig',
     'edc_base.apps.AppConfig',
-    'edc_metadata.apps.AppConfig',
     'edc_device.apps.AppConfig',
+    'edc_metadata.apps.AppConfig',
     'edc_visit_schedule.apps.AppConfig',
-    'banamotswe.apps.EdcVisitTrackingAppConfig',
-    'banamotswe.apps.EdcProtocolAppConfig',
-    'banamotswe.apps.EdcRegistrationAppConfig',
-    'banamotswe.apps.EdcTimepointAppConfig',
-    'banamotswe.apps.AppConfig',
+    'ba_namotswe.apps.EdcVisitTrackingAppConfig',
+    'ba_namotswe.apps.EdcProtocolAppConfig',
+    'ba_namotswe.apps.EdcRegistrationAppConfig',
+    'ba_namotswe.apps.EdcTimepointAppConfig',
+    'ba_namotswe.apps.AppConfig',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'banamotswe.urls'
+ROOT_URLCONF = 'ba_namotswe.urls'
 
 TEMPLATES = [
     {
@@ -80,7 +81,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'banamotswe.wsgi.application'
+WSGI_APPLICATION = 'ba_namotswe.wsgi.application'
 
 
 # Database
@@ -131,6 +132,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'banamotswe', 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'ba_namotswe', 'static')
 GIT_DIR = BASE_DIR
 CRISPY_TEMPLATE_PACK = 'bootstrap3'

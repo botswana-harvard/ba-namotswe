@@ -8,17 +8,17 @@ from edc_visit_tracking.apps import AppConfig as EdcVisitTrackingAppConfigParent
 
 
 class AppConfig(DjangoAppConfig):
-    name = 'banamotswe'
+    name = 'ba_namotswe'
 
 
 class EdcProtocolAppConfig(EdcProtocolAppConfigParent):
-    enrollment_caps = {'banamotswe.enrollment': ('subject', -1)}  # {label_lower: (key, count)}
+    enrollment_caps = {'ba_namotswe.enrollment': ('subject', -1)}  # {label_lower: (key, count)}
 
 
 class EdcTimepointAppConfig(EdcTimepointAppConfigParent):
     timepoints = [
         Timepoint(
-            model='banamotswe.appointment',
+            model='ba_namotswe.appointment',
             datetime_field='appt_datetime',
             status_field='appt_status',
             closed_status='CLOSED'
@@ -33,4 +33,4 @@ class EdcRegistrationAppConfig(EdcRegistrationAppConfigParent):
 class EdcVisitTrackingAppConfig(EdcVisitTrackingAppConfigParent):
     name = 'edc_visit_tracking'
     verbose_name = 'Edc Visit Tracking'
-    visit_models = {'banamotswe': ('subject_visit', 'banamotswe.subjectvisit')}
+    visit_models = {'ba_namotswe': ('subject_visit', 'ba_namotswe.subjectvisit')}
