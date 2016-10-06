@@ -16,7 +16,9 @@ class RegisteredSubject(RegisteredSubjectModelMixin, BaseUuidModel):
         app_label = 'ba_namotswe'
 
 
-class Enrollment(RegisteredSubjectMixin, BaseUuidModel):
+class Enrollment(BaseUuidModel):
+
+    registered_subject = models.ForeignKey(RegisteredSubject)
 
     report_datetime = models.DateTimeField(default=timezone.now)
 
@@ -104,6 +106,8 @@ class Appointment(AppointmentModelMixin, BaseUuidModel):
 
 
 class SubjectVisit(VisitModelMixin, CreatesMetadataModelMixin, PreviousVisitModelMixin, BaseUuidModel):
+
+    enrollment = models.ForeignKey(Enrollment)
 
     appointment = models.OneToOneField(Appointment)
 
