@@ -1,26 +1,2 @@
-Django
-factory-boy
+Django==1.10
 
-git+https://github.com/botswana-harvard/edc-base@develop#egg=edc_base
-git+https://github.com/botswana-harvard/edc-protocol@develop#egg=edc_protocol
-git+https://github.com/erikvw/django-crypto-fields@develop#egg=django_crypto_fields
-git+https://github.com/erikvw/django-revision@develop#egg=django_revision
-git+https://github.com/botswana-harvard/edc-appointment@develop#egg=edc_appointment
-git+https://github.com/botswana-harvard/edc-code-lists@develop#egg=edc_code_lists
-git+https://github.com/botswana-harvard/edc-configuration@develop#egg=edc_configuration
-git+https://github.com/botswana-harvard/edc-consent@develop#egg=edc_consent
-git+https://github.com/botswana-harvard/edc-constants@develop#egg=edc_constants
-git+https://github.com/botswana-harvard/edc-death-report@develop#egg=edc_death_report
-git+https://github.com/botswana-harvard/edc-device@develop#egg=edc_device
-git+https://github.com/botswana-harvard/edc-identifier@develop#egg=edc_identifier
-git+https://github.com/botswana-harvard/edc-lab@develop#egg=edc_lab
-git+https://github.com/botswana-harvard/edc-label@develop#egg=edc_label
-git+https://github.com/botswana-harvard/edc-meta-data@develop#egg=edc_meta_data
-git+https://github.com/botswana-harvard/edc-rest@develop#egg=edc_rest
-git+https://github.com/botswana-harvard/edc-templates@develop#egg=edc_templates
-git+https://github.com/botswana-harvard/edc-visit-schedule@develop#egg=edc_visit_schedule
-git+https://github.com/botswana-harvard/edc-visit-tracking@develop#egg=edc_visit_tracking
-git+https://github.com/botswana-harvard/lab-requisition@develop#egg=lab_requisition
-git+https://github.com/botswana-harvard/edc-timepoint@develop#egg=edc_timepoint
-git+https://github.com/botswana-harvard/edc-registration@develop#egg=edc-registration
-git+https://github.com/botswana-harvard/edc-rule-groups@develop#egg=edc-rule-groups

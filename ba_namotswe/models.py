@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
+from edc_base.utils.age import formatted_age
 from edc_base.model.models.base_uuid_model import BaseUuidModel
 from edc_base.model.validators.date import date_not_future
 from edc_constants.choices import GENDER, YES_NO, YES_NO_UNKNOWN
@@ -24,15 +25,6 @@ class Enrollment(BaseUuidModel):
 
     is_eligible = models.BooleanField(default=True)
 
-    dob = models.DateField(
-        verbose_name='Date of Birth',
-        validators=[date_not_future, ])
-
-    gender = models.CharField(
-        max_length=25,
-        verbose_name='Gender',
-        choices=GENDER)
-
     initial_visit_date = models.DateField(
         verbose_name='Date of Initial Clinic Visit',
         validators=[date_not_future, ])
@@ -41,6 +33,8 @@ class Enrollment(BaseUuidModel):
     caregiver_relation = models.CharField(
         verbose_name='Caregiver/Next of Kin Relationship',
         max_length=25,
+        blank=True,
+        default=None,
         choices=(
             ('mother', 'Mother'),
             ('father', 'Father'),
@@ -49,7 +43,8 @@ class Enrollment(BaseUuidModel):
             ('aunt', 'Aunt'),
             ('uncle', 'Uncle'),
             ('legal_guardian', 'Legal Guardian'),
-            ('OTHER', 'Other (describe))')),
+            ('not_applicable', 'Not Applicable'),
+            ('OTHER', 'Other, specify')),
         help_text='Please describe the caregiver/next of kin\'s relationship to patient')
 
     # TODO: skip_logic caregiver_relation_other: display field only if Caregiver/Next of Kin Relationship= OTHER
@@ -64,8 +59,10 @@ class Enrollment(BaseUuidModel):
         verbose_name='Weight was measured at Initial Clinic Visit',
         choices=YES_NO)
 
-    weight = models.IntegerField(
-        verbose_name='Weight',
+    weight = models.DecimalField(
+        verbose_name='Weight in kg',
+        decimal_places=2,
+        max_digits=5,
         blank=True,
         null=True)
 
@@ -74,8 +71,10 @@ class Enrollment(BaseUuidModel):
         verbose_name='Height was measured at Initial Clinic Visit',
         choices=YES_NO)
 
-    height = models.IntegerField(
-        verbose_name='Height was measured at Initial Clinic Visit',
+    height = models.DecimalField(
+        verbose_name='Height in cm',
+        decimal_places=2,
+        max_digits=5,
         blank=True,
         null=True)
 
@@ -97,6 +96,10 @@ class Enrollment(BaseUuidModel):
 
     class Meta:
         app_label = 'ba_namotswe'
+
+    @property
+    def age_at_visit(self):
+        return formatted_age(self.dob, self.initial_visit_date)
 
 
 class Appointment(AppointmentModelMixin, BaseUuidModel):
