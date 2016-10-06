@@ -135,5 +135,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'ba_namotswe', 'static')
 GIT_DIR = BASE_DIR
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
-KEY_PATH = os.path.join(BASE_DIR, 'crypto_fields')
+KEY_PATH = os.path.join(BASE_DIR, 'ba_namotswe')
 ETC_DIR = os.path.join(BASE_DIR, 'etc')
