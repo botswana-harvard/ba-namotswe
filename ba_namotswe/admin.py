@@ -3,8 +3,9 @@ from django.contrib import admin
 from .admin_site import ba_namotswe_admin
 from .models import (
     RegisteredSubject, SubjectVisit, Enrollment, Io, Abstraction, Treatment, ARTRegimen, Appointment)
-from .forms import EnrollmentForm
-from ba_namotswe.forms import RegisteredSubjectForm
+from ba_namotswe.forms.enrollment_form import EnrollmentForm
+from ba_namotswe.forms.registered_subject_form import RegisteredSubjectForm
+from ba_namotswe.forms.treatment_form import TreatmentForm
 
 
 @admin.register(Enrollment, site=ba_namotswe_admin)
@@ -40,6 +41,7 @@ class AbstractionAdmin(admin.ModelAdmin):
 @admin.register(Treatment, site=ba_namotswe_admin)
 class TreatmentAdmin(admin.ModelAdmin):
     list_filter = ('perinatal_infection', )
+    form = TreatmentForm
 
 
 @admin.register(Io, site=ba_namotswe_admin)
