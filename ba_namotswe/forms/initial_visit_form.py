@@ -2,7 +2,7 @@ from django import forms
 from ba_namotswe.models import SubjectVisit, RegisteredSubject
 
 
-class SubjectVisitForm(forms.ModelForm):
+class SubjectVisitForm(forms.BaseModelForm):
 
     def clean(self):
         self.validate_report_datetime()

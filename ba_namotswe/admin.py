@@ -3,8 +3,8 @@ from django.contrib import admin
 from .admin_site import ba_namotswe_admin
 from .models import (
     RegisteredSubject, SubjectVisit, Enrollment, Io, Abstraction, Treatment, ARTRegimen, Appointment)
-from .forms import EnrollmentForm
-from ba_namotswe.forms import RegisteredSubjectForm
+from ba_namotswe.forms.enrollment_form import EnrollmentForm
+from ba_namotswe.forms.registered_subject_form import RegisteredSubjectForm
 
 
 @admin.register(Enrollment, site=ba_namotswe_admin)

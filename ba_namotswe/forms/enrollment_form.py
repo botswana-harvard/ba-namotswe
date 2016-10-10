@@ -5,7 +5,7 @@ from edc_constants.constants import NOT_APPLICABLE
 from ..models import Enrollment
 
 
-class EnrollmentForm(forms.Form):
+class EnrollmentForm(forms.BaseModelForm):
 
     def validate_participant_enrollment(self):
         cleaned_data = self.cleaned_data
