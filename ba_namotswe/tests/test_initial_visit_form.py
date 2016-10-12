@@ -3,8 +3,8 @@ from datetime import date, datetime
 
 from edc_constants.constants import YES, NO
 
-from ba_namotswe.forms.initial_visit_form import SubjectVisitForm
 from ba_namotswe.tests.factories.registered_subject_factory import RegisteredSubjectFactory
+from edc_visit_tracking.tests import SubjectVisitForm
 
 
 class TestSubjectVistForm(TestCase):

@@ -5,10 +5,7 @@ from .models import (
     RegisteredSubject, SubjectVisit, Enrollment, Io, Abstraction, Treatment, ARTRegimen, Appointment)
 from ba_namotswe.forms.enrollment_form import EnrollmentForm
 from ba_namotswe.forms.registered_subject_form import RegisteredSubjectForm
-<<<<<<< HEAD
-=======
 from ba_namotswe.forms.treatment_form import TreatmentForm
->>>>>>> 4265853bf8180eca6fa9f32bcd6ef09d9e7b2d64
 
 
 @admin.register(Enrollment, site=ba_namotswe_admin)
