@@ -7,7 +7,7 @@ from ba_namotswe.tests.factories.registered_subject_factory import RegisteredSub
 from edc_visit_tracking.tests import SubjectVisitForm
 
 
-class TestSubjectVistForm(TestCase):
+class TestSubjectVisitForm(TestCase):
 
     def setUp(self):
         self.registered_subject = RegisteredSubjectFactory()

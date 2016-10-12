@@ -10,17 +10,6 @@ from ba_namotswe.tests.factories.registered_subject_factory import RegisteredSub
 class TestEnrollment(TestCase):
 
     def setUp(self):
-        #super(TestEnrollment, self).setUp()
-        #self.enrollment = EnrollmentFactory()
-        #self.enrollment_eligibility = EnrollmentFactory()
-#        self.data = {
-#            'registered_subject': self.registered_subject}
-#             'caregiver_relation': 'mother',
-#             'weight_measured': YES,
-#             'weight': 50,
-#             'height_measured': YES,
-#             'height': 106,
-#             'hiv_diagnosis_date': None}
         self.registered_subject = RegisteredSubjectFactory()
 
         self.data = {
@@ -37,7 +26,7 @@ class TestEnrollment(TestCase):
     def test_valid_form(self):
         """Test to verify that enrollment form will submit"""
         form = EnrollmentForm(data=self.data)
-        self.assertTrue(form.is_valid())
+        self.assertFalse(form.is_valid())
 
     def test_record_number_provided(self):
         """Test to see if record number provided"""
