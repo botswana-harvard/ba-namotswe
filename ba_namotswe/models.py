@@ -1,10 +1,12 @@
 from django.db import models
 from django.utils import timezone
 
+from datetime import date
+
 from edc_base.utils.age import formatted_age
 from edc_base.model.models.base_uuid_model import BaseUuidModel
 from edc_base.model.validators.date import date_not_future
-from edc_constants.choices import GENDER, YES_NO, YES_NO_UNKNOWN
+from edc_constants.choices import YES_NO, YES_NO_UNKNOWN
 from edc_metadata.model_mixins import CreatesMetadataModelMixin, UpdatesCrfMetadataModelMixin
 from edc_registration.model_mixins import RegisteredSubjectModelMixin, RegisteredSubjectMixin
 from edc_visit_tracking.model_mixins import VisitModelMixin, PreviousVisitModelMixin, CrfModelMixin
@@ -12,6 +14,10 @@ from edc_appointment.model_mixins import AppointmentModelMixin
 
 
 class RegisteredSubject(RegisteredSubjectModelMixin, BaseUuidModel):
+
+    @property
+    def subject_age(self):
+        return formatted_age(self.dob, date.today())
 
     class Meta:
         app_label = 'ba_namotswe'

@@ -1,7 +1,7 @@
 import factory
 
 from datetime import date
-from .models import RegisteredSubject
+from ba_namotswe.models import RegisteredSubject
 from edc_constants.constants import FEMALE
 
 

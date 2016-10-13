@@ -1,8 +1,10 @@
 from django.test import TestCase
-from .forms import EnrollmentForm
-from .factory import RegisteredSubjectFactory
 from datetime import datetime, date
+from dateutil.relativedelta import relativedelta
+
 from edc_constants.constants import YES
+from ba_namotswe.forms.enrollment_form import EnrollmentForm
+from ba_namotswe.tests.factory.factory import RegisteredSubjectFactory
 
 
 class TestEnrollmentForm(TestCase):
@@ -15,11 +17,13 @@ class TestEnrollmentForm(TestCase):
             'registered_subject': self.registered_subject.id,
             'report_datetime': datetime.now(),
             'is_eligible': True,
-            'initial_visit_date': date.today(),
+            'initial_visit_date': date.today() - relativedelta(years=3),
             'caregiver_relation': 'mother',
-            'caregiver_relation_other': 'Wife',
+            #'caregiver_relation_other': 'Wife',
             'weight_measured': YES,
+            'weight': 200,
             'height_measured': YES,
+            'height': 50,
             'art_initiation_date': date.today()}
 
     def test_valid_form(self):
