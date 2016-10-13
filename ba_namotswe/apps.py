@@ -3,6 +3,7 @@ from django.apps import AppConfig as DjangoAppConfig
 from edc_base.apps import AppConfig as EdcBaseAppConfigParent
 from edc_protocol.apps import AppConfig as EdcProtocolAppConfigParent
 from edc_timepoint.apps import AppConfig as EdcTimepointAppConfigParent
+from edc_appointment.apps import AppConfig as EdcAppointmentAppConfigParent
 from edc_timepoint.timepoint import Timepoint
 from edc_registration.apps import AppConfig as EdcRegistrationAppConfigParent
 from edc_visit_tracking.apps import AppConfig as EdcVisitTrackingAppConfigParent
@@ -33,7 +34,11 @@ class EdcTimepointAppConfig(EdcTimepointAppConfigParent):
 
 
 class EdcRegistrationAppConfig(EdcRegistrationAppConfigParent):
-    app_label = 'edc_example'
+    app_label = 'ba_namotswe'
+
+
+class EdcAppointmentAppConfig(EdcAppointmentAppConfigParent):
+    app_label = 'ba_namotswe'
 
 
 class EdcVisitTrackingAppConfig(EdcVisitTrackingAppConfigParent):

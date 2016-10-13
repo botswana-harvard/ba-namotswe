@@ -202,7 +202,7 @@ class Treatment(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
         app_label = 'ba_namotswe'
 
 
-class Io(BaseUuidModel):
+class Oi(BaseUuidModel):
 
     name = models.CharField(max_length=10)
 
@@ -299,7 +299,7 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic io_history_table: display field only if non-TB OI since last visit=YES
     oi_history = models.ManyToManyField(
-        Io,
+        Oi,
         verbose_name='Opportunistic Infections Since last visit')
 
     ctx = models.CharField(
