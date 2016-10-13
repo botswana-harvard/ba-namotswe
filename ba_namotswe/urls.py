@@ -21,6 +21,7 @@ from ba_namotswe.views import HomeView
 from ba_namotswe.admin_site import ba_namotswe_admin
 
 urlpatterns = [
+    url(r'^ba_namotswe_dashboard/', include('ba_namotswe_dashboard.urls')),
     url(r'login', LoginView.as_view(), name='login_url'),
     url(r'logout', LogoutView.as_view(pattern_name='login_url'), name='logout_url'),
     url(r'^admin/', ba_namotswe_admin.urls),
