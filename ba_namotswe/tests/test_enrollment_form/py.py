@@ -1,28 +1,37 @@
 from datetime import date, datetime
 from django.test import TestCase
-
-from dateutil.relativedelta import relativedelta
-
-from edc_constants.constants import YES
+from django import forms
+from edc_constants.constants import YES, NO
 from ba_namotswe.forms.enrollment_form import EnrollmentForm
+from ba_namotswe.tests.factories.enrollment_factory import EnrollmentFactory
 from ba_namotswe.tests.factories.registered_subject_factory import RegisteredSubjectFactory
 
 
 class TestEnrollment(TestCase):
 
     def setUp(self):
+        #super(TestEnrollment, self).setUp()
+        #self.enrollment = EnrollmentFactory()
+        #self.enrollment_eligibility = EnrollmentFactory()
+#        self.data = {
+#            'registered_subject': self.registered_subject}
+#             'caregiver_relation': 'mother',
+#             'weight_measured': YES,
+#             'weight': 50,
+#             'height_measured': YES,
+#             'height': 106,
+#             'hiv_diagnosis_date': None}
         self.registered_subject = RegisteredSubjectFactory()
 
         self.data = {
             'registered_subject': self.registered_subject.id,
             'report_datetime': datetime.now(),
             'is_eligible': True,
-            'initial_visit_date': date.today() - relativedelta(years=3),
-            #'caregiver_relation': 'mother',
+            'initial_visit_date': date.today(),
+            'caregiver_relation': 'mother',
+            'caregiver_relation_other': 'Wife',
             'weight_measured': YES,
-            'weight': 200,
             'height_measured': YES,
-            'height': 50,
             'art_initiation_date': date.today()}
 
     def test_valid_form(self):
@@ -106,3 +115,4 @@ class TestEnrollment(TestCase):
         self.assertNotIn(
             'ART provided',
             form.errors.get('height', []))
+

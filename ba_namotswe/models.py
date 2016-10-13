@@ -116,6 +116,8 @@ class Appointment(AppointmentModelMixin, BaseUuidModel):
 
 class SubjectVisit(VisitModelMixin, CreatesMetadataModelMixin, PreviousVisitModelMixin, BaseUuidModel):
 
+    enrollment = models.ForeignKey(Enrollment)
+
     appointment = models.OneToOneField(Appointment)
 
     class Meta:
@@ -296,13 +298,13 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
         blank=True,
         null=True)
 
-    io = models.CharField(
+    oi = models.CharField(
         max_length=25,
         verbose_name='Non-TB Opportunistic Infections since last visit',
         choices=YES_NO)
 
     # TODO: skip_logic io_history_table: display field only if non-TB OI since last visit=YES
-    io_history = models.ManyToManyField(
+    oi_history = models.ManyToManyField(
         Io,
         verbose_name='Opportunistic Infections Since last visit')
 
