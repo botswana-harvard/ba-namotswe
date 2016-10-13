@@ -4,10 +4,11 @@ from django.utils import timezone
 from edc_base.model.validators.date import date_not_future
 from edc_base.utils.age import formatted_age
 from edc_base.model.models.base_uuid_model import BaseUuidModel
+from edc_appointment.model_mixins import CreateAppointmentsMixin
 from edc_constants.choices import YES_NO, GENDER
 
 
-class Enrollment(BaseUuidModel):
+class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
 
     subject_identifier = models.CharField()
 
