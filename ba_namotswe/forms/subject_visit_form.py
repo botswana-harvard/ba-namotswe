@@ -1,5 +1,5 @@
 from django import forms
-from ba_namotswe.models import SubjectVisit, RegisteredSubject
+from ba_namotswe.models import SubjectVisit
 
 
 class SubjectVisitForm(forms.BaseModelForm):
