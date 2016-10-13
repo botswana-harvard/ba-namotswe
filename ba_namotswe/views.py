@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.edit import FormView
 
 from ba_namotswe.forms.search_form import SearchForm
-from ba_namotswe.models import Enrollment
+from ba_namotswe.models.enrollment import Enrollment
 
 
 class HomeView(EdcBaseViewMixin, TemplateView, FormView):
