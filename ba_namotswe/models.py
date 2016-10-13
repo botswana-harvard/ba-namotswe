@@ -100,12 +100,11 @@ class Enrollment(BaseUuidModel):
             self.hiv_diagnosis_date = self.initial_visit_date
         super(Enrollment, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return '{}, {}'.format(self.registered_subject.last_name, self.registered_subject.initials)
+
     class Meta:
         app_label = 'ba_namotswe'
-
-    @property
-    def age_at_visit(self):
-        return formatted_age(self.dob, self.initial_visit_date)
 
 
 class Appointment(AppointmentModelMixin, BaseUuidModel):
