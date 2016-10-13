@@ -3,11 +3,12 @@
 
 {% block main %}
 <div class="container">
-
 <!-- Beginning of Demographic Div -->
-<div class="row" style="border:1px solid #eeeeee;">
-<address>
-  <strong>{{dashboard_type | capfirst}} Dashboard</strong> 
+<div class="row" style="solid #eeeeee;">
+  <div class="panel-group">
+	<div class="panel panel-success">
+      <div class="panel-heading"><strong>{{dashboard_type | capfirst}} Dashboard</strong></div>
+     <div class="panel-body"> 
   <hr style="margin-top:4px; margin-bottom:4px;">
   	<mark>
 		{% for key, value in markey_data %}
@@ -17,14 +18,13 @@
 		    {% endif %}
 		{% endfor %}
   	</mark>
-</address>
 </div>
 <!-- End of Demographic Div -->
 
 <!-- Begin Visits Div -->
 <div class="row">
 <!-- 9-col-visits -->
-	<div class="col-md-9" style="min-height:200px; border:1px solid #eeeeee;">
+	<div class="col-md-9" style="min-height:200px; solid #eeeeee;">
 	{% block membership_forms %}
 		<blockquote class="blockquote" style="margin:0px">
   		<ul class="list-inline text-primary">
@@ -60,11 +60,15 @@
 <!-- End 9-col-visits -->
 
 <!-- Begin 3-col-visits -->
-	<div class="col-md-3" style="min-height:200px; border:1px solid #eeeeee;">
+	<div class="col-md-3" style="min-height:200px; solid #eeeeee;">
 	{% block locator_information %}
 		<p></p>
 		<hr>
  		<div class="panel-group">
+ 	    	<div class="panel panel-default">
+      			<div class="panel-heading">Infant</div>
+      			<div class="panel-body"></div>
+    		</div>
  		    <div class="panel panel-info">
       			<div class="panel-heading">Contact Info</div>
       			<div class="panel-body">
@@ -100,5 +104,8 @@
 </div>
 <!-- End Visits Div -->
 
+</div>
+</div>
+</div>
 </div>
 {% endblock main %}
