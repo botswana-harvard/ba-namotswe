@@ -4,14 +4,25 @@ from django.utils import timezone
 from edc_base.model.validators.date import date_not_future
 from edc_base.utils.age import formatted_age
 from edc_base.model.models.base_uuid_model import BaseUuidModel
-from edc_constants.choices import YES_NO
-
-from .registered_subject import RegisteredSubject
+from edc_constants.choices import YES_NO, GENDER
 
 
 class Enrollment(BaseUuidModel):
 
-    registered_subject = models.ForeignKey(RegisteredSubject)
+    subject_identifier = models.CharField(max_length=20)
+
+    gender = models.CharField(
+        verbose_name="Gender",
+        max_length=1,
+        choices=GENDER,
+        null=True,
+        blank=False)
+
+    dob = models.DateField(
+        verbose_name=("Date of birth"),
+        null=True,
+        blank=False,
+        help_text=("Format is YYYY-MM-DD"))
 
     report_datetime = models.DateTimeField(default=timezone.now)
 
