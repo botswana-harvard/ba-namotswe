@@ -10,7 +10,9 @@ from edc_constants.choices import YES_NO, GENDER
 
 class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
 
-    subject_identifier = models.CharField()
+    subject_identifier = models.CharField(max_length=20)
+
+    initials = models.CharField(max_length=3)
 
     gender = models.CharField(
         verbose_name="Gender",
@@ -20,10 +22,10 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
         blank=False)
 
     dob = models.DateField(
-        verbose_name=_("Date of birth"),
+        verbose_name=("Date of birth"),
         null=True,
         blank=False,
-        help_text=_("Format is YYYY-MM-DD"))
+        help_text=("Format is YYYY-MM-DD"))
 
     report_datetime = models.DateTimeField(default=timezone.now)
 

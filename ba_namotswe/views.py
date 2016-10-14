@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.edit import FormView
 
 from ba_namotswe.forms.search_form import SearchForm
-from ba_namotswe.models import Enrollment
+from ba_namotswe.models.enrollment import Enrollment
 
 
 class HomeView(EdcBaseViewMixin, TemplateView, FormView):
@@ -22,7 +22,7 @@ class HomeView(EdcBaseViewMixin, TemplateView, FormView):
         if form.is_valid():
             subject_identifier = form.cleaned_data['subject_identifier']
             try:
-                self.patient = Enrollment.objects.get(registered_subject__subject_identifier=subject_identifier)
+                self.patient = Enrollment.objects.get(subject_identifier=subject_identifier)
             except Enrollment.DoesNotExist:
                 form.add_error('subject_identifier', 'Patient not found. Please search again or add a new patient.')
             context = self.get_context_data(form=form)
