@@ -11,6 +11,8 @@ class Enrollment(BaseUuidModel):
 
     subject_identifier = models.CharField(max_length=20)
 
+    initials = models.CharField(max_length=3)
+
     gender = models.CharField(
         verbose_name="Gender",
         max_length=1,

@@ -7,6 +7,8 @@ from ba_namotswe.forms.enrollment_form import EnrollmentForm
 from ba_namotswe.forms.registered_subject_form import RegisteredSubjectForm
 from ba_namotswe.forms.treatment_form import TreatmentForm
 from ba_namotswe.models.collected_data import CollectedData
+from ba_namotswe.models.tb_history import TBHistory
+from ba_namotswe.forms.tb_history_form import TBHistoryForm
 
 
 @admin.register(Enrollment, site=ba_namotswe_admin)
@@ -62,3 +64,11 @@ class CollectedDataAdmin(admin.ModelAdmin):
         'counselling_adhere': admin.VERTICAL,
         'transfer': admin.VERTICAL,
         'death': admin.VERTICAL}
+
+
+@admin.register(TBHistory, site=ba_namotswe_admin)
+class TBHistoryAdmin(admin.ModelAdmin):
+    form = TBHistoryForm
+    radio_fields = {
+        'tb_type': admin.VERTICAL,
+        'tb_test': admin.VERTICAL}
