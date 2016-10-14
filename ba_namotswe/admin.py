@@ -16,10 +16,13 @@ class EnrollmentAdmin(admin.ModelAdmin):
         'weight_measured': admin.VERTICAL,
         'height_measured': admin.VERTICAL}
 
+    list_display = ('registered_subject', 'initial_visit_date', 'hiv_diagnosis_date', 'art_initiation_date', )
+
 
 @admin.register(RegisteredSubject, site=ba_namotswe_admin)
 class RegisteredSubjectAdmin(admin.ModelAdmin):
     list_filter = ('dob', )
+    list_display = ('last_name', 'initials', )
     form = RegisteredSubjectForm
 
 

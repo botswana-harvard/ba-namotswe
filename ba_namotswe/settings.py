@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+PROJECT_TITLE = 'BA NAMOTSWE'
 
 # Application definition
 
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
     'ba_namotswe.apps.EdcTimepointAppConfig',
     'ba_namotswe.apps.EdcBaseAppConfig',
     'ba_namotswe.apps.AppConfig',
+    'ba_namotswe_dashboard.apps.BaNamotsweDashboardConfig',
 ]
 
 MIDDLEWARE = [
