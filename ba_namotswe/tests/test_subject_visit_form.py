@@ -1,7 +1,7 @@
 from django.test import TestCase
 from datetime import date, datetime
 
-from edc_constants.constants import YES, NO
+from edc_constants.constants import YES
 
 from ba_namotswe.tests.factories.registered_subject_factory import RegisteredSubjectFactory
 from edc_visit_tracking.tests import SubjectVisitForm

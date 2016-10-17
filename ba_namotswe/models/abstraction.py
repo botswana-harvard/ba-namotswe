@@ -8,7 +8,7 @@ from edc_visit_tracking.model_mixins import CrfModelMixin
 
 from .subject_visit import SubjectVisit
 from .art_regimen import ARTRegimen
-from ba_namotswe.models.oi import Io
+from ba_namotswe.models.oi import Oi
 
 
 class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
@@ -95,7 +95,7 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
 
     # TODO: skip_logic io_history_table: display field only if non-TB OI since last visit=YES
     io_history = models.ManyToManyField(
-        Io,
+        Oi,
         verbose_name='Opportunistic Infections Since last visit')
 
     ctx = models.CharField(
