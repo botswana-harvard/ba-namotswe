@@ -8,7 +8,7 @@ from edc_visit_tracking.model_mixins import CrfModelMixin
 
 from .subject_visit import SubjectVisit
 from .art_regimen import ARTRegimen
-from .io import Io
+from ba_namotswe.models.oi import Io
 
 
 class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
