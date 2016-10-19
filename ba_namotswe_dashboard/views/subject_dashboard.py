@@ -32,7 +32,7 @@ class SubjectDashboardView(
             'markey_next_row': {},
             'requisitions_meta_data': self.requisitions_meta_data,
             'scheduled_forms': self.scheduled_forms,
-            'appointments': [],
+            'appointments': self.appointments,
             'subject_identifier': self.subject_identifier,
         })
         return self.context

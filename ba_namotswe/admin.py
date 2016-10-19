@@ -1,25 +1,44 @@
 from django.contrib import admin
 
+from edc_base.modeladmin.mixins import (
+    ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin, ModelAdminFormAutoNumberMixin,
+    ModelAdminAuditFieldsMixin)
+
 from .admin_site import ba_namotswe_admin
-from .models import (
-    RegisteredSubject, SubjectVisit, Enrollment, Oi, Abstraction, Treatment, ARTRegimen, Appointment)
+from .models import SubjectVisit, Enrollment, Oi, Abstraction, Treatment, ARTRegimen, Appointment
 from ba_namotswe.forms.enrollment_form import EnrollmentForm
-from ba_namotswe.forms.registered_subject_form import RegisteredSubjectForm
 from ba_namotswe.forms.treatment_form import TreatmentForm
 from ba_namotswe.models.collected_data import CollectedData
 from ba_namotswe.models.tb_history import TBHistory
 from ba_namotswe.forms.tb_history_form import TBHistoryForm
+from ba_namotswe.models import SubjectIdentifier
+
+
+@admin.register(SubjectIdentifier, site=ba_namotswe_admin)
+class SubjectIdentifierAdmin(admin.ModelAdmin):
+    pass
+
+
+class MembershipBaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
+                               ModelAdminFormAutoNumberMixin, ModelAdminAuditFieldsMixin, admin.ModelAdmin):
+
+    list_per_page = 10
+    date_hierarchy = 'modified'
+    empty_value_display = '-'
+
+    def redirect_url(self, request, obj, post_url_continue=None):
+        return request.GET.get('next')
 
 
 @admin.register(Enrollment, site=ba_namotswe_admin)
-class EnrollmentAdmin(admin.ModelAdmin):
+class EnrollmentAdmin(MembershipBaseModelAdmin):
     form = EnrollmentForm
     radio_fields = {
         'caregiver_relation': admin.VERTICAL,
         'weight_measured': admin.VERTICAL,
         'height_measured': admin.VERTICAL}
 
-    list_display = ('initial_visit_date', 'hiv_diagnosis_date', 'art_initiation_date', )
+    list_display = ('dashboard', 'initial_visit_date', 'hiv_diagnosis_date', 'art_initiation_date', )
 
 
 @admin.register(Appointment, site=ba_namotswe_admin)

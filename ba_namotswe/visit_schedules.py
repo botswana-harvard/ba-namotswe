@@ -1,0 +1,4 @@
+from edc_visit_schedule.site_visit_schedules import site_visit_schedules
+from ba_namotswe.visit_schedule.enrollment import subject_visit_schedule_enrollment
+
+# site_visit_schedules.register(subject_visit_schedule_enrollment)

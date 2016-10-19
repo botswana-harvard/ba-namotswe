@@ -135,3 +135,14 @@ class EnrollmentForm(forms.ModelForm):
     class Meta:
         model = Enrollment
         fields = '__all__'
+
+
+    def dashboard(self):
+        """Returns a hyperink for the Admin page."""
+        url = reverse(
+            'subject_dashboard_url',
+            kwargs={
+                'subject_identifier': self.subject_identifier
+            })
+        ret = """<a href="{url}" >dashboard</a>""".format(url=url)
+        return ret

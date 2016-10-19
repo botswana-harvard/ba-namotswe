@@ -1,5 +1,5 @@
 
-"""amp URL Configuration
+"""ba_namotswe URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.9/topics/http/urls/
@@ -18,5 +18,6 @@ from django.conf.urls import url
 from ba_namotswe_dashboard.views import SubjectDashboardView
 
 urlpatterns = [
-    url(r'^subject_dashboard/', SubjectDashboardView.as_view(), name='subject_dashboard_url'),
+    url(r'^subject_dashboard/(?P<subject_identifier>[0-9A-Z-]+)/', SubjectDashboardView.as_view(), name='subject_dashboard_url'),
+    url(r'^subject_dashboard/(?P<appointment_pk>[0-9a-z-]+)/(?P<subject_identifier>[0-9A-Z-]+)/', SubjectDashboardView.as_view(), name='subject_dashboard_url'),
 ]

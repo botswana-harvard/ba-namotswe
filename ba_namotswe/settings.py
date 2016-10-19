@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'simple_history',
     'edc_example',
-    'edc_lab',
+    'ba_namotswe.apps.EdcLabAppConfig',
     'edc_identifier',
     'django_crypto_fields.apps.AppConfig',
     'django_revision.apps.AppConfig',

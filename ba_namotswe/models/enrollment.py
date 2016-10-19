@@ -1,16 +1,19 @@
 from django.db import models
 from django.utils import timezone
+from django.core.urlresolvers import reverse
 
 from edc_base.model.validators.date import date_not_future
 from edc_base.utils.age import formatted_age
 from edc_base.model.models.base_uuid_model import BaseUuidModel
 from edc_appointment.model_mixins import CreateAppointmentsMixin
 from edc_constants.choices import YES_NO, GENDER
+from ba_namotswe.models.subject_identifier import SubjectIdentifier
+# from edc_consent.model_mixins import ConsentModelMixin
+# from edc_consent.model_mixins import RequiresConsentMixin
+from edc_registration.model_mixins import RegisteredSubjectMixin
 
 
-class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
-
-    subject_identifier = models.CharField(max_length=20)
+class Enrollment(CreateAppointmentsMixin, RegisteredSubjectMixin, BaseUuidModel):
 
     initials = models.CharField(max_length=3)
 
@@ -98,6 +101,7 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
     def save(self, *args, **kwargs):
         if not self.hiv_diagnosis_date:
             self.hiv_diagnosis_date = self.initial_visit_date
+        self.subject_identifier = self.identifier  # SubjectIdentifier(site_code='99').get_identifier()
         super(Enrollment, self).save(*args, **kwargs)
 
     class Meta:
@@ -106,3 +110,20 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
     @property
     def age_at_visit(self):
         return formatted_age(self.dob, self.initial_visit_date)
+
+    @property
+    def identifier(self):
+        subject_identifier = SubjectIdentifier.objects.filter(
+            allocated_datetime=None).order_by('created').first()
+        return subject_identifier.subject_identifier
+
+    def dashboard(self):
+        """Returns a hyperink for the Admin page."""
+        url = reverse(
+            'subject_dashboard_url',
+            kwargs={
+                'subject_identifier': self.subject_identifier
+            })
+        ret = """<a href="{url}" >dashboard</a>""".format(url=url)
+        return ret
+    dashboard.allow_tags = True
