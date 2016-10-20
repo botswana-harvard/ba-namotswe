@@ -3,26 +3,27 @@ from django.test import TestCase
 
 from dateutil.relativedelta import relativedelta
 
-from edc_constants.constants import YES
+from edc_constants.constants import YES, MALE
 from ba_namotswe.forms.enrollment_form import EnrollmentForm
-from ba_namotswe.tests.factories.registered_subject_factory import RegisteredSubjectFactory
+from ba_namotswe.tests.factories.appointment_factory import AppointmentFactory
 
 
 class TestEnrollment(TestCase):
 
     def setUp(self):
-        self.registered_subject = RegisteredSubjectFactory()
 
         self.data = {
-            'registered_subject': self.registered_subject.id,
+            'subject_identifier': '123456ABCD',
+            'initials': 'AH',
+            'dob': date(1990, 12, 16),
+            'gender': MALE,
             'report_datetime': datetime.now(),
             'is_eligible': True,
-            'initial_visit_date': date.today() - relativedelta(years=3),
-            #'caregiver_relation': 'mother',
+            'initial_visit_date': date.today() - relativedelta(years=4),
             'weight_measured': YES,
-            'weight': 200,
+            'weight': 100,
             'height_measured': YES,
-            'height': 50,
+            'height': 140,
             'art_initiation_date': date.today()}
 
     def test_valid_form(self):
@@ -30,79 +31,18 @@ class TestEnrollment(TestCase):
         form = EnrollmentForm(data=self.data)
         self.assertTrue(form.is_valid())
 
-    def test_record_number_provided(self):
-        """Test to see if record number provided"""
+    def test_initial_visit_date_validation_before_date(self):
+        """Test to verify that validation for initial visit date works"""
+        self.data['initial_visit_date'] = date(1990, 1, 1)
         form = EnrollmentForm(data=self.data)
-        self.assertNotIn(
-            'You should provide record number',
-            form.errors.get('record_number', []))
+        self.assertIn(
+            'Initial visit date should come after January 1st, 2002',
+            form.errors.get('initial_visit_date', []))
 
-    def test_record_number_provided_valid(self):
-        """Test to see if valid record number is provided"""
+    def test_initial_visit_date_validation_after_date(self):
+        """Test to verify that validation for initial visit date works"""
+        self.data['initial_visit_date'] = date(2016, 10, 10)
         form = EnrollmentForm(data=self.data)
-        self.assertNotIn(
-            'You provided wrong record number',
-            form.errors.get('record_number', []))
-
-    def test_date_of_birth_provided(self):
-        """Test to see if valid date_of_birth is provided"""
-        form = EnrollmentForm(data=self.data)
-        self.assertNotIn(
-            'You provided valid dob',
-            form.errors.get('date_of_birth', []))
-
-    def test_date_of_birth_provided_not_valid(self):
-        """Test to see if valid date_of_birth is provided"""
-        form = EnrollmentForm(data=self.data)
-        self.assertNotIn(
-            'You provided invalid dob, please correct',
-            form.errors.get('date_of_birth', []))
-
-    def test_right_gender_provided(self):
-        """Test to see if correct gender is provided"""
-        form = EnrollmentForm(data=self.data)
-        self.assertNotIn(
-            'You provided correct sex, please correct',
-            form.errors.get('gender', []))
-
-    def test_gender_is_provided(self):
-        """Test to see if gender is provided"""
-        form = EnrollmentForm(data=self.data)
-        self.assertNotIn(
-            'You provided sex',
-            form.errors.get('gender', []))
-
-    def test_caretaker_relation(self):
-        """Test to see who the caretaker is """
-        form = EnrollmentForm(data=self.data)
-        self.assertNotIn(
-            'You provided the caretaker as other',
-            form.errors.get('caregiver_relation_other', []))
-
-    def test_caretaker_relation_is(self):
-        """Test to see who the caretaker is """
-        form = EnrollmentForm(data=self.data)
-        self.assertNotIn(
-            'You provided the caretaker as other',
-            form.errors.get('caregiver_relation_other', []))
-
-    def test_if_weight_provided(self):
-        """Test to see if weight is given """
-        form = EnrollmentForm(data=self.data)
-        self.assertNotIn(
-            'You provided the weight',
-            form.errors.get('weight', []))
-
-    def test_if_height_provided(self):
-        """Test to see if height is given """
-        form = EnrollmentForm(data=self.data)
-        self.assertNotIn(
-            'You provided the height',
-            form.errors.get('height', []))
-
-    def test_if_anti_retroviral_treatment_given(self):
-        """Test to see if ART is given """
-        form = EnrollmentForm(data=self.data)
-        self.assertNotIn(
-            'ART provided',
-            form.errors.get('height', []))
+        self.assertIn(
+            'Initial visit date should come before June 1st, 2016',
+            form.errors.get('initial_visit_date', []))

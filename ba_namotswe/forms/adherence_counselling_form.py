@@ -6,7 +6,7 @@ from edc_constants.constants import NO, YES
 from datetime import date
 
 
-class AdherencePartnerRelationForm(forms.ModelForm):
+class AdherenceCounsellingForm(forms.ModelForm):
 
     def clean(self):
         self.validate_adherence_partner_relation()
@@ -25,4 +25,3 @@ class AdherencePartnerRelationForm(forms.ModelForm):
                     'adherence_partner_relation_other': [
                         'You should enter other adherence_partner relation as you have selected OTHER adherence_partner relation']})
         return self.cleaned_data
-

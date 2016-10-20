@@ -1,16 +1,19 @@
 from django.contrib import admin
 
+
 from edc_base.modeladmin.mixins import (
     ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin, ModelAdminFormAutoNumberMixin,
     ModelAdminAuditFieldsMixin)
 
 from .admin_site import ba_namotswe_admin
 from .models import SubjectVisit, Enrollment, Oi, Abstraction, Treatment, ARTRegimen, Appointment
+
 from ba_namotswe.forms.enrollment_form import EnrollmentForm
 from ba_namotswe.forms.treatment_form import TreatmentForm
 from ba_namotswe.models.collected_data import CollectedData
 from ba_namotswe.models.tb_history import TBHistory
 from ba_namotswe.forms.tb_history_form import TBHistoryForm
+
 from ba_namotswe.models import SubjectIdentifier
 
 
@@ -64,7 +67,9 @@ class TreatmentAdmin(admin.ModelAdmin):
 
 @admin.register(Oi, site=ba_namotswe_admin)
 class OiAdmin(admin.ModelAdmin):
-    list_filter = ('name', )
+    list_filter = ('oi_type', )
+    radio_fields = {
+        'oi_type': admin.VERTICAL}
 
 
 @admin.register(ARTRegimen, site=ba_namotswe_admin)
