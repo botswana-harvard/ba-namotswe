@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+
 from edc_base.modeladmin.mixins import (
     ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin, ModelAdminFormAutoNumberMixin,
     ModelAdminAuditFieldsMixin)
@@ -12,6 +13,7 @@ from ba_namotswe.forms.treatment_form import TreatmentForm
 from ba_namotswe.models.collected_data import CollectedData
 from ba_namotswe.models import TbHistory
 from ba_namotswe.forms.tb_history_form import TBHistoryForm
+
 from ba_namotswe.models import SubjectIdentifier
 from ba_namotswe.models import DummyConsent
 from ba_namotswe.forms import DummyConsentForm
@@ -75,7 +77,9 @@ admin.site.register(Treatment, TreatmentAdmin)
 
 
 class OiAdmin(MembershipBaseModelAdmin):
-    list_filter = ('name', )
+    list_filter = ('oi_type', )
+    radio_fields = {
+        'oi_type': admin.VERTICAL}
 admin.site.register(Oi, OiAdmin)
 
 

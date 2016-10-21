@@ -25,7 +25,7 @@ SECRET_KEY = 'n7@bmf88asdjo$=f#4---8gqchixi38r02@o^tlgyonm_##+2c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', ]
 
 PROJECT_TITLE = 'BA NAMOTSWE'
 

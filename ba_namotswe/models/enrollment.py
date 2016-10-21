@@ -23,14 +23,10 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
     gender = models.CharField(
         verbose_name="Gender",
         max_length=1,
-        choices=GENDER,
-        null=True,
-        blank=False)
+        choices=GENDER)
 
     dob = models.DateField(
         verbose_name=("Date of birth"),
-        null=True,
-        blank=False,
         help_text=("Format is YYYY-MM-DD"))
 
     report_datetime = models.DateTimeField(default=timezone.now)
