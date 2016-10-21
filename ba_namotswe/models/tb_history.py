@@ -25,7 +25,7 @@ TEST_TYPE = (
 )
 
 
-class TBHistory(BaseUuidModel):
+class TbHistory(BaseUuidModel):
 
     tb_date = models.DateField(
         verbose_name='Date of TB diagnosis',

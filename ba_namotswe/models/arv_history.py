@@ -1,7 +1,8 @@
-from django.db import models
-
-from edc_base.model.models.base_list_uuid_model import BaseUuidModel
+from edc_base.model.models import BaseUuidModel
 
 
-class ARVHistory(BaseUuidModel):
-    
+class ArvHistory(BaseUuidModel):
+
+    class Meta:
+        app_label = 'ba_namotswe'
+        verbose_name = 'ARV History'

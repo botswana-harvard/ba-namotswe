@@ -1,5 +1,7 @@
 from django import forms
-from ba_namotswe.models.tb_history import TBHistory, OTHER
+
+from ba_namotswe.models import TbHistory
+from ba_namotswe.models.tb_history import OTHER
 
 
 class TBHistoryForm(forms.ModelForm):
@@ -22,5 +24,5 @@ class TBHistoryForm(forms.ModelForm):
                         'You should not enter other TB test as you have already selected a TB Test']})
 
     class Meta:
-        model = TBHistory
+        model = TbHistory
         fields = '__all__'

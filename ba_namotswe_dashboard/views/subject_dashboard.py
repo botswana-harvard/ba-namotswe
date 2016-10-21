@@ -7,6 +7,8 @@ from edc_base.views import EdcBaseViewMixin
 from .appointment_visit_crf_view_mixin import AppointmentSubjectVisitCRFViewMixin
 from .locator_results_actions_view_mixin import LocatorResultsActionsViewMixin
 from .marquee_view_mixin import MarqueeViewMixin
+from ba_namotswe.models.enrollment import Enrollment
+from ba_namotswe.models.requisition_meta_data import RequisitionMetadata, CrfMetadata
 
 
 class SubjectDashboardView(
@@ -28,7 +30,7 @@ class SubjectDashboardView(
             site_header=admin.site.site_header,
         )
         self.context.update({
-            'markey_data': {},
+            'markey_data': self.markey_data.items(),
             'markey_next_row': {},
             'requisitions_meta_data': self.requisitions_meta_data,
             'scheduled_forms': self.scheduled_forms,
@@ -46,10 +48,18 @@ class SubjectDashboardView(
 
     @property
     def scheduled_forms(self):
+        if self.appointment:
+            crf_metadata = CrfMetadata.objects.filter(
+                subject_identifier=self.subject_identifier, visit_code=self.appointment.visit_code)
+            return crf_metadata
         return {}
 
     @property
     def requisitions_meta_data(self):
+        if self.appointment:
+            requistions = RequisitionMetadata.objects.filter(
+                subject_identifier=self.subject_identifier, visit_code=self.appointment.visit_code, )
+            return requistions
         return {}
 
     @property
@@ -60,3 +70,11 @@ class SubjectDashboardView(
     @property
     def subject_identifier(self):
         return self.context.get('subject_identifier')
+
+    @property
+    def enrollment(self):
+        try:
+            enrollment = Enrollment.objects.get(subject_identifier=self.subject_identifier)
+        except Enrollment.DoesNotExist:
+            enrollment = None
+        return enrollment

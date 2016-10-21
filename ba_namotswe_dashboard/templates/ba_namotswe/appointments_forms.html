@@ -15,8 +15,7 @@
 	    <th>Type</th>
 	    <th>Appt. Date</th>
 	    <th>Status</th>
-	    <th>Visit Report</th>
-	    <th>Visit Reason</th>      
+	    <th>Visit Report</th>      
 	    <th>Action</th>                                    
 	    </thead>
 	    <tbody>
@@ -32,12 +31,11 @@
 				<td><a href="{% url 'admin:ba_namotswe_appointment_change' appointment.pk %}?subject_identifier={{ appointment.subject_identifier }}&next={% url 'subject_dashboard_url' appointment.subject_identifier %}">{{ appointment.appt_status | capfirst }}</a></td>
 		        <td>
 		        	{% if appointment.subject_visit %}
-		        		<a href="{% url 'admin:ba_namotswe_subjectvisit_change' appointment.subject_visit.pk %}?subject_identifier={{ appointment.subject_identifier }}&next={% url 'subject_dashboard_url' appointment.subject_identifier %}">{{ appointment.subject_visit.report_datetime |date:"Y-m-d D"| capfirst }}</a>
+		        		<a href="{% url 'admin:ba_namotswe_subjectvisit_change' appointment.subject_visit.pk %}?subject_identifier={{ appointment.subject_identifier }}&appointment={{appointment.pk}}&next={% url 'subject_dashboard_url' appointment.subject_identifier %}">{{ appointment.subject_visit.report_datetime |date:"Y-m-d D"| capfirst }}</a>
 		        	{% else %}
-		        		<a href="{% url 'admin:ba_namotswe_subjectvisit_add' %}?subject_identifier={{ appointment.subject_identifier }}&next={% url 'subject_dashboard_url' appointment.subject_identifier %}">Add Visit</a>
+		        		<a href="{% url 'admin:ba_namotswe_subjectvisit_add' %}?subject_identifier={{ appointment.subject_identifier }}&appointment={{appointment.pk}}&next={% url 'subject_dashboard_url' appointment.subject_identifier %}">Add Visit</a>
 		        	{% endif %}
 		        </td>
-		        <td><b>{{appointment.appt_reason}}</b></td>
 			    <td>
 			    	{% if show %}
 			    		<a href="{% url 'subject_dashboard_url' subject_identifier %}">show appointments</a>

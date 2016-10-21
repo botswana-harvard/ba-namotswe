@@ -4,7 +4,6 @@ from ba_namotswe.models import Appointment
 class AppointmentSubjectVisitCRFViewMixin:
 
     def __init__(self):
-#         self.subject_identifier = None
         self.show = None
 
     @property

@@ -8,12 +8,15 @@ from edc_base.model.models.base_uuid_model import BaseUuidModel
 from edc_appointment.model_mixins import CreateAppointmentsMixin
 from edc_constants.choices import YES_NO, GENDER
 from ba_namotswe.models.subject_identifier import SubjectIdentifier
-# from edc_consent.model_mixins import ConsentModelMixin
-# from edc_consent.model_mixins import RequiresConsentMixin
-from edc_registration.model_mixins import RegisteredSubjectMixin
+from ba_namotswe.models import DummyConsent
 
 
-class Enrollment(CreateAppointmentsMixin, RegisteredSubjectMixin, BaseUuidModel):
+class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
+
+    subject_identifier = models.CharField(
+        verbose_name="Subject Identifier",
+        max_length=50,
+        editable=False)
 
     initials = models.CharField(max_length=3)
 
@@ -101,11 +104,13 @@ class Enrollment(CreateAppointmentsMixin, RegisteredSubjectMixin, BaseUuidModel)
     def save(self, *args, **kwargs):
         if not self.hiv_diagnosis_date:
             self.hiv_diagnosis_date = self.initial_visit_date
-        self.subject_identifier = self.identifier  # SubjectIdentifier(site_code='99').get_identifier()
+        self.subject_identifier = self.identifier
         super(Enrollment, self).save(*args, **kwargs)
 
     class Meta:
         app_label = 'ba_namotswe'
+        consent_model = 'ba_namotswe.dummyconsent'
+        visit_schedule_name = 'subject_visit_schedule'
 
     @property
     def age_at_visit(self):
@@ -116,6 +121,12 @@ class Enrollment(CreateAppointmentsMixin, RegisteredSubjectMixin, BaseUuidModel)
         subject_identifier = SubjectIdentifier.objects.filter(
             allocated_datetime=None).order_by('created').first()
         return subject_identifier.subject_identifier
+
+    def create_dummy_consent(self, subject_identifier):
+        try:
+            DummyConsent.objects.get(subject_identifier=subject_identifier)
+        except DummyConsent.DoesNotExist:
+            DummyConsent.objects.create(subject_identifier=subject_identifier)
 
     def dashboard(self):
         """Returns a hyperink for the Admin page."""

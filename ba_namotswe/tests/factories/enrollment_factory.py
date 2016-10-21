@@ -22,5 +22,4 @@ class EnrollmentFactory(factory.DjangoModelFactory):
     height_measured = YES
     height = 106
     hiv_diagnosis_date = None
-    #subject_identifier = '12345'
     art_initiation_date = date(2016, 7, 7)

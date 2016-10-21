@@ -7,7 +7,7 @@ from edc_metadata.model_mixins import UpdatesCrfMetadataModelMixin
 from edc_visit_tracking.model_mixins import CrfModelMixin
 
 from .subject_visit import SubjectVisit
-from .art_regimen import ARTRegimen
+from .art_regimen import ArtRegimen
 from ba_namotswe.models.oi import Oi
 
 
@@ -56,7 +56,7 @@ class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
         null=True)
 
     art_history = models.ManyToManyField(
-        ARTRegimen,
+        ArtRegimen,
         verbose_name='ARV regimens',
         help_text='Please select all ART regimens since last visit')
 

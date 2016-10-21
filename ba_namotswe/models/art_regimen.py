@@ -3,7 +3,7 @@ from django.db import models
 from edc_base.model.models.base_uuid_model import BaseUuidModel
 
 
-class ARTRegimen(BaseUuidModel):
+class ArtRegimen(BaseUuidModel):
 
     name = models.CharField(max_length=10)
 

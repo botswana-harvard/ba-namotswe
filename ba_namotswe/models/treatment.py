@@ -5,7 +5,7 @@ from edc_constants.choices import YES_NO_UNKNOWN
 from edc_metadata.model_mixins import UpdatesCrfMetadataModelMixin
 from edc_visit_tracking.model_mixins import CrfModelMixin
 
-from .art_regimen import ARTRegimen
+from .art_regimen import ArtRegimen
 
 
 class Treatment(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
@@ -46,7 +46,7 @@ class Treatment(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
         null=True)
 
     art_history = models.ManyToManyField(
-        ARTRegimen,
+        ArtRegimen,
         verbose_name='Prior History of ARV Treatments')
 
     counseling = models.CharField(

@@ -5,9 +5,6 @@ from ba_namotswe.models.transfer_history import TransferHistory
 
 class TransferHistoryForm (forms.ModelForm):
 
-    class Meta:
-        model = TransferHistory
-
     def clean(self):
         if self.cleaned_data['transfer_loc']:
             self.validate_other_tb_diagnosis()
@@ -24,3 +21,7 @@ class TransferHistoryForm (forms.ModelForm):
                 raise forms.ValidationError({
                     'transfer_loc_other': [
                         'You should not enter other transfer_location as you have already selected a transfer_location']})
+
+    class Meta:
+        model = TransferHistory
+        fields = '__all__'

@@ -4,6 +4,7 @@ from ba_namotswe.models import Enrollment
 from edc_base.utils.age import age
 from edc_constants.constants import NO, YES
 from datetime import date
+from django.urls.base import reverse
 
 
 class EnrollmentForm(forms.ModelForm):
@@ -135,7 +136,6 @@ class EnrollmentForm(forms.ModelForm):
     class Meta:
         model = Enrollment
         fields = '__all__'
-
 
     def dashboard(self):
         """Returns a hyperink for the Admin page."""

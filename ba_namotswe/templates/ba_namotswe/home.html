@@ -19,7 +19,7 @@
           <div class="panel-group">
           <div class="panel panel-default">
             <div class="panel-body">{% crispy form %}
-            <a href={% url 'ba_namotswe_admin:ba_namotswe_enrollment_add' %} class="btn btn-sm btn-default" role="button">Add Enrollee</a>
+            <a href={% url 'admin:ba_namotswe_enrollment_add' %} class="btn btn-sm btn-default" role="button">Add Enrollment</a>
             </div>
 
           </div>          
@@ -27,7 +27,9 @@
               <div class="panel-heading">Administration</div>
                   <div class="panel-body">
                       <ul id="nav-pill-home" class="nav nav-pills nav-stacked">
-                         <li><a href={% url 'ba_namotswe_admin:index' %} >Admin<span class="glyphicon glyphicon-wrench pull-right" aria-hidden="true"></span></a></li>
+                         <li><a href={% url 'admin:index' %} >Admin<span class="glyphicon glyphicon-wrench pull-right" aria-hidden="true"></span></a></li>
+                         <li>
+					      <a id="link-enrollment" href="{% url 'admin:ba_namotswe_enrollment_changelist' %}">Enrollment</a></li>
                       </ul>
                   </div>
               </div>

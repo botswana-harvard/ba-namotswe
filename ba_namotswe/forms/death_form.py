@@ -7,3 +7,4 @@ class DeathForm (forms.ModelForm):
 
     class Meta:
         model = Death
+        fields = '__all__'

@@ -80,9 +80,9 @@ $(document).ready(function() {
     		<td><small>{{requisition_meta_data.panel_name}}</small></td>
     		<td>
     			{% if requisition_meta_data.subject_requisition %}
-    				<a href="{% url 'admin:ba_namotswe_subjectrequisition_change' requisition_meta_data.subject_requisition.pk %}?subject_visit={{requisition_meta_data.subject_visit.pk}}&subject_identifier={{requisition_meta_data.appointment.subject_identifier}}&next={% url 'subject_dashboard_url' requisition_meta_data.appointment.str_pk requisition_meta_data.appointment.subject_identifier %}&show=forms">Subject Requisition</a>
+    				<a href="#">Subject Requisition</a>
     			{% else %}
-    				<a href="{% url 'admin:ba_namotswe_subjectrequisition_add' %}?subject_visit={{requisition_meta_data.subject_visit.pk}}&subject_identifier={{requisition_meta_data.appointment.subject_identifier}}&next={% url 'subject_dashboard_url' requisition_meta_data.appointment.str_pk requisition_meta_data.appointment.subject_identifier %}&show=forms">Add Subject Requisition</a>
+    				<a href="#">Add Subject Requisition</a>
     			{% endif %}
     		</td>
     		<td>

@@ -14,22 +14,21 @@ class MarqueeViewMixin:
     @property
     def markey_data(self):
         markey_data = {}
-        if self.consent:
+        if self.enrollment:
             markey_data = {
-                'Name': '{}({})'.format(self.consent.first_name, self.consent.initials),
-                'Born': self.consent.dob,
+                'Initials': '{}'.format(self.enrollment.initials),
+                'Born': self.enrollment.dob,
                 'Age': self.age,
-                'Consented': self.consent.consent_datetime,
-                'Omang': self.consent.identity,
                 'Gender': self.gender,
-                'Age Today': self.age_today,
-                'Identifier': self.consent.subject_identifier,
+                'Height': self.enrollment.height,
+                'Weight': self.enrollment.weight,
+                'Identifier': self.enrollment.subject_identifier,
             }
         return markey_data
 
     @property
-    def consent(self):
-        return self.consent_model
+    def enrollment(self):
+        return self.enrollment_model
 
     @property
     def age(self):
@@ -41,5 +40,5 @@ class MarqueeViewMixin:
 
     @property
     def gender(self):
-        gender = 'Female' if self.consent.gender == 'F' else 'Male'
+        gender = 'Female' if self.enrollment.gender == 'F' else 'Male'
         return gender
