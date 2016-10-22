@@ -10,7 +10,6 @@ django-simple-history==1.8.1
 pycrypto==2.6.1
 python-dateutil==2.5.3
 django-nose==1.4.4
-django-revision==0.1.10
 git+https://github.com/botswana-harvard/edc-appointment@develop#egg=edc_appointment
 git+https://github.com/botswana-harvard/edc-base@develop#egg=edc_base
 git+https://github.com/botswana-harvard/edc-consent@develop#egg=edc_consent
