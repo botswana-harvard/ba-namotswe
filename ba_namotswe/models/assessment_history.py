@@ -1,15 +1,11 @@
 from django.db import models
 
-from edc_base.model.models.base_uuid_model import BaseUuidModel
 from edc_metadata.model_mixins import UpdatesCrfMetadataModelMixin
-from edc_visit_tracking.model_mixins import CrfModelMixin
 
-from .subject_visit import SubjectVisit
+from .crf_model import CrfModel
 
 
-class AssessmentHistory(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
-
-    subject_visit = models.ForeignKey(SubjectVisit)
+class AssessmentHistory(UpdatesCrfMetadataModelMixin, CrfModel):
 
     cd4_count = models.IntegerField(
         verbose_name='CD4+ Cell Count',

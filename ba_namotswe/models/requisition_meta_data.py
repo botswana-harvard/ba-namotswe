@@ -1,7 +1,6 @@
 from edc_base.model.models.base_uuid_model import BaseUuidModel
 
-from edc_metadata.model_mixins import (
-    CrfMetadataModelMixin, RequisitionMetadataModelMixin)
+from edc_metadata.model_mixins import RequisitionMetadataModelMixin
 from ba_namotswe.models.subject_requisition import SubjectRequisition
 
 
@@ -18,9 +17,3 @@ class RequisitionMetadata(RequisitionMetadataModelMixin, BaseUuidModel):
         except SubjectRequisition.DoesNotExist:
             pass
         return subject_requisition
-
-
-class CrfMetadata(CrfMetadataModelMixin, BaseUuidModel):
-
-    class Meta(CrfMetadataModelMixin.Meta):
-        app_label = 'ba_namotswe'

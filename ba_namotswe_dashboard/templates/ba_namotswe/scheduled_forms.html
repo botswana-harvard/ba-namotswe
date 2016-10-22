@@ -25,9 +25,9 @@
 			    <td>{{forloop.counter}}</td>
 			    <td>
 			    	{% if crf.entry_status == 'NOT_REQUIRED' %}
-			        	<span>{{ crf.verbose_name }}</span>
+			        	<span>{{crf.crf_model_add_or_update.0}}</span>
 			        {% else %}
-			        	<a href="{{ crf.url }}?next=subject_dashboard_url&appointment_pk={{crf.appointment.str_pk}}&subject_identifier={{subject_identifier}}&visit_code={{ crf.appointment.visit_code }}&show=forms">{{ crf.verbose_name }}</a>
+			        	<a href="{{crf.crf_model_add_or_update.1}}?next=subject_dashboard_url&appointment_pk={{crf.appointment.str_pk}}&subject_identifier={{subject_identifier}}&visit_code={{ crf.appointment.visit_code }}&show=forms">{{crf.crf_model_add_or_update.0}}</a>
 			   		{% endif %}
 			    </td>                
 			    <td>{{crf.entry_status}}</td>

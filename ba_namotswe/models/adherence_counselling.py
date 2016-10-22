@@ -1,21 +1,10 @@
 from django.db import models
 
-from edc_base.model.models.base_uuid_model import BaseUuidModel
-
-RELATIONSHIP = (
-    ('mother', 'Mother'),
-    ('father', 'Father'),
-    ('grandmother', 'Grandmother'),
-    ('grandfather', 'Grandfather'),
-    ('aunt', 'Aunt'),
-    ('uncle', 'Uncle'),
-    ('sister', 'Sister'),
-    ('legal_guardian', 'Legal Guardian'),
-    ('not_applicable', 'Not Applicable'),
-    ('OTHER', 'Other, specify'))
+from .crf_model import CrfModel
+from ..choices import RELATIONSHIP
 
 
-class AdherenceCounselling(BaseUuidModel):
+class AdherenceCounselling(CrfModel):
 
     adherence_date = models.DateField(
         verbose_name='Date of Adherence Counseling',

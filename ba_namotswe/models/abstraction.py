@@ -1,19 +1,15 @@
 from django.db import models
 
-from edc_base.model.models.base_uuid_model import BaseUuidModel
 from edc_base.model.validators.date import date_not_future
 from edc_constants.choices import YES_NO, YES_NO_UNKNOWN
 from edc_metadata.model_mixins import UpdatesCrfMetadataModelMixin
-from edc_visit_tracking.model_mixins import CrfModelMixin
 
-from .subject_visit import SubjectVisit
 from .art_regimen import ArtRegimen
-from ba_namotswe.models.oi import Oi
+from .crf_model import CrfModel
+from .oi import Oi
 
 
-class Abstraction(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
-
-    subject_visit = models.ForeignKey(SubjectVisit)
+class Abstraction(UpdatesCrfMetadataModelMixin, CrfModel):
 
     height_measured = models.CharField(
         max_length=25,

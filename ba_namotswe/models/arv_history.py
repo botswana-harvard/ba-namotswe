@@ -1,7 +1,7 @@
-from edc_base.model.models import BaseUuidModel
+from .crf_model import CrfModel
 
 
-class ArvHistory(BaseUuidModel):
+class ArvHistory(CrfModel):
 
     class Meta:
         app_label = 'ba_namotswe'

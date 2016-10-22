@@ -1,9 +1,9 @@
 from django.db import models
 
-from edc_base.model.models.base_uuid_model import BaseUuidModel
+from .crf_model import CrfModel
 
 
-class ArtRegimen(BaseUuidModel):
+class ArtRegimen(CrfModel):
 
     name = models.CharField(max_length=10)
 

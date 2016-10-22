@@ -7,8 +7,7 @@ from edc_base.view_mixins import EdcBaseViewMixin
 from .appointment_visit_crf_view_mixin import AppointmentSubjectVisitCRFViewMixin
 from .locator_results_actions_view_mixin import LocatorResultsActionsViewMixin
 from .marquee_view_mixin import MarqueeViewMixin
-from ba_namotswe.models.enrollment import Enrollment
-from ba_namotswe.models.requisition_meta_data import RequisitionMetadata, CrfMetadata
+from ba_namotswe.models import RequisitionMetadata, CrfMetadata, Enrollment
 
 
 class SubjectDashboardView(

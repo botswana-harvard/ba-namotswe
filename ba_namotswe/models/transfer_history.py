@@ -1,18 +1,10 @@
 from django.db import models
 
-from edc_base.model.models.base_uuid_model import BaseUuidModel
-
-TRANSFER = (
-    ('into_idcc', 'Into IDCC'),
-    ('out_of_idcc', 'Out of IDCC'),
-    ('into private_clinic', 'Into Private Clinic'),
-    ('out_of_private_clinic', 'Out of Private Clinic'),
-    ('into_bipai', 'Into BIPAI'),
-    ('out_of_bipai', 'Out of BIPAI'),
-    ('OTHER', 'Other, specify'))
+from .crf_model import CrfModel
+from ..choices import TRANSFER
 
 
-class TransferHistory(BaseUuidModel):
+class TransferHistory(CrfModel):
 
     transfer_details = models.CharField(
         verbose_name="Transfer of Care Details",

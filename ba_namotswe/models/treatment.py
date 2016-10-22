@@ -1,14 +1,13 @@
 from django.db import models
 
-from edc_base.model.models.base_uuid_model import BaseUuidModel
 from edc_constants.choices import YES_NO_UNKNOWN
 from edc_metadata.model_mixins import UpdatesCrfMetadataModelMixin
-from edc_visit_tracking.model_mixins import CrfModelMixin
 
 from .art_regimen import ArtRegimen
+from .crf_model import CrfModel
 
 
-class Treatment(CrfModelMixin, UpdatesCrfMetadataModelMixin, BaseUuidModel):
+class Treatment(UpdatesCrfMetadataModelMixin, CrfModel):
 
     perinatal_infection = models.CharField(
         max_length=25,

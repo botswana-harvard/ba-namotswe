@@ -1,18 +1,10 @@
 from django.db import models
 
-from edc_base.model.models.base_uuid_model import BaseUuidModel
-
-YES = 'YES'
-NO = 'NO'
-UNCERTAIN = 'UNCERTAIN'
-YES_NO_UNCERTAIN = (
-    (YES, 'Yes'),
-    (NO, 'No'),
-    (UNCERTAIN, 'Unable to ascertain'),
-)
+from .crf_model import CrfModel
+from ..choices import YES_NO_UNCERTAIN
 
 
-class CollectedData(BaseUuidModel):
+class CollectedData(CrfModel):
 
     arv_changes = models.CharField(
         max_length=20,

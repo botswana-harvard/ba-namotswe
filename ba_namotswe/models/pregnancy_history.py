@@ -1,14 +1,10 @@
 from django.db import models
 
-from edc_base.model.models.base_uuid_model import BaseUuidModel
+from .crf_model import CrfModel
+from ..choices import PREGNANCY
 
 
-PREGNANCY = (
-    ('date_of_first_clinical_documentation_of_pregnancy', 'Date of First Clinical Documentation of Pregnancy'),
-    ('date_of_delivery', 'Date of Delivery'),)
-
-
-class PregnancyHistory(BaseUuidModel):
+class PregnancyHistory(CrfModel):
 
     class Meta:
         app_label = 'ba_namotswe'

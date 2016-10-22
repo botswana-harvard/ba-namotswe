@@ -10,6 +10,7 @@ from edc_appointment.model_mixins import CreateAppointmentsMixin
 from edc_constants.choices import YES_NO, GENDER
 
 from .subject_consent import SubjectConsent
+from ..choices import RELATIONSHIP
 
 
 class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
@@ -49,16 +50,7 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
         max_length=25,
         blank=True,
         default=None,
-        choices=(
-            ('mother', 'Mother'),
-            ('father', 'Father'),
-            ('grandmother', 'Grandmother'),
-            ('grandfather', 'Grandfather'),
-            ('aunt', 'Aunt'),
-            ('uncle', 'Uncle'),
-            ('legal_guardian', 'Legal Guardian'),
-            ('not_applicable', 'Not Applicable'),
-            ('OTHER', 'Other, specify')),
+        choices=RELATIONSHIP,
         help_text='Please describe the caregiver/next of kin\'s relationship to patient')
 
     # TODO: skip_logic caregiver_relation_other: display field only if Caregiver/Next of Kin Relationship= OTHER

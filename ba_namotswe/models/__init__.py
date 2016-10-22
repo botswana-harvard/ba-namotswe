@@ -10,8 +10,10 @@ from .enrollment import Enrollment
 from .oi import Oi
 from .packing_list import PackingList
 from .registered_subject import RegisteredSubject
-from .requisition_meta_data import RequisitionMetadata, CrfMetadata
+from .requisition_meta_data import RequisitionMetadata
+from .crf_metadata import CrfMetadata
 from .subject_consent import SubjectConsent
 from .subject_visit import SubjectVisit
 from .tb_history import TbHistory
 from .treatment import Treatment
+from .crf_model import CrfModel

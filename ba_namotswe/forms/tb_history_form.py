@@ -1,7 +1,7 @@
 from django import forms
 
 from ba_namotswe.models import TbHistory
-from ba_namotswe.models.tb_history import OTHER
+from edc_constants.constants import OTHER
 
 
 class TBHistoryForm(forms.ModelForm):
