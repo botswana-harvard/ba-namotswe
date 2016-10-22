@@ -17,3 +17,6 @@ from .subject_visit import SubjectVisit
 from .tb_history import TbHistory
 from .treatment import Treatment
 from .crf_model import CrfModel
+from .death import Death
+from .pregnancy_history import PregnancyHistory
+from .transfer_history import TransferHistory

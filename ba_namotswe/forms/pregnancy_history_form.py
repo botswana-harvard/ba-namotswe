@@ -1,6 +1,6 @@
 from django import forms
 
-from ba_namotswe.models.pregnancy_history import PregnancyHistory
+from ba_namotswe.models import PregnancyHistory
 
 
 class PregnancyHistoryForm (forms.ModelForm):

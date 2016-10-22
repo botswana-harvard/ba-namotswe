@@ -6,10 +6,13 @@ from edc_base.modeladmin.mixins import (
 from edc_visit_tracking.admin import VisitAdminMixin
 
 from .forms import (
-    SubjectConsentForm, SubjectVisitForm, TBHistoryForm, TreatmentForm, EnrollmentForm)
+    SubjectConsentForm, SubjectVisitForm, TBHistoryForm, TreatmentForm, EnrollmentForm, AbstractionForm,
+    AdherenceCounsellingForm, ArvHistoryForm, AssessmentHistoryForm, DeathForm, PregnancyHistoryForm,
+    TransferHistoryForm, OiForm, ArtRegimenForm, CollectedDataForm)
 from .models import (
     SubjectConsent, SubjectVisit, CollectedData, Enrollment, Oi, Abstraction, Treatment, ArtRegimen,
-    Appointment, TbHistory)
+    Appointment, TbHistory, AdherenceCounselling, ArvHistory, AssessmentHistory, Death, PregnancyHistory,
+    TransferHistory)
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
@@ -54,6 +57,43 @@ class SubjectVisitAdmin(VisitAdminMixin, BaseModelAdmin):
 @admin.register(Abstraction)
 class AbstractionAdmin(BaseModelAdmin):
     list_filter = ('subject_visit', )
+    form = AbstractionForm
+
+
+@admin.register(PregnancyHistory)
+class PregnancyHistoryAdmin(BaseModelAdmin):
+    list_filter = ('subject_visit', )
+    form = PregnancyHistoryForm
+
+
+@admin.register(TransferHistory)
+class TransferHistoryAdmin(BaseModelAdmin):
+    list_filter = ('subject_visit', )
+    form = TransferHistoryForm
+
+
+@admin.register(Death)
+class DeathAdmin(BaseModelAdmin):
+    list_filter = ('subject_visit', )
+    form = DeathForm
+
+
+@admin.register(AssessmentHistory)
+class AssessmentHistoryAdmin(BaseModelAdmin):
+    list_filter = ('subject_visit', )
+    form = AssessmentHistoryForm
+
+
+@admin.register(ArvHistory)
+class ArvHistoryAdmin(BaseModelAdmin):
+    list_filter = ('subject_visit', )
+    form = ArvHistoryForm
+
+
+@admin.register(AdherenceCounselling)
+class AdherenceCounsellingAdmin(BaseModelAdmin):
+    list_filter = ('subject_visit', )
+    form = AdherenceCounsellingForm
 
 
 @admin.register(Treatment)
@@ -67,11 +107,13 @@ class OiAdmin(BaseModelAdmin):
     list_filter = ('oi_type', )
     radio_fields = {
         'oi_type': admin.VERTICAL}
+    form = OiForm
 
 
 @admin.register(ArtRegimen)
 class ARTRegimenAdmin(BaseModelAdmin):
     list_filter = ('name', )
+    form = ArtRegimenForm
 
 
 @admin.register(CollectedData)
@@ -85,6 +127,7 @@ class CollectedDataAdmin(BaseModelAdmin):
         'counselling_adhere': admin.VERTICAL,
         'transfer': admin.VERTICAL,
         'death': admin.VERTICAL}
+    form = CollectedDataForm
 
 
 @admin.register(TbHistory)

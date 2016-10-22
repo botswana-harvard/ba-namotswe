@@ -1,6 +1,6 @@
 from django import forms
 
-from ba_namotswe.models.death import Death
+from ba_namotswe.models import Death
 
 
 class DeathForm (forms.ModelForm):
