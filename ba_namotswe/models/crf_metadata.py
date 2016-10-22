@@ -20,10 +20,14 @@ class CrfMetadata(CrfMetadataModelMixin, BaseUuidModel):
             obj = model.objects.get(subject_visit__appointment__subject_identifier=self.subject_identifier)
             admin_model_url_label = model._meta.verbose_name
             admin_model_change_url = obj.get_absolute_url()
-            print(admin_model_url_label, admin_model_change_url)
+            next_url = reverse(
+                'subject_dashboard_url',
+                kwargs={
+                    'subject_identifier': self.subject_identifier,
+                    'appointment_pk': obj.subject_visit.appointment.str_pk})
+            admin_model_change_url = admin_model_change_url + '?next' + next_url + '&show=forms'
             return (admin_model_url_label, admin_model_change_url)
         except model.DoesNotExist:
             admin_model_url_label = model._meta.verbose_name
             admin_model_add_url = reverse('admin:{}_{}_add'.format(app_label, model_name))
-            print(admin_model_url_label, admin_model_add_url)
             return (admin_model_url_label, admin_model_add_url)
