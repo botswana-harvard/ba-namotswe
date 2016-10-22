@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', ]
 
-PROJECT_TITLE = 'BA NAMOTSWE'
+PROJECT_TITLE = 'Ba Namotswe'
 
 # Application definition
 
@@ -40,22 +41,53 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'simple_history',
-    'ba_namotswe.apps.EdcLabAppConfig',
-    'edc_identifier',
     'django_crypto_fields.apps.AppConfig',
     'django_revision.apps.AppConfig',
     'edc_device.apps.AppConfig',
     'edc_visit_schedule.apps.AppConfig',
+    'edc_rule_groups.apps.AppConfig',
     'ba_namotswe.apps.BaNamotsweAppConfig',
-    'ba_namotswe.apps.EdcConsentAppConfig',
     'ba_namotswe.apps.EdcAppointmentAppConfig',
+    'ba_namotswe.apps.EdcBaseAppConfig',
+    'ba_namotswe.apps.EdcConsentAppConfig',
+    'ba_namotswe.apps.EdcIdentifierAppConfig',
+    'ba_namotswe.apps.EdcRegistrationAppConfig',
+    'ba_namotswe.apps.EdcLabAppConfig',
     'ba_namotswe.apps.EdcMetaDataAppConfig',
-    'ba_namotswe.apps.EdcVisitTrackingAppConfig',
     'ba_namotswe.apps.EdcProtocolAppConfig',
     'ba_namotswe.apps.EdcTimepointAppConfig',
-    'ba_namotswe.apps.EdcBaseAppConfig',
+    'ba_namotswe.apps.EdcVisitTrackingAppConfig',
     'ba_namotswe_dashboard.apps.BaNamotsweDashboardConfig',
 ]
+
+
+if 'test' in sys.argv:
+    # TODO: Make this list auto generate from INSTALLED_APPS
+    # Ignore running migrations on unit tests, greately speeds up tests.
+    MIGRATION_MODULES = {
+        "call_manager": None,
+        "edc_appointment": None,
+        "edc_code_lists": None,
+        "edc_configuration": None,
+        "edc_consent": None,
+        "edc_content_type_map": None,
+        "edc_data_manager": None,
+        "edc_death_report": None,
+        "edc_death_report": None,
+        "edc_identifier": None,
+        "edc_metadata": None,
+        "edc_registration": None,
+        "edc_rule_groups": None,
+        "edc_sync": None,
+        "edc_visit_schedule": None,
+        "edc_visit_tracking": None,
+        "lab_clinic_api": None,
+        "lab_clinic_reference": None,
+        "lab_packing": None,
+        "ba_namotswe": None,
+        'django_crypto_fields': None,
+    }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -139,5 +171,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'ba_namotswe', 'static')
 GIT_DIR = BASE_DIR
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
-KEY_PATH = os.path.join(BASE_DIR, 'ba_namotswe')
+KEY_PATH = os.path.join(BASE_DIR, 'crypto_fields')
 ETC_DIR = os.path.join(BASE_DIR, 'etc')
+
+STUDY_SITE = '10'

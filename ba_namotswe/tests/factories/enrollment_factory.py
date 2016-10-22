@@ -1,11 +1,15 @@
 import factory
-
-from datetime import date, datetime
+import random
+from dateutil.parser import parse
+from datetime import date
 from django.utils import timezone
+from faker import Faker
 
-from edc_constants.constants import YES, NO
+from edc_constants.constants import YES
 
 from ba_namotswe.models import Enrollment
+
+fake = Faker()
 
 
 class EnrollmentFactory(factory.DjangoModelFactory):
@@ -13,13 +17,14 @@ class EnrollmentFactory(factory.DjangoModelFactory):
     class Meta:
         model = Enrollment
 
-    dob = date(1988, 7, 7)
-    gender = 'female'
-    initial_visit_date = timezone.datetime.date(datetime.today())
+    initials = ''.join([name[0] for name in fake.name().split(' ')])
+    dob = parse(fake.date())
+    gender = random.choice(['M', 'F'])
+    initial_visit_date = timezone.now()
     caregiver_relation = 'mother'
     weight_measured = YES
-    weight = 50
+    weight = random.choice(range(35, 60))
     height_measured = YES
-    height = 106
+    height = random.choice(range(100, 120))
     hiv_diagnosis_date = None
-    art_initiation_date = date(2016, 7, 7)
+    art_initiation_date = parse(fake.date())

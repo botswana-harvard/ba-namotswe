@@ -15,4 +15,4 @@ class SubjectVisit(VisitModelMixin, CreatesMetadataModelMixin, RequiresConsentMi
 
     class Meta:
         app_label = 'ba_namotswe'
-        consent_model = 'ba_namotswe.dummyconsent'
+        consent_model = 'ba_namotswe.subjectconsent'

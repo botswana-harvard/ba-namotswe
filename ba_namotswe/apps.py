@@ -1,24 +1,39 @@
+import pytz
+
 from datetime import datetime
 
 from django.apps import AppConfig as DjangoAppConfig
+from django.conf import settings
 
-from edc_base.apps import AppConfig as EdcBaseAppConfigParent
-from edc_protocol.apps import AppConfig as EdcProtocolAppConfigParent
-from edc_timepoint.apps import AppConfig as EdcTimepointAppConfigParent
 from edc_appointment.apps import AppConfig as EdcAppointmentAppConfigParent
-from edc_timepoint.timepoint import Timepoint
-from edc_visit_tracking.apps import AppConfig as EdcVisitTrackingAppConfigParent
-from edc_lab.apps import AppConfig as EdcLabAppConfig
-from edc_metadata.apps import AppConfig as EdcMetaDataAppConfigParent
+from edc_base.apps import AppConfig as EdcBaseAppConfigParent
 from edc_consent.apps import AppConfig as EdcConsentAppConfigParent
 from edc_consent.consent_config import ConsentConfig
+from edc_identifier.apps import AppConfig as EdcIdentifierAppConfigParent
+from edc_lab.apps import AppConfig as EdcLabAppConfig
+from edc_metadata.apps import AppConfig as EdcMetaDataAppConfigParent
+from edc_protocol.apps import AppConfig as EdcProtocolAppConfigParent
+from edc_registration.apps import AppConfig as EdcRegistrationAppConfigParent
+from edc_timepoint.apps import AppConfig as EdcTimepointAppConfigParent
+from edc_timepoint.timepoint import Timepoint
+from edc_visit_tracking.apps import AppConfig as EdcVisitTrackingAppConfigParent
+
+tz = pytz.timezone(settings.TIME_ZONE)
 
 
 class BaNamotsweAppConfig(DjangoAppConfig):
     name = 'ba_namotswe'
 
     def ready(self):
-        from .models.signals import create_dummy_consent_on_pre_save
+        from .models import signals
+
+
+class EdcRegistrationAppConfig(EdcRegistrationAppConfigParent):
+    app_label = 'ba_namotswe'
+
+
+class EdcIdentifierAppConfig(EdcIdentifierAppConfigParent):
+    identifier_prefix = '084'
 
 
 class EdcBaseAppConfig(EdcBaseAppConfigParent):
@@ -44,10 +59,10 @@ class EdcTimepointAppConfig(EdcTimepointAppConfigParent):
 class EdcConsentAppConfig(EdcConsentAppConfigParent):
     consent_configs = [
         ConsentConfig(
-            'ba_namotswe.dummyconsent',
+            'ba_namotswe.subjectconsent',
             version='1',
-            start=datetime(2016, 5, 1, 0, 0, 0).replace(tzinfo=None),
-            end=datetime(2017, 10, 30, 0, 0, 0).replace(tzinfo=None),
+            start=datetime(2016, 5, 1, 0, 0, 0),
+            end=datetime(2017, 10, 30, 0, 0, 0),
             age_min=16,
             age_is_adult=18,
             age_max=64,

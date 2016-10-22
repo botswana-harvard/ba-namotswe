@@ -123,11 +123,8 @@ class EnrollmentForm(forms.ModelForm):
 
     def validate_hiv_art_initiation(self):
         if self.cleaned_data.get('art_initiation_date'):
-            print(self.cleaned_data.get('art_initiation_date'))
             if self.cleaned_data.get('hiv_diagnosis_date'):
-                print(self.cleaned_data.get('hiv_diagnosis_date'))
                 if self.cleaned_data.get('art_initiation_date') < self.cleaned_data.get('hiv_diagnosis_date'):
-                    print(self.cleaned_data.get('hiv_diagnosis_date'))
                     raise forms.ValidationError({
                         'art_initiation_date': [
                             'ART Initiation date should come after diagnosis date']})

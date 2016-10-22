@@ -8,7 +8,7 @@ from edc_appointment.model_mixins import AppointmentModelMixin
 class Appointment(AppointmentModelMixin, RequiresConsentMixin, BaseUuidModel):
 
     class Meta:
-        consent_model = 'ba_namotswe.dummyconsent'
+        consent_model = 'ba_namotswe.subjectconsent'
         app_label = 'ba_namotswe'
 
     @property

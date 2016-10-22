@@ -1,14 +1,15 @@
 from django.db import models
 from django.utils import timezone
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from edc_base.model.validators.date import date_not_future
 from edc_base.utils.age import formatted_age
 from edc_base.model.models.base_uuid_model import BaseUuidModel
 from edc_appointment.model_mixins import CreateAppointmentsMixin
 from edc_constants.choices import YES_NO, GENDER
-from ba_namotswe.models.subject_identifier import SubjectIdentifier
-from ba_namotswe.models import DummyConsent
+
+from .subject_consent import SubjectConsent
 
 
 class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
@@ -16,6 +17,11 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
     subject_identifier = models.CharField(
         verbose_name="Subject Identifier",
         max_length=50,
+        editable=False)
+
+    study_site = models.CharField(
+        max_length=10,
+        default=settings.STUDY_SITE,
         editable=False)
 
     initials = models.CharField(max_length=3)
@@ -100,29 +106,27 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
     def save(self, *args, **kwargs):
         if not self.hiv_diagnosis_date:
             self.hiv_diagnosis_date = self.initial_visit_date
-        self.subject_identifier = self.identifier
         super(Enrollment, self).save(*args, **kwargs)
-
-    class Meta:
-        app_label = 'ba_namotswe'
-        consent_model = 'ba_namotswe.dummyconsent'
-        visit_schedule_name = 'subject_visit_schedule'
 
     @property
     def age_at_visit(self):
         return formatted_age(self.dob, self.initial_visit_date)
 
     @property
-    def identifier(self):
-        subject_identifier = SubjectIdentifier.objects.filter(
-            allocated_datetime=None).order_by('created').first()
-        return subject_identifier.subject_identifier
-
-    def create_dummy_consent(self, subject_identifier):
+    def subject_consent(self):
         try:
-            DummyConsent.objects.get(subject_identifier=subject_identifier)
-        except DummyConsent.DoesNotExist:
-            DummyConsent.objects.create(subject_identifier=subject_identifier)
+            subject_consent = SubjectConsent.objects.get(
+                subject_identifier=self.subject_identifier,
+                study_site='')
+        except SubjectConsent.DoesNotExist:
+            subject_consent = SubjectConsent.objects.create(
+                consent_datetime=self.report_datetime,
+                dob=self.dob,
+                gender=self.gender,
+                initials=self.initials,
+                study_site=self.study_site,
+            )
+        return subject_consent
 
     def dashboard(self):
         """Returns a hyperink for the Admin page."""
@@ -134,3 +138,8 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
         ret = """<a href="{url}" >dashboard</a>""".format(url=url)
         return ret
     dashboard.allow_tags = True
+
+    class Meta:
+        app_label = 'ba_namotswe'
+        consent_model = 'ba_namotswe.subjectconsent'
+        visit_schedule_name = 'visit_schedule'

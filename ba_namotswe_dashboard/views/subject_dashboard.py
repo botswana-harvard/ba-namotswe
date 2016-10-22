@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.views.generic import TemplateView
 
-from edc_base.views import EdcBaseViewMixin
+from edc_base.view_mixins import EdcBaseViewMixin
 
 from .appointment_visit_crf_view_mixin import AppointmentSubjectVisitCRFViewMixin
 from .locator_results_actions_view_mixin import LocatorResultsActionsViewMixin

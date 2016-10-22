@@ -5,7 +5,6 @@ from dateutil.relativedelta import relativedelta
 
 from edc_constants.constants import YES, MALE
 from ba_namotswe.forms.enrollment_form import EnrollmentForm
-from ba_namotswe.tests.factories.appointment_factory import AppointmentFactory
 
 
 class TestEnrollment(TestCase):
@@ -13,7 +12,6 @@ class TestEnrollment(TestCase):
     def setUp(self):
 
         self.data = {
-            'subject_identifier': '123456ABCD',
             'initials': 'AH',
             'dob': date(1990, 12, 16),
             'gender': MALE,

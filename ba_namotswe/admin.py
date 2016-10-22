@@ -1,32 +1,19 @@
 from django.contrib import admin
 
-
 from edc_base.modeladmin.mixins import (
     ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin, ModelAdminFormAutoNumberMixin,
     ModelAdminAuditFieldsMixin)
-
 from edc_visit_tracking.admin import VisitAdminMixin
 
-from .models import SubjectVisit, Enrollment, Oi, Abstraction, Treatment, ArtRegimen, Appointment
-from ba_namotswe.forms.enrollment_form import EnrollmentForm
-from ba_namotswe.forms.treatment_form import TreatmentForm
-from ba_namotswe.models.collected_data import CollectedData
-from ba_namotswe.models import TbHistory
-from ba_namotswe.forms.tb_history_form import TBHistoryForm
-
-from ba_namotswe.models import SubjectIdentifier
-from ba_namotswe.models import DummyConsent
-from ba_namotswe.forms import DummyConsentForm
-from ba_namotswe.forms import SubjectVisitForm
+from .forms import (
+    SubjectConsentForm, SubjectVisitForm, TBHistoryForm, TreatmentForm, EnrollmentForm)
+from .models import (
+    SubjectConsent, SubjectVisit, CollectedData, Enrollment, Oi, Abstraction, Treatment, ArtRegimen,
+    Appointment, TbHistory)
 
 
-class SubjectIdentifierAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(SubjectIdentifier, SubjectIdentifierAdmin)
-
-
-class MembershipBaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
-                               ModelAdminFormAutoNumberMixin, ModelAdminAuditFieldsMixin, admin.ModelAdmin):
+class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
+                     ModelAdminFormAutoNumberMixin, ModelAdminAuditFieldsMixin, admin.ModelAdmin):
 
     list_per_page = 10
     date_hierarchy = 'modified'
@@ -36,7 +23,8 @@ class MembershipBaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormIns
         return request.GET.get('next')
 
 
-class EnrollmentAdmin(MembershipBaseModelAdmin):
+@admin.register(Enrollment)
+class EnrollmentAdmin(BaseModelAdmin):
     form = EnrollmentForm
     radio_fields = {
         'caregiver_relation': admin.VERTICAL,
@@ -45,15 +33,15 @@ class EnrollmentAdmin(MembershipBaseModelAdmin):
         'height_measured': admin.VERTICAL}
 
     list_display = ('dashboard', 'initial_visit_date', 'hiv_diagnosis_date', 'art_initiation_date', )
-admin.site.register(Enrollment, EnrollmentAdmin)
 
 
-class AppointmentAdmin(MembershipBaseModelAdmin):
+@admin.register(Appointment)
+class AppointmentAdmin(BaseModelAdmin):
     list_filter = ('best_appt_datetime', )
-admin.site.register(Appointment, AppointmentAdmin)
 
 
-class SubjectVisitAdmin(VisitAdminMixin, MembershipBaseModelAdmin):
+@admin.register(SubjectVisit)
+class SubjectVisitAdmin(VisitAdminMixin, BaseModelAdmin):
 
     form = SubjectVisitForm
 
@@ -62,33 +50,32 @@ class SubjectVisitAdmin(VisitAdminMixin, MembershipBaseModelAdmin):
             kwargs["queryset"] = Appointment.objects.filter(pk=request.GET.get('appointment', 0))
         return super(VisitAdminMixin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
-admin.site.register(SubjectVisit, SubjectVisitAdmin)
 
-
-class AbstractionAdmin(MembershipBaseModelAdmin):
+@admin.register(Abstraction)
+class AbstractionAdmin(BaseModelAdmin):
     list_filter = ('subject_visit', )
-admin.site.register(Abstraction, AbstractionAdmin)
 
 
-class TreatmentAdmin(MembershipBaseModelAdmin):
+@admin.register(Treatment)
+class TreatmentAdmin(BaseModelAdmin):
     list_filter = ('perinatal_infection', )
     form = TreatmentForm
-admin.site.register(Treatment, TreatmentAdmin)
 
 
-class OiAdmin(MembershipBaseModelAdmin):
+@admin.register(Oi)
+class OiAdmin(BaseModelAdmin):
     list_filter = ('oi_type', )
     radio_fields = {
         'oi_type': admin.VERTICAL}
-admin.site.register(Oi, OiAdmin)
 
 
-class ARTRegimenAdmin(MembershipBaseModelAdmin):
+@admin.register(ArtRegimen)
+class ARTRegimenAdmin(BaseModelAdmin):
     list_filter = ('name', )
-admin.site.register(ArtRegimen, ARTRegimenAdmin)
 
 
-class CollectedDataAdmin(MembershipBaseModelAdmin):
+@admin.register(CollectedData)
+class CollectedDataAdmin(BaseModelAdmin):
     list_filter = ('arv_changes', 'tb_diagnosis', )
     radio_fields = {
         'arv_changes': admin.VERTICAL,
@@ -98,20 +85,18 @@ class CollectedDataAdmin(MembershipBaseModelAdmin):
         'counselling_adhere': admin.VERTICAL,
         'transfer': admin.VERTICAL,
         'death': admin.VERTICAL}
-admin.site.register(CollectedData, CollectedDataAdmin)
 
 
-class TBHistoryAdmin(MembershipBaseModelAdmin):
+@admin.register(TbHistory)
+class TBHistoryAdmin(BaseModelAdmin):
     form = TBHistoryForm
     radio_fields = {
         'tb_type': admin.VERTICAL,
         'tb_test': admin.VERTICAL}
-admin.site.register(TbHistory, TBHistoryAdmin)
 
 
-class DummyConsentAdmin(MembershipBaseModelAdmin):
+@admin.register(SubjectConsent)
+class SubjectConsentAdmin(BaseModelAdmin):
 
     dashboard_type = 'subject'
-    form = DummyConsentForm
-
-admin.site.register(DummyConsent, DummyConsentAdmin)
+    form = SubjectConsentForm

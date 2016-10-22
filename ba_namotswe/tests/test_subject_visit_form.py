@@ -2,22 +2,16 @@ from django.test import TestCase
 from datetime import date, datetime
 
 from edc_constants.constants import YES
-
-from ba_namotswe.tests.factories.registered_subject_factory import RegisteredSubjectFactory
-from ba_namotswe.tests.factories.appointment_factory import AppointmentFactory
-from edc_visit_tracking.tests import SubjectVisitForm
+from ba_namotswe.forms.subject_visit_form import SubjectVisitForm
+from ba_namotswe.tests.factories.enrollment_factory import EnrollmentFactory
+from ba_namotswe.models.appointment import Appointment
 
 
 class TestSubjectVisitForm(TestCase):
 
     def setUp(self):
 
-        #self.registered_subject = RegisteredSubjectFactory()
-
-        self.appointment = AppointmentFactory()
-
         self.data = {
-            'registered_subject': self.registered_subject.id,
             'report_datetime': datetime.now(),
             'is_eligible': True,
             'initial_visit_date': date.today(),
@@ -29,5 +23,7 @@ class TestSubjectVisitForm(TestCase):
 
     def test_valid_form(self):
         """Test to verify that enrollment form will submit"""
+        EnrollmentFactory()
+        self.data['appointment'] = Appointment.objects.all().order_by('visit_code').first()
         form = SubjectVisitForm(data=self.data)
         self.assertTrue(form.is_valid())
