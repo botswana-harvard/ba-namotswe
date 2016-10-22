@@ -25,23 +25,21 @@
 			    <td>{{forloop.counter}}</td>
 			    <td>
 			    	{% if crf.entry_status == 'NOT_REQUIRED' %}
-			        	<span>{{crf.crf_model_add_or_update.0}}</span>
+			        	<span>{{ crf.verbose_name }}</span>
 			        {% else %}
-			        	<a href="{{crf.crf_model_add_or_update.1}}?next=subject_dashboard_url&appointment_pk={{crf.appointment.str_pk}}&subject_identifier={{subject_identifier}}&visit_code={{ crf.appointment.visit_code }}&show=forms">{{crf.crf_model_add_or_update.0}}</a>
+			        	<a href="{{ crf.url }}?next=subject_dashboard_url&appointment_pk={{crf.appointment.str_pk}}&subject_identifier={{subject_identifier}}&visit_code={{ crf.appointment.visit_code }}&show=forms">{{ crf.verbose_name }}</a>
 			   		{% endif %}
 			    </td>                
-			    <td>
-			         {{crf.entry_status}}
-			    </td>
-			    <td>{{crf.due_datetime|date:"Y-m-d D"| capfirst }}</td>
+			    <td>{{crf.entry_status}}</td>
+			    <td>{{crf.due_datetime|date:"Y-m-d"| capfirst }}</td>
 			    <td>{{crf.user_created}}</td> 
-				<td>{{crf.user_modified |date:"Y-m-d D"| capfirst}}</td>            
+				<td>{{crf.user_modified |date:"Y-m-d"| capfirst}}</td>            
 			    <td>{{crf.entry_comment}}</td>                  
 			    <td>
 			        <a href="#">Browse</a>
 			    </td>
 			    <td>
-			      <a href="#">Audit trail visit</a>
+			      <a href="#">Audit trail</a>
 			    </td>
 	  		</tr>
 	  	{% endfor %}
