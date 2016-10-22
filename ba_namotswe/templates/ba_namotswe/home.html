@@ -46,7 +46,7 @@
         <div class="panel-group">
           {% if patient %}
             <div class="panel panel-success"> 
-              <div class="panel-heading"><b>Patient:</b> <a title="Edit patient information" >{{ patient.subject_identifier }}</a> <b>Intials:</b> {{ patient.initials }} <b>Gender:</b> {{ patient.registered_subject.gender }} <b>DOB:</b> {{ patient.registered_subject.dob }}  <b>Age:</b> {{ patient.registered_subject.subject_age }}</div>
+              <div class="panel-heading"><b>Patient:</b> <a title="Edit patient information" >{{ enrollment.subject_identifier }}</a> <b>Initials:</b> {{ enrollment.initials }} <b>Gender:</b> {{ enrollment.gender }} <b>DOB:</b> {{ enrollment.dob }}  <b>Age:</b> {{ patient.registered_subject.subject_age }}</div>
             </div>
             <div class="panel panel-default"> 
               <div class="panel-heading clearfix">Enrollment history
@@ -57,16 +57,13 @@
                 <thead><th>Initial Clinic Visit</th><th>HIV Diagnosis Date</th><th>ART Initiation Date</th><th></th></thead>
                 <tbody>
                   <tr> 
-                    <td>{{ patient.initial_visit_date }}</td>
-                    <td>{{ patient.hiv_diagnosis_date }}</td>
-                    <td>{{ patient.art_initiation_date }}</td>
+                    <td>{{ enrollment.initial_visit_date }}</td>
+                    <td>{{ enrollment.hiv_diagnosis_date }}</td>
+                    <td>{{ enrollment.art_initiation_date }}</td>
                     </tr>
                 </tbody>
               </table>
             </div>
-            {% if dispenses %}
-              <div class="text-center">{% include 'edc_pharma/paginator_row.html' %}</div>
-            {% endif %}           
             </div>
           {% endif %} <!--- end if patient --->
         </div>                        

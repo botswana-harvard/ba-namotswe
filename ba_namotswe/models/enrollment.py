@@ -130,6 +130,7 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
 
     def dashboard(self):
         """Returns a hyperink for the Admin page."""
+        print('subject={}'.format(self.subject_identifier))
         url = reverse(
             'subject_dashboard_url',
             kwargs={

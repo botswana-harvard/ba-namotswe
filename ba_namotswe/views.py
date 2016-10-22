@@ -15,26 +15,24 @@ class HomeView(EdcBaseViewMixin, TemplateView, FormView):
     form_class = SearchForm
 
     def __init__(self, **kwargs):
-        self.patient = None
+        self.enrollment = None
         super(HomeView, self).__init__(**kwargs)
 
     def form_valid(self, form):
         if form.is_valid():
             subject_identifier = form.cleaned_data['subject_identifier']
             try:
-                self.patient = Enrollment.objects.get(subject_identifier=subject_identifier)
+                self.enrollment = Enrollment.objects.get(subject_identifier=subject_identifier)
             except Enrollment.DoesNotExist:
-                form.add_error('subject_identifier', 'Patient not found. Please search again or add a new patient.')
+                form.add_error('subject_identifier', 'Enrollment not found. Please search again or add a new patient.')
             context = self.get_context_data(form=form)
             context.update({
-                'patient': self.patient})
-            print(self.patient)
+                'enrollment': self.enrollment})
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
-        context.update({
-            'patient': self.patient})
+        context.update({'enrollment': self.enrollment})
         return context
 
     @method_decorator(login_required)

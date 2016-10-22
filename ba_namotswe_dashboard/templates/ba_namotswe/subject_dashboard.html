@@ -33,7 +33,7 @@
   				 	{% if forloop.counter > 1%}
   				 		|
   				 	{% endif %}
-  					<a href="{{consent.1.get_absolute_url}}?next={% url 'subject_dashboard_url' consent.1.subject_identifier %}">{{consent.0}}</a>
+  					<a href="{{consent.get_absolute_url}}?next={% url 'subject_dashboard_url' consent.subject_identifier %}">{{consent.0}}</a>
 	 			{% endfor %}
   			</li>
 		</ul>

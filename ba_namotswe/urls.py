@@ -17,8 +17,9 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from edc_base.views import LoginView, LogoutView
-from ba_namotswe.views import HomeView
-from ba_namotswe.admin_site import ba_namotswe_admin
+
+from .views import HomeView
+from .admin_site import ba_namotswe_admin
 
 urlpatterns = [
     url(r'^ba_namotswe_dashboard/', include('ba_namotswe_dashboard.urls')),
