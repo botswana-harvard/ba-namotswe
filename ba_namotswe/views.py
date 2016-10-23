@@ -18,6 +18,11 @@ class HomeView(EdcBaseViewMixin, TemplateView, FormView):
         self.enrollment = None
         super(HomeView, self).__init__(**kwargs)
 
+    def get_initial(self):
+        initial = super(HomeView, self).get_initial()
+        initial['subject_identifier'] = self.kwargs.get('subject_identifier')
+        return initial
+
     def form_valid(self, form):
         if form.is_valid():
             subject_identifier = form.cleaned_data['subject_identifier']

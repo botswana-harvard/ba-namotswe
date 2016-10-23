@@ -1,0 +1,28 @@
+{% extends "edc_base/base.html" %}
+{% load staticfiles %}
+
+{% block main %}
+<div class="container">
+
+  <div class="col-md-12">
+    {% block demographics%}{% endblock demographics%}
+  </div>
+
+  <div class="col-md-9">
+  	{% block appointments %}
+  	{% endblock appointments %}
+
+    {% block scheduled_data_collection %}
+    {% endblock scheduled_data_collection %}
+
+    {% block scheduled_requisitions %}
+    {% endblock scheduled_requisitions %}
+	</div>
+
+	<div class="col-md-3">
+  	{% block locator_information %}
+  	{% endblock locator_information %}
+	</div>
+
+</div>
+{% endblock main %}
