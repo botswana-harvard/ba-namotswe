@@ -36,6 +36,11 @@ class CollectedData(CrfModel):
         verbose_name='Has this patient been transferred in or out of the clinic since the last visit?',
         choices=YES_NO_UNCERTAIN)
 
+    treatment = models.CharField(
+        max_length=20,
+        verbose_name='Does the patient have any treatment history?',
+        choices=YES_NO_UNCERTAIN)
+
     death = models.CharField(
         max_length=20,
         verbose_name='Has this patient died since the last visit?',
