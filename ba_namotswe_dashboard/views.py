@@ -22,8 +22,8 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
     def get_context_data(self, **kwargs):
         self.context = super(SubjectDashboardView, self).get_context_data(**kwargs)
         self.context.update({
-            'requisitions_meta_data': self.requisitions_meta_data,
-            'scheduled_forms': self.scheduled_forms,
+            'requisitions': self.requisitions,
+            'crfs': self.crfs,
             'appointments': self.appointments,
             'selected_appointment': self.selected_appointment,
             'subject_identifier': self.subject_identifier,
@@ -39,25 +39,25 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
         return self.render_to_response(context)
 
     @property
-    def scheduled_forms(self):
+    def crfs(self):
+        crfs = None
         if self.selected_appointment:
-            crf_metadata = CrfMetadata.objects.filter(
+            crfs = CrfMetadata.objects.filter(
                 subject_identifier=self.subject_identifier, visit_code=self.selected_appointment.visit_code)
-            return crf_metadata
-        return {}
+        return crfs
 
     @property
-    def requisitions_meta_data(self):
+    def requisitions(self):
+        requisitions = None
         if self.selected_appointment:
-            requistions = RequisitionMetadata.objects.filter(
+            requisitions = RequisitionMetadata.objects.filter(
                 subject_identifier=self.subject_identifier, visit_code=self.selected_appointment.visit_code, )
-            return requistions
-        return {}
+        return requisitions
 
-    @property
-    def show_forms(self):
-        show = self.request.GET.get('show', None)
-        return True if show == 'forms' else False
+#     @property
+#     def show_forms(self):
+#         show = self.request.GET.get('show', None)
+#         return True if show == 'forms' else False
 
     @property
     def subject_identifier(self):

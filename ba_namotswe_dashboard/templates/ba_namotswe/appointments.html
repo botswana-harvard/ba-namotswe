@@ -1,5 +1,5 @@
 	<div class="panel-group">
-		<div class="panel panel-default">
+		<div class="panel panel-warning">
 			{% if show == 'forms' %}
 				<div class="panel-heading clearfix"><B>{{ selected_appointment.title }}</B>: {{ selected_appointment.subject_visit.report_datetime|date:"Y-m-d"| capfirst }}<span class="pull-right"><a href="{% url 'subject_dashboard_url' subject_identifier %} role="button" class="btn btn-sm btn-default">appointments</a></span></div>
 			{% else %}

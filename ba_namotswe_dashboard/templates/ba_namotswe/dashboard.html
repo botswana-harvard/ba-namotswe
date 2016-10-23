@@ -8,21 +8,27 @@
     {% block demographics%}{% endblock demographics%}
   </div>
 
-  <div class="col-md-9">
+  {% if locator %}
+    <div class="col-md-9">
+  {% else %}
+    <div class="col-md-12">
+  {% endif %}
   	{% block appointments %}
   	{% endblock appointments %}
 
-    {% block scheduled_data_collection %}
-    {% endblock scheduled_data_collection %}
+    {% block crfs %}
+    {% endblock crfs %}
 
-    {% block scheduled_requisitions %}
-    {% endblock scheduled_requisitions %}
+    {% block requisitions %}
+    {% endblock requisitions %}
 	</div>
 
-	<div class="col-md-3">
-  	{% block locator_information %}
-  	{% endblock locator_information %}
-	</div>
+  {% if locator %}
+  	<div class="col-md-3">
+    	{% block locator_information %}
+    	{% endblock locator_information %}
+  	</div>
+  {% endif %}
 
 </div>
 {% endblock main %}

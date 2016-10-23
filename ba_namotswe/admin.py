@@ -58,6 +58,27 @@ class SubjectVisitAdmin(VisitAdminMixin, BaseModelAdmin):
 class AbstractionAdmin(BaseModelAdmin):
     list_filter = ('subject_visit', )
     form = AbstractionForm
+    # fields = ()
+    readonly_fields = ('subject_visit', )
+    filter_horizontal = ('art_history', 'io_history')
+    radio_fields = {
+        'height_measured': admin.VERTICAL,
+        'weight_measured': admin.VERTICAL,
+        'hospitalized': admin.VERTICAL,
+        'tb': admin.VERTICAL,
+        'tb_type': admin.VERTICAL,
+        'tb_method': admin.VERTICAL,
+        'io': admin.VERTICAL,
+        'ctx': admin.VERTICAL,
+        'ctx_table': admin.VERTICAL,
+        'pregnant_and_rx': admin.VERTICAL,
+        'hiv_status_aware': admin.VERTICAL,
+        'hiv_disclosed_others': admin.VERTICAL,
+        'hiv_caregiver_disclosed_others': admin.VERTICAL,
+        'transferred': admin.VERTICAL,
+        'transferred_to': admin.VERTICAL,
+        'deceased': admin.VERTICAL,
+    }
 
 
 @admin.register(PregnancyHistory)

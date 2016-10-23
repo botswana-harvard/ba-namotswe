@@ -3,62 +3,24 @@
 {% load staticfiles %}
 
 {% block demographics %}
-    <div class="panel-group">
-    	<div class="panel panel-success">
-          <div class="panel-heading clearfix">{{ subject_identifier }}<span class="pull-right"><a href="{% url 'home_url' subject_identifier %}" role="button" class="btn btn-sm btn-primary">Close</a></span></div>
-      <div class="panel-body"> 
-        {% for key, value in demographics.items %}
-    		  <strong>{{ key|title }}: </strong>{{ value }}
-    		{% endfor %}
-      </div>
-    </div>
-  </div>
+    {% include "ba_namotswe/demographics.html" %}
 {% endblock demographics %}
 
 {% block appointments %}
   	{% include "ba_namotswe/appointments.html" %}
 {% endblock appointments %}
 
-{% block scheduled_data_collection %}
-	{% if show == 'forms' %}
-  	{% include "ba_namotswe/scheduled_forms.html" %}
-  {% endif %}    
-{% endblock scheduled_data_collection %}
+{% block crfs %}
+	{% if crfs %}
+  		{% include "ba_namotswe/crfs.html" %}
+  	{% endif %}    
+{% endblock crfs %}
 
-{% block scheduled_requisitions %}
-  {% if show == 'forms' %}
+{% block requisitions %}
+  {% if requisitions %}
   	{% include "ba_namotswe/requisitions.html" %}
   {% endif %}    
-{% endblock scheduled_requisitions %}
+{% endblock requisitions %}
 
 {% block locator_information %}
-		<div class="panel-group">
-		    <div class="panel panel-info">
-    			<div class="panel-heading">Contact Info</div>
-    			<div class="panel-body">
-    			<address>
-						<b>May follow-up?</b> {{follow}}<br>
-						<b>Home visits?</b> {{visits}}<br>
-						<br>
-						<em>Address:</em><br>
-						<span style="margin-top:20px;">
-						</span><br><br>
-					<abbr title="Phone">Tel:</abbr>{{tel}}<br>
-					<abbr title="Phone">Alt:</abbr> {{alt}}<br>
-					<abbr title="Phone">Cell:</abbr> {{cell}}<br>
-					<span>Name: {{name}}</span><br>
-					<span>Relation: {{name}}</span><br>
-					<br>
-					<em>Address:</em><br>
-					<span style="margin-top:20px;">
-					</span>
-					<br>
-			</address>
-    			</div>
-  		</div>
-     		<div class="panel panel-default">
-    			<div class="panel-heading">Action Items</div>
-    			<div class="panel-body"></div>
-  		</div>
-	</div>
 {% endblock locator_information %}
