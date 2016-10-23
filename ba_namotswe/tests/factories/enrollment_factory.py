@@ -1,7 +1,6 @@
 import factory
 import random
 from dateutil.parser import parse
-from datetime import date
 from django.utils import timezone
 from faker import Faker
 

@@ -1,0 +1,20 @@
+import factory
+
+from edc_constants.constants import YES
+
+from ba_namotswe.models import CollectedData
+
+
+class CollectedDataFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = CollectedData
+
+    arv_changes = YES
+    tb_diagnosis = YES
+    oi_diagnosis = YES
+    preg_diagnosis = YES
+    counselling_adhere = YES
+    transfer = YES
+    treatment = YES
+    death = YES
