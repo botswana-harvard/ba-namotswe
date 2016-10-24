@@ -2,7 +2,6 @@ from django.db import models
 
 from edc_base.model.validators.date import date_not_future
 from edc_constants.choices import YES_NO, YES_NO_UNKNOWN
-from edc_metadata.model_mixins import UpdatesCrfMetadataModelMixin
 
 from .art_regimen import ArtRegimen
 from .crf_model import CrfModel

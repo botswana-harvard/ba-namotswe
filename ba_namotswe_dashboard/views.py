@@ -2,6 +2,7 @@ from collections import OrderedDict
 
 from django.views.generic import TemplateView
 from django.urls.base import reverse
+from django.apps.registry import apps
 
 from edc_base.view_mixins import EdcBaseViewMixin
 
@@ -40,18 +41,20 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
                 self._crfs = []
                 crfs = CrfMetadata.objects.filter(
                     subject_identifier=self.subject_identifier,
-                    visit_code=self.selected_appointment.visit_code).order_by('show_order')
+                    visit_code=self.selected_appointment.visit_code)
                 for crf in crfs:
+                    app_label, model_name = crf.model.split('.')
+                    model = apps.get_app_config(app_label).get_model(model_name)
                     try:
-                        obj = crf.model_class.objects.get(
+                        obj = model.objects.get(
                             subject_visit__appointment=self.selected_appointment)
                         crf.instance = obj
-                        crf.url = obj.get_absolute_url()
+#                         crf.url = obj.get_absolute_url()
                         crf.title = obj._meta.verbose_name
-                    except crf.model_class.DoesNotExist:
+                    except model.DoesNotExist:
                         crf.instance = None
-                        crf.url = crf.model_class().get_absolute_url()
-                        crf.title = crf.model_class()._meta.verbose_name
+#                         crf.url = model().get_absolute_url()
+                        crf.title = model()._meta.verbose_name
                     self._crfs.append(crf)
         return self._crfs
 

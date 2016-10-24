@@ -51,12 +51,26 @@ class BaNamotsweRuleGroup(RuleGroup):
             alternative=NOT_REQUIRED),
         target_models=['transferhistory'])
 
-    crfs_transferhistory = CrfRule(
+    crfs_assessmenthistory = CrfRule(
+        logic=Logic(
+            predicate=P('assessment_history', 'eq', 'Yes'),
+            consequence=REQUIRED,
+            alternative=NOT_REQUIRED),
+        target_models=['assessmenthistory'])
+
+    crfs_extraction = CrfRule(
+        logic=Logic(
+            predicate=P('extraction', 'eq', 'Yes'),
+            consequence=REQUIRED,
+            alternative=NOT_REQUIRED),
+        target_models=['extraction'])
+
+    crfs_treatment = CrfRule(
         logic=Logic(
             predicate=P('treatment', 'eq', 'Yes'),
             consequence=REQUIRED,
             alternative=NOT_REQUIRED),
-        target_models=['transferhistory'])
+        target_models=['treatment'])
 
     crfs_death = CrfRule(
         logic=Logic(

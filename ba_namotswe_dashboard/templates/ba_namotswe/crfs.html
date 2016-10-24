@@ -25,7 +25,7 @@
 						        	{% elif crf.entry_status == 'KEYED' %}
 						        		<span title="{{crf.get_entry_status_display }}" class="glyphicon glyphicon-ok small" style="color:green"></span>
 						        	{% endif %}
-						        	<a href="{{ crf.url }}?subject_visit={{ subject_visit.pk }}&next={{ dashboard_url }}">{{ crf.title|title }}</a>
+						        	<a href="{{ crf.get_absolute_url }}?subject_visit={{ subject_visit.pk }}&next={{ dashboard_url }}">{{ crf.title|title }}</a>
 						   		{% endif %}
 						    </td>                
 						    <td>{% if crf.instance.user_created %}

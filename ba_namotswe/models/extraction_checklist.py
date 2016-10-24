@@ -22,6 +22,16 @@ class ExtractionChecklist(CrfModel):
         verbose_name='Has the patient been diagnosed with any new opportunistic infections since the last visit?',
         choices=YES_NO_UNCERTAIN)
 
+    assessment_history = models.CharField(
+        max_length=20,
+        verbose_name='Has there been any assessment history for the patient?',
+        choices=YES_NO_UNCERTAIN)
+
+    extraction = models.CharField(
+        max_length=20,
+        verbose_name='Data extraction',
+        choices=YES_NO_UNCERTAIN)
+
     preg_diagnosis = models.CharField(
         max_length=20,
         verbose_name='Has this patient been diagnosed with a new pregnancy since the last visit?',
