@@ -15,8 +15,6 @@ class CrfModel(CrfModelMixin, RequiresConsentMixin, UpdatesCrfMetadataModelMixin
 
     subject_visit = models.OneToOneField(SubjectVisit)
 
-    visit_model_attr = 'subject_visit'
-
     def get_absolute_url(self):
         if self.id:
             return reverse(
