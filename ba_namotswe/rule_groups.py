@@ -67,4 +67,4 @@ class BaNamotsweRuleGroup(RuleGroup):
 
     class Meta:
         app_label = 'ba_namotswe'
-        source_model = 'ba_namotswe.collecteddata'
+        source_model = 'ba_namotswe.extractionchecklist'

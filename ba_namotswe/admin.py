@@ -6,13 +6,14 @@ from edc_base.modeladmin.mixins import (
 from edc_visit_tracking.admin import VisitAdminMixin
 
 from .forms import (
-    SubjectConsentForm, SubjectVisitForm, TBHistoryForm, TreatmentForm, EnrollmentForm, AbstractionForm,
+    SubjectConsentForm, SubjectVisitForm, TBHistoryForm, TreatmentForm, EnrollmentForm, ExtractionForm,
     AdherenceCounsellingForm, ArvHistoryForm, AssessmentHistoryForm, DeathForm, PregnancyHistoryForm,
-    TransferHistoryForm, OiForm, ArtRegimenForm, CollectedDataForm)
+    TransferHistoryForm, OiForm, ArtRegimenForm, ExtractionChecklistForm)
 from .models import (
-    SubjectConsent, SubjectVisit, CollectedData, Enrollment, Oi, Abstraction, Treatment, ArtRegimen,
+    SubjectConsent, SubjectVisit, ExtractionChecklist, Enrollment, Oi, Extraction, Treatment, ArtRegimen,
     Appointment, TbHistory, AdherenceCounselling, ArvHistory, AssessmentHistory, Death, PregnancyHistory,
     TransferHistory)
+from ba_namotswe.admin_site import ba_namotswe_admin
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
@@ -26,7 +27,30 @@ class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsM
         return request.GET.get('next')
 
 
-@admin.register(Enrollment)
+class BaseCrfModelAdmin(BaseModelAdmin):
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'subject_visit' and request.GET.get('subject_visit'):
+            kwargs["queryset"] = SubjectVisit.objects.filter(pk=request.GET.get('subject_visit', 0))
+        return super(BaseCrfModelAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+@admin.register(ExtractionChecklist, site=ba_namotswe_admin)
+class ExtractionChecklistAdmin(BaseCrfModelAdmin):
+    form = ExtractionChecklistForm
+    list_filter = ('subject_visit', 'arv_changes', 'tb_diagnosis', )
+    radio_fields = {
+        'arv_changes': admin.VERTICAL,
+        'tb_diagnosis': admin.VERTICAL,
+        'oi_diagnosis': admin.VERTICAL,
+        'preg_diagnosis': admin.VERTICAL,
+        'counselling_adhere': admin.VERTICAL,
+        'treatment': admin.VERTICAL,
+        'transfer': admin.VERTICAL,
+        'death': admin.VERTICAL}
+
+
+@admin.register(Enrollment, site=ba_namotswe_admin)
 class EnrollmentAdmin(BaseModelAdmin):
     form = EnrollmentForm
     radio_fields = {
@@ -38,12 +62,12 @@ class EnrollmentAdmin(BaseModelAdmin):
     list_display = ('dashboard', 'initial_visit_date', 'hiv_diagnosis_date', 'art_initiation_date', )
 
 
-@admin.register(Appointment)
+@admin.register(Appointment, site=ba_namotswe_admin)
 class AppointmentAdmin(BaseModelAdmin):
     list_filter = ('best_appt_datetime', )
 
 
-@admin.register(SubjectVisit)
+@admin.register(SubjectVisit, site=ba_namotswe_admin)
 class SubjectVisitAdmin(VisitAdminMixin, BaseModelAdmin):
 
     form = SubjectVisitForm
@@ -54,10 +78,10 @@ class SubjectVisitAdmin(VisitAdminMixin, BaseModelAdmin):
         return super(VisitAdminMixin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-@admin.register(Abstraction)
-class AbstractionAdmin(BaseModelAdmin):
+@admin.register(Extraction, site=ba_namotswe_admin)
+class ExtractionAdmin(BaseCrfModelAdmin):
     list_filter = ('subject_visit', )
-    form = AbstractionForm
+    form = ExtractionForm
     # fields = ()
     readonly_fields = ('subject_visit', )
     filter_horizontal = ('art_history', 'io_history')
@@ -81,85 +105,71 @@ class AbstractionAdmin(BaseModelAdmin):
     }
 
 
-@admin.register(PregnancyHistory)
-class PregnancyHistoryAdmin(BaseModelAdmin):
+@admin.register(PregnancyHistory, site=ba_namotswe_admin)
+class PregnancyHistoryAdmin(BaseCrfModelAdmin):
     list_filter = ('subject_visit', )
     form = PregnancyHistoryForm
 
 
-@admin.register(TransferHistory)
-class TransferHistoryAdmin(BaseModelAdmin):
+@admin.register(TransferHistory, site=ba_namotswe_admin)
+class TransferHistoryAdmin(BaseCrfModelAdmin):
     list_filter = ('subject_visit', )
     form = TransferHistoryForm
 
 
-@admin.register(Death)
-class DeathAdmin(BaseModelAdmin):
+@admin.register(Death, site=ba_namotswe_admin)
+class DeathAdmin(BaseCrfModelAdmin):
     list_filter = ('subject_visit', )
     form = DeathForm
 
 
-@admin.register(AssessmentHistory)
-class AssessmentHistoryAdmin(BaseModelAdmin):
+@admin.register(AssessmentHistory, site=ba_namotswe_admin)
+class AssessmentHistoryAdmin(BaseCrfModelAdmin):
     list_filter = ('subject_visit', )
     form = AssessmentHistoryForm
 
 
-@admin.register(ArvHistory)
-class ArvHistoryAdmin(BaseModelAdmin):
+@admin.register(ArvHistory, site=ba_namotswe_admin)
+class ArvHistoryAdmin(BaseCrfModelAdmin):
     list_filter = ('subject_visit', )
     form = ArvHistoryForm
 
 
-@admin.register(AdherenceCounselling)
-class AdherenceCounsellingAdmin(BaseModelAdmin):
+@admin.register(AdherenceCounselling, site=ba_namotswe_admin)
+class AdherenceCounsellingAdmin(BaseCrfModelAdmin):
     list_filter = ('subject_visit', )
     form = AdherenceCounsellingForm
 
 
-@admin.register(Treatment)
-class TreatmentAdmin(BaseModelAdmin):
+@admin.register(Treatment, site=ba_namotswe_admin)
+class TreatmentAdmin(BaseCrfModelAdmin):
     list_filter = ('perinatal_infection', )
     form = TreatmentForm
 
 
-@admin.register(Oi)
-class OiAdmin(BaseModelAdmin):
+@admin.register(Oi, site=ba_namotswe_admin)
+class OiAdmin(BaseCrfModelAdmin):
     list_filter = ('oi_type', )
     radio_fields = {
         'oi_type': admin.VERTICAL}
     form = OiForm
 
 
-@admin.register(ArtRegimen)
-class ARTRegimenAdmin(BaseModelAdmin):
+@admin.register(ArtRegimen, site=ba_namotswe_admin)
+class ARTRegimenAdmin(BaseCrfModelAdmin):
     list_filter = ('name', )
     form = ArtRegimenForm
 
 
-@admin.register(CollectedData)
-class CollectedDataAdmin(BaseModelAdmin):
-    list_filter = ('arv_changes', 'tb_diagnosis', )
-    radio_fields = {
-        'arv_changes': admin.VERTICAL,
-        'tb_diagnosis': admin.VERTICAL,
-        'oi_diagnosis': admin.VERTICAL,
-        'preg_diagnosis': admin.VERTICAL,
-        'counselling_adhere': admin.VERTICAL,
-        'transfer': admin.VERTICAL,
-        'death': admin.VERTICAL}
-    form = CollectedDataForm
-
-
-@admin.register(TbHistory)
-class TBHistoryAdmin(BaseModelAdmin):
+@admin.register(TbHistory, site=ba_namotswe_admin)
+class TBHistoryAdmin(BaseCrfModelAdmin):
     form = TBHistoryForm
     radio_fields = {
         'tb_type': admin.VERTICAL,
         'tb_test': admin.VERTICAL}
 
 
-@admin.register(SubjectConsent)
+@admin.register(SubjectConsent, site=ba_namotswe_admin)
 class SubjectConsentAdmin(BaseModelAdmin):
 
     dashboard_type = 'subject'

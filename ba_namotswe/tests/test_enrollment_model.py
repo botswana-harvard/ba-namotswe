@@ -1,14 +1,12 @@
-from datetime import date
 from django.test.testcases import TestCase
 from django.utils import timezone
 
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 from edc_visit_tracking.constants import SCHEDULED
 
-from ba_namotswe.models import Appointment, SubjectVisit, RequisitionMetadata, CrfMetadata, SubjectConsent
+from ba_namotswe.models import Appointment, SubjectVisit, RequisitionMetadata, CrfMetadata, SubjectConsent, RegisteredSubject
 
 from .factories.enrollment_factory import EnrollmentFactory
-from ba_namotswe.models.registered_subject import RegisteredSubject
 
 
 class TestEnrollment(TestCase):

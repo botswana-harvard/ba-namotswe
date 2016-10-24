@@ -1,11 +1,9 @@
 from django.db import models
 
-from edc_metadata.model_mixins import UpdatesCrfMetadataModelMixin
-
 from .crf_model import CrfModel
 
 
-class AssessmentHistory(UpdatesCrfMetadataModelMixin, CrfModel):
+class AssessmentHistory(CrfModel):
 
     cd4_count = models.IntegerField(
         verbose_name='CD4+ Cell Count',
@@ -50,5 +48,5 @@ class AssessmentHistory(UpdatesCrfMetadataModelMixin, CrfModel):
         blank=True,
         null=True)
 
-    class Meta:
+    class Meta(CrfModel.Meta):
         app_label = 'ba_namotswe'

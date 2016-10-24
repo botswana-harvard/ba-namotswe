@@ -6,9 +6,6 @@ from ..choices import PREGNANCY
 
 class PregnancyHistory(CrfModel):
 
-    class Meta:
-        app_label = 'ba_namotswe'
-
     pregnancy_details = models.CharField(
         max_length=7,
         verbose_name='Has the participant moved out of the household where last seen',
@@ -16,3 +13,6 @@ class PregnancyHistory(CrfModel):
         null=True,
         blank=False,
         help_text="")
+
+    class Meta(CrfModel.Meta):
+        app_label = 'ba_namotswe'

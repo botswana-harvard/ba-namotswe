@@ -1,10 +1,11 @@
 from django.db import models
 
-from .crf_model import CrfModel
 from ..choices import YES_NO_UNCERTAIN
 
+from .crf_model import CrfModel
 
-class CollectedData(CrfModel):
+
+class ExtractionChecklist(CrfModel):
 
     arv_changes = models.CharField(
         max_length=20,
@@ -45,3 +46,9 @@ class CollectedData(CrfModel):
         max_length=20,
         verbose_name='Has this patient died since the last visit?',
         choices=YES_NO_UNCERTAIN)
+
+    def __str__(self):
+        return self.get_subject_identifier()
+
+    class Meta(CrfModel.Meta):
+        app_label = 'ba_namotswe'

@@ -1,13 +1,12 @@
 from django.db import models
 
 from edc_constants.choices import YES_NO_UNKNOWN
-from edc_metadata.model_mixins import UpdatesCrfMetadataModelMixin
 
 from .art_regimen import ArtRegimen
 from .crf_model import CrfModel
 
 
-class Treatment(UpdatesCrfMetadataModelMixin, CrfModel):
+class Treatment(CrfModel):
 
     perinatal_infection = models.CharField(
         max_length=25,
@@ -74,5 +73,5 @@ class Treatment(UpdatesCrfMetadataModelMixin, CrfModel):
         blank=True,
         null=True)
 
-    class Meta:
+    class Meta(CrfModel.Meta):
         app_label = 'ba_namotswe'

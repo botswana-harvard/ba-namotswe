@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'edc_device.apps.AppConfig',
     'edc_visit_schedule.apps.AppConfig',
     'edc_rule_groups.apps.AppConfig',
-    'ba_namotswe.apps.BaNamotsweAppConfig',
+    'ba_namotswe.apps.AppConfig',
     'ba_namotswe.apps.EdcAppointmentAppConfig',
     'ba_namotswe.apps.EdcBaseAppConfig',
     'ba_namotswe.apps.EdcConsentAppConfig',
@@ -57,13 +57,12 @@ INSTALLED_APPS = [
     'ba_namotswe.apps.EdcProtocolAppConfig',
     'ba_namotswe.apps.EdcTimepointAppConfig',
     'ba_namotswe.apps.EdcVisitTrackingAppConfig',
-    'ba_namotswe_dashboard.apps.BaNamotsweDashboardConfig',
+    'ba_namotswe_dashboard.apps.AppConfig',
 ]
 
 
 if 'test' in sys.argv:
-    # TODO: Make this list auto generate from INSTALLED_APPS
-    # Ignore running migrations on unit tests, greately speeds up tests.
+    # Ignore running migrations on unit tests -- speeds up tests.
     MIGRATION_MODULES = {
         "call_manager": None,
         "edc_appointment": None,

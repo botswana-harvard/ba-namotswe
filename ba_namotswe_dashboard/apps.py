@@ -1,6 +1,6 @@
-from django.apps import AppConfig
+from django.apps import AppConfig as DjangoAppConfig
 
 
-class BaNamotsweDashboardConfig(AppConfig):
+class AppConfig(DjangoAppConfig):
     name = 'ba_namotswe_dashboard'
     verbose_name = 'ba_namotswe_dashboard'

@@ -3,5 +3,6 @@ from edc_base.model.models import BaseUuidModel
 
 
 class RegisteredSubject(RegisteredSubjectModelMixin, BaseUuidModel):
+
     class Meta:
         app_label = 'ba_namotswe'

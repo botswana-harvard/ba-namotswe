@@ -7,9 +7,9 @@ from .subject_visit_form import SubjectVisitForm
 from .tb_history_form import TBHistoryForm
 from .transfer_history_form import TransferHistoryForm
 from .treatment_form import TreatmentForm
-from .abstraction_form import AbstractionForm
+from .extraction_form import ExtractionForm
 from .arv_history_form import ArvHistoryForm
 from .assessment_history_form import AssessmentHistoryForm
 from .art_regimen_form import ArtRegimenForm
 from .oi_form import OiForm
-from .collected_data_form import CollectedDataForm
+from .extraction_checklist_form import ExtractionChecklistForm

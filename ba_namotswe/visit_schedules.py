@@ -6,17 +6,18 @@ from edc_visit_schedule.visit import Crf, Requisition
 from .lab_profiles import hiv_diagnostics_panel
 
 crfs = (
-    Crf(show_order=10, model='ba_namotswe.abstraction'),
+    Crf(show_order=10, model='ba_namotswe.extractionchecklist'),
     Crf(show_order=20, model='ba_namotswe.adherencecounselling'),
     Crf(show_order=30, model='ba_namotswe.artregimen'),
     Crf(show_order=40, model='ba_namotswe.arvhistory'),
     Crf(show_order=50, model='ba_namotswe.assessmenthistory'),
-    Crf(show_order=60, model='ba_namotswe.collecteddata'),
+    Crf(show_order=60, model='ba_namotswe.oi'),
     Crf(show_order=70, model='ba_namotswe.pregnancyhistory'),
     Crf(show_order=80, model='ba_namotswe.tbhistory'),
     Crf(show_order=90, model='ba_namotswe.transferhistory'),
     Crf(show_order=100, model='ba_namotswe.treatment'),
     Crf(show_order=110, model='ba_namotswe.death', required=False),
+    Crf(show_order=120, model='ba_namotswe.extraction', required=False),
 )
 
 requisitions = (

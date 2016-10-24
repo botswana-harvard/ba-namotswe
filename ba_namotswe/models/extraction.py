@@ -9,7 +9,7 @@ from .crf_model import CrfModel
 from .oi import Oi
 
 
-class Abstraction(UpdatesCrfMetadataModelMixin, CrfModel):
+class Extraction(CrfModel):
 
     height_measured = models.CharField(
         max_length=25,
@@ -187,5 +187,5 @@ class Abstraction(UpdatesCrfMetadataModelMixin, CrfModel):
         blank=True,
         null=True)
 
-    class Meta:
+    class Meta(CrfModel.Meta):
         app_label = 'ba_namotswe'

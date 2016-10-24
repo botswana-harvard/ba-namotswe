@@ -13,5 +13,5 @@ class Oi(CrfModel):
     def __str__(self):
         return self.oi_type
 
-    class Meta:
+    class Meta(CrfModel.Meta):
         app_label = 'ba_namotswe'

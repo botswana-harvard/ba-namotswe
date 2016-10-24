@@ -24,5 +24,5 @@ class AdherenceCounselling(CrfModel):
         blank=True,
         null=True)
 
-    class Meta:
+    class Meta(CrfModel.Meta):
         app_label = 'ba_namotswe'

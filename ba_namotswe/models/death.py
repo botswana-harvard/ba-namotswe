@@ -19,5 +19,5 @@ class Death(CrfModel):
     def __str__(self):
         return self.display_name
 
-    class Meta:
+    class Meta(CrfModel.Meta):
         app_label = 'ba_namotswe'

@@ -21,12 +21,12 @@ from edc_visit_tracking.apps import AppConfig as EdcVisitTrackingAppConfigParent
 tz = pytz.timezone(settings.TIME_ZONE)
 
 
-class BaNamotsweAppConfig(DjangoAppConfig):
+class AppConfig(DjangoAppConfig):
     name = 'ba_namotswe'
 
     def ready(self):
         from .models import signals
-        from .rule_groups import BaNamotsweRuleGroup
+        # from .rule_groups import BaNamotsweRuleGroup
 
 
 class EdcRegistrationAppConfig(EdcRegistrationAppConfigParent):

@@ -27,3 +27,6 @@ class TbHistory(CrfModel):
         blank=True,
         null=True,
         max_length=50)
+
+    class Meta(CrfModel.Meta):
+        app_label = 'ba_namotswe'
