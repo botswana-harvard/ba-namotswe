@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib import admin
 
 from edc_base.modeladmin.mixins import (
@@ -14,6 +16,8 @@ from .models import (
     Appointment, TbHistory, AdherenceCounselling, ArvHistory, AssessmentHistory, Death, PregnancyHistory,
     TransferHistory)
 from ba_namotswe.admin_site import ba_namotswe_admin
+from ba_namotswe.models.arv import Arv
+from django.db.models.fields import UUIDField
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
@@ -105,6 +109,11 @@ class ExtractionAdmin(BaseCrfModelAdmin):
     }
 
 
+class ArvInline(admin.TabularInline):
+    model = Arv
+    extra = 1
+
+
 @admin.register(PregnancyHistory, site=ba_namotswe_admin)
 class PregnancyHistoryAdmin(BaseCrfModelAdmin):
     list_filter = ('subject_visit', )
@@ -131,8 +140,12 @@ class AssessmentHistoryAdmin(BaseCrfModelAdmin):
 
 @admin.register(ArvHistory, site=ba_namotswe_admin)
 class ArvHistoryAdmin(BaseCrfModelAdmin):
-    list_filter = ('subject_visit', )
+    list_display = ('subject_identifier', 'report_datetime',)
     form = ArvHistoryForm
+    inlines = [ArvInline]
+
+    def subject_identifier(self, object):
+        return object.subject_visit.subject_identifier
 
 
 @admin.register(AdherenceCounselling, site=ba_namotswe_admin)
