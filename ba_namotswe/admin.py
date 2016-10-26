@@ -19,6 +19,8 @@ from ba_namotswe.admin_site import ba_namotswe_admin
 from ba_namotswe.models.arv import Arv
 from ba_namotswe.models.oi_history import OiHistory
 from ba_namotswe.models.tb import Tb
+from ba_namotswe.models.pregnancy import Pregnancy
+from ba_namotswe.models.transfer import Transfer
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
@@ -120,21 +122,19 @@ class OiInline(admin.TabularInline):
     extra = 1
 
 
+class PregnancyInline(admin.TabularInline):
+    model = Pregnancy
+    extra = 1
+
+
 class TbInline(admin.TabularInline):
     model = Tb
     extra = 1
 
 
-@admin.register(PregnancyHistory, site=ba_namotswe_admin)
-class PregnancyHistoryAdmin(BaseCrfModelAdmin):
-    list_filter = ('subject_visit', )
-    form = PregnancyHistoryForm
-
-
-@admin.register(TransferHistory, site=ba_namotswe_admin)
-class TransferHistoryAdmin(BaseCrfModelAdmin):
-    list_filter = ('subject_visit', )
-    form = TransferHistoryForm
+class TransferInline(admin.TabularInline):
+    model = Transfer
+    extra = 1
 
 
 @admin.register(Death, site=ba_namotswe_admin)
@@ -157,6 +157,18 @@ class ArvHistoryAdmin(BaseCrfModelAdmin):
 
     def subject_identifier(self, object):
         return object.subject_visit.subject_identifier
+
+
+@admin.register(TransferHistory, site=ba_namotswe_admin)
+class TransferHistoryAdmin(BaseCrfModelAdmin):
+    form = TransferHistoryForm
+    inlines = [TransferInline]
+
+
+@admin.register(PregnancyHistory, site=ba_namotswe_admin)
+class PregnancyHistoryAdmin(BaseCrfModelAdmin):
+    form = PregnancyHistoryForm
+    inlines = [PregnancyInline]
 
 
 @admin.register(AdherenceCounselling, site=ba_namotswe_admin)
