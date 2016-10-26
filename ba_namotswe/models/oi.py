@@ -2,6 +2,7 @@ from django.db import models
 
 from .crf_model import CrfModel
 from ..choices import OI_OPTIONS
+
 from ba_namotswe.models.oi_history import OiHistory
 
 

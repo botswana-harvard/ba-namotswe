@@ -3,11 +3,13 @@ from .adherence_counselling import AdherenceCounselling
 from .aliquot_type import AliquotType
 from .appointment import Appointment
 from .art_regimen import ArtRegimen
+from .arv import Arv
 from .arv_history import ArvHistory
 from .assessment_history import AssessmentHistory
 from .extraction_checklist import ExtractionChecklist
 from .enrollment import Enrollment
 from .oi import Oi
+from .oi_history import OiHistory
 from .packing_list import PackingList
 from .registered_subject import RegisteredSubject
 from .requisition_meta_data import RequisitionMetadata

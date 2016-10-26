@@ -1,6 +1,6 @@
 import uuid
 
-from django.contrib import admin
+from django.contrib import admin, admindocs
 
 from edc_base.modeladmin.mixins import (
     ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin, ModelAdminFormAutoNumberMixin,
@@ -18,6 +18,7 @@ from .models import (
 from ba_namotswe.admin_site import ba_namotswe_admin
 from ba_namotswe.models.arv import Arv
 from ba_namotswe.models.oi_history import OiHistory
+from ba_namotswe.models.tb import Tb
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
@@ -119,6 +120,11 @@ class OiInline(admin.TabularInline):
     extra = 1
 
 
+class TbInline(admin.TabularInline):
+    model = Tb
+    extra = 1
+
+
 @admin.register(PregnancyHistory, site=ba_namotswe_admin)
 class PregnancyHistoryAdmin(BaseCrfModelAdmin):
     list_filter = ('subject_visit', )
@@ -175,18 +181,19 @@ class OiHistoryAdmin(BaseCrfModelAdmin):
         return object.subject_visit.subject_identifier
 
 
+@admin.register(TbHistory, site=ba_namotswe_admin)
+class TbHistoryAdmin(BaseCrfModelAdmin):
+    form = TBHistoryForm
+    inlines = [TbInline]
+#     radio_fields = {
+#         'tb_type': admin.VERTICAL,
+#         'tb_test': admin.VERTICAL}
+
+
 @admin.register(ArtRegimen, site=ba_namotswe_admin)
 class ARTRegimenAdmin(BaseCrfModelAdmin):
     list_filter = ('name', )
     form = ArtRegimenForm
-
-
-@admin.register(TbHistory, site=ba_namotswe_admin)
-class TBHistoryAdmin(BaseCrfModelAdmin):
-    form = TBHistoryForm
-    radio_fields = {
-        'tb_type': admin.VERTICAL,
-        'tb_test': admin.VERTICAL}
 
 
 @admin.register(SubjectConsent, site=ba_namotswe_admin)
