@@ -16,9 +16,12 @@ from .requisition_meta_data import RequisitionMetadata
 from .crf_metadata import CrfMetadata
 from .subject_consent import SubjectConsent
 from .subject_visit import SubjectVisit
+from .tb import Tb
 from .tb_history import TbHistory
 from .treatment import Treatment
 from .crf_model import CrfModel
 from .death import Death
+from .pregnancy import Pregnancy
 from .pregnancy_history import PregnancyHistory
+from .transfer import Transfer
 from .transfer_history import TransferHistory
