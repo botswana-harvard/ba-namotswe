@@ -17,7 +17,7 @@ from .models import (
     TransferHistory)
 from ba_namotswe.admin_site import ba_namotswe_admin
 from ba_namotswe.models.arv import Arv
-from django.db.models.fields import UUIDField
+from ba_namotswe.models.oi_history import OiHistory
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
@@ -114,6 +114,11 @@ class ArvInline(admin.TabularInline):
     extra = 1
 
 
+class OiInline(admin.TabularInline):
+    model = Oi
+    extra = 1
+
+
 @admin.register(PregnancyHistory, site=ba_namotswe_admin)
 class PregnancyHistoryAdmin(BaseCrfModelAdmin):
     list_filter = ('subject_visit', )
@@ -160,12 +165,14 @@ class TreatmentAdmin(BaseCrfModelAdmin):
     form = TreatmentForm
 
 
-@admin.register(Oi, site=ba_namotswe_admin)
-class OiAdmin(BaseCrfModelAdmin):
-    list_filter = ('oi_type', )
-    radio_fields = {
-        'oi_type': admin.VERTICAL}
+@admin.register(OiHistory, site=ba_namotswe_admin)
+class OiHistoryAdmin(BaseCrfModelAdmin):
+    list_display = ('subject_identifier', 'report_datetime',)
+    inlines = [OiInline]
     form = OiForm
+
+    def subject_identifier(self, object):
+        return object.subject_visit.subject_identifier
 
 
 @admin.register(ArtRegimen, site=ba_namotswe_admin)
