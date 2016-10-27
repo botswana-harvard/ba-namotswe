@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import FormView
 
-from ba_namotswe.forms.search_form import SearchForm
+from ba_namotswe.search_form import SearchForm
 from ba_namotswe.models.enrollment import Enrollment
 
 

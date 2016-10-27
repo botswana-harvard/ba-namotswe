@@ -6,11 +6,16 @@ from django.urls.base import reverse
 from edc_base.view_mixins import EdcBaseViewMixin
 
 from ba_namotswe.models import RequisitionMetadata, CrfMetadata, Enrollment, Appointment, SubjectVisit
+from ba_namotswe.models.entry_to_care import EntryToCare
+from edc_metadata.constants import REQUIRED
+from ba_namotswe.comment_form import CommentForm
 
 
 class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
 
     template_name = 'ba_namotswe/subject_dashboard.html'
+    enrollment_model = Enrollment
+    dashboard_url_name = 'subject_dashboard_url'
 
     def __init__(self, **kwargs):
         super(SubjectDashboardView, self).__init__(**kwargs)
@@ -26,10 +31,13 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
             'crfs': self.crfs,
             'appointments': self.appointments,
             'selected_appointment': self.selected_appointment,
+            'selected_crf': self.kwargs.get('selected_crf'),
             'subject_visit': self.subject_visit,
             'dashboard_url': self.dashboard_url,
             'subject_identifier': self.subject_identifier,
             'demographics': self.demographics,
+            'enrollment_model': self.enrollment_model._meta.verbose_name,
+            'comment_form': CommentForm()
         })
         return self.context
 
@@ -43,15 +51,27 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
                     visit_code=self.selected_appointment.visit_code).order_by('show_order')
                 for crf in crfs:
                     try:
-                        obj = crf.model_class.objects.get(
-                            subject_visit__appointment=self.selected_appointment)
-                        crf.instance = obj
-                        crf.url = obj.get_absolute_url()
-                        crf.title = obj._meta.verbose_name
+                        obj = crf.model_class.objects.get(subject_visit=self.subject_visit)
                     except crf.model_class.DoesNotExist:
-                        crf.instance = None
-                        crf.url = crf.model_class().get_absolute_url()
-                        crf.title = crf.model_class()._meta.verbose_name
+                        if crf.entry_status == REQUIRED:
+                            obj = crf.model_class.objects.create(subject_visit=self.subject_visit)
+                            obj.edited = False
+                            obj.save(update_fields=['edited'])
+                        else:
+                            obj = None
+                            crf.url = None
+                            crf.instance = None
+                    if obj:
+                        if self.kwargs.get('selected_crf') == crf.model:
+                            if self.kwargs.get('toggle_status') == 'flagged':
+                                obj.flagged = False if obj.flagged else True
+                                obj.save(update_fields=['flagged'])
+                            elif self.kwargs.get('toggle_status') == 'reviewed':
+                                obj.reviewed = False if obj.reviewed else True
+                                obj.save(update_fields=['reviewed'])
+                        crf.url = obj.get_absolute_url()
+                        crf.instance = obj
+                    crf.title = crf.model_class()._meta.verbose_name
                     self._crfs.append(crf)
         return self._crfs
 
@@ -67,7 +87,7 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
     def dashboard_url(self):
         try:
             dashboard_url = reverse(
-                'subject_dashboard_url',
+                self.dashboard_url_name,
                 kwargs={
                     'subject_identifier': self.subject_identifier,
                     'appointment_pk': self.selected_appointment.pk})
@@ -92,10 +112,13 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
         demographics = OrderedDict()
         demographics.update({'initials': self.enrollment.initials})
         demographics.update({'gender': self.enrollment.get_gender_display()})
-        demographics.update({'age': self.enrollment.age_at_visit})
+        demographics.update({'age': self.enrollment.age_at_entry})
         demographics.update({'born': self.enrollment.dob.strftime('%Y-%m-%d')})
-        demographics.update({'height': self.enrollment.height})
-        demographics.update({'weight': self.enrollment.weight})
+        try:
+            demographics.update({'height': self.entry_to_care.entry_height})
+            demographics.update({'weight': self.entry_to_care.entry_weight})
+        except AttributeError:
+            pass
         return demographics
 
     @property
@@ -106,6 +129,19 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
             except SubjectVisit.DoesNotExist:
                 self._subject_visit = None
         return self._subject_visit
+
+    @property
+    def entry_appointment(self):
+        return Appointment.objects.filter(subject_identifier=self.subject_identifier).first()
+
+    @property
+    def entry_subject_visit(self):
+        if not self._entry_subject_visit:
+            try:
+                self._entry_subject_visit = SubjectVisit.objects.get(appointment=self.entry_appointment)
+            except SubjectVisit.DoesNotExist:
+                self._entry_subject_visit = None
+        return self._entry_subject_visit
 
     @property
     def selected_appointment(self):
@@ -125,3 +161,11 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
                 self._appointments = Appointment.objects.filter(
                     subject_identifier=self.subject_identifier).order_by('visit_code')
         return self._appointments
+
+    @property
+    def entry_to_care(self):
+        try:
+            entry_to_care = EntryToCare.objects.get(subject_visit=self.entry_subject_visit)
+        except EntryToCare.DoesNotExist:
+            entry_to_care = None
+        return entry_to_care

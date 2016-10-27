@@ -14,8 +14,8 @@ class AdherenceCounselling(CrfModel):
     adherence_partner = models.CharField(
         verbose_name='Relationship of Adherence Partner to Individual',
         max_length=25,
+        null=True,
         blank=True,
-        default=None,
         choices=RELATIONSHIP)
 
     adherence_partner_other = models.CharField(

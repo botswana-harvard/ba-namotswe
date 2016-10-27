@@ -21,14 +21,14 @@ class BaNamotsweRuleGroup(RuleGroup):
             predicate=P('tb_diagnosis', 'eq', 'Yes'),
             consequence=REQUIRED,
             alternative=NOT_REQUIRED),
-        target_models=['tbhistory'])
+        target_models=['tbrecord'])
 
     crfs_oi = CrfRule(
         logic=Logic(
             predicate=P('oi_diagnosis', 'eq', 'Yes'),
             consequence=REQUIRED,
             alternative=NOT_REQUIRED),
-        target_models=['oi'])
+        target_models=['oirecord'])
 
     crfs_pregnancyhistory = CrfRule(
         logic=Logic(
@@ -49,28 +49,28 @@ class BaNamotsweRuleGroup(RuleGroup):
             predicate=P('transfer', 'eq', 'Yes'),
             consequence=REQUIRED,
             alternative=NOT_REQUIRED),
-        target_models=['transferhistory'])
+        target_models=['transferrecord'])
 
-    crfs_assessmenthistory = CrfRule(
-        logic=Logic(
-            predicate=P('assessment_history', 'eq', 'Yes'),
-            consequence=REQUIRED,
-            alternative=NOT_REQUIRED),
-        target_models=['assessmenthistory'])
+#     crfs_assessmenthistory = CrfRule(
+#         logic=Logic(
+#             predicate=P('assessment_history', 'eq', 'Yes'),
+#             consequence=REQUIRED,
+#             alternative=NOT_REQUIRED),
+#         target_models=['assessmenthistory'])
 
-    crfs_extraction = CrfRule(
-        logic=Logic(
-            predicate=P('extraction', 'eq', 'Yes'),
-            consequence=REQUIRED,
-            alternative=NOT_REQUIRED),
-        target_models=['extraction'])
+#     crfs_extraction = CrfRule(
+#         logic=Logic(
+#             predicate=P('extraction', 'eq', 'Yes'),
+#             consequence=REQUIRED,
+#             alternative=NOT_REQUIRED),
+#         target_models=['extraction'])
 
-    crfs_treatment = CrfRule(
-        logic=Logic(
-            predicate=P('treatment', 'eq', 'Yes'),
-            consequence=REQUIRED,
-            alternative=NOT_REQUIRED),
-        target_models=['treatment'])
+#     crfs_treatment = CrfRule(
+#         logic=Logic(
+#             predicate=P('treatment', 'eq', 'Yes'),
+#             consequence=REQUIRED,
+#             alternative=NOT_REQUIRED),
+#         target_models=['treatment'])
 
     crfs_death = CrfRule(
         logic=Logic(

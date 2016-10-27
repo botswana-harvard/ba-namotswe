@@ -21,9 +21,3 @@ class EnrollmentFactory(factory.DjangoModelFactory):
     gender = random.choice(['M', 'F'])
     initial_visit_date = timezone.now()
     caregiver_relation = 'mother'
-    weight_measured = YES
-    weight = random.choice(range(35, 60))
-    height_measured = YES
-    height = random.choice(range(100, 120))
-    hiv_diagnosis_date = None
-    art_initiation_date = parse(fake.date())

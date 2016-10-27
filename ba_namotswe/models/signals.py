@@ -8,7 +8,7 @@ from .enrollment import Enrollment
 def create_dummy_consent_on_post_save(sender, instance, raw, using, **kwargs):
     if not raw and not kwargs.get('update_fields'):
         try:
-            if instance.is_eligible and not instance.subject_identifier:
+            if not instance.subject_identifier:
                 instance.subject_identifier = instance.subject_consent.subject_identifier
                 instance.save(update_fields=['subject_identifier'])
         except AttributeError as e:

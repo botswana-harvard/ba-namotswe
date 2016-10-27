@@ -1,15 +1,99 @@
-from .contants import (CANDIDIASIS_OF_BRONCHI, INVASIVE_CERVICAL_CANCER, COCCIDIOIDOMYCOSIS, CRYPTOCOCCOSIS,
-                       CRYPTOSPORIDIOSIS, ENCEPHALOPHALOPATHY, HERPES_SIMPLEX, HISTOPLASMOSIS,
-                       ISOSPORIASIS, KAPOSI_SARCOMA, LYMPHOMA, MYCOBACTERIUM_AVIUM_COMPLEX, TUBERCULOSIS, PNEUMOCYSTIS,
-                       PNEUMONIA, PROGRESSIVE_MULTILOCAL_LEUKOENCEPHALOPATHY, SALMONELLA_SEPTICEMIA_RECURRENT,
-                       TOXOPLASMOSIS_OF_BRAIN, WASTING_SYNDROME_DUE_TO_HIV, PULMONARY_TB, NON_PULMONARY_TB,
-                       CULTURE_POSITIVE, CXR, OTHER_IMAGING_MODALITY, CLINICAL_DIAGNOSIS, OTHER, UNCERTAIN)
-from edc_constants.constants import YES, NO
+from edc_constants.constants import YES, NO, UNKNOWN
 
-YES_NO_UNCERTAIN = (
-    (YES, 'Yes'),
-    (NO, 'No'),
-    (UNCERTAIN, 'Unable to ascertain'),
+from .constants import (CANDIDIASIS_OF_BRONCHI, INVASIVE_CERVICAL_CANCER, COCCIDIOIDOMYCOSIS, CRYPTOCOCCOSIS,
+                        CRYPTOSPORIDIOSIS, ENCEPHALOPHALOPATHY, HERPES_SIMPLEX, HISTOPLASMOSIS,
+                        ISOSPORIASIS, KAPOSI_SARCOMA, LYMPHOMA, MYCOBACTERIUM_AVIUM_COMPLEX, TUBERCULOSIS, PNEUMOCYSTIS,
+                        PNEUMONIA, PROGRESSIVE_MULTILOCAL_LEUKOENCEPHALOPATHY, SALMONELLA_SEPTICEMIA_RECURRENT,
+                        TOXOPLASMOSIS_OF_BRAIN, WASTING_SYNDROME_DUE_TO_HIV, PULMONARY_TB, NON_PULMONARY_TB,
+                        CULTURE_POSITIVE, CXR, OTHER_IMAGING_MODALITY, CLINICAL_DIAGNOSIS, OTHER, UNCERTAIN)
+
+
+UTEST_IDS = (
+    ('CD4', 'CD4 absolute'),
+    ('CD4_perc', 'CD4 percentage'),
+    ('VL', 'Viral Load'),
+)
+
+MATERNAL_ARVS = (
+    ('AZT', 'AZT Monotherapy'),
+    ('sdNVP', 'Single-dose NVP'),
+    ('AZT-sdNVP', 'AZT and dsNVP'),
+    ('tripleARV', 'triple ARV'),
+    (OTHER, 'Other, please specify'),
+)
+
+QUANTIFIERS = (
+    ('<', '<'),
+    ('<=', '<='),
+    ('=', '= EQUALS'),
+    ('>=', '>='),
+    ('>', '>'),
+)
+
+INFANT_PROPHYLAXIS = (
+    ('sdNVP', 'Single-dose NVP'),
+    ('AZT', 'AZT Monotherapy'),
+    ('AZT-sdNVP', 'AZT and dsNVP'),
+    ('extNVP', 'Extended NVP'),
+)
+
+WHO_STAGE = (
+    ('I', 'Stage I'),
+    ('II', 'Stage II'),
+    ('III', 'Stage III'),
+    ('IV', 'Stage IV'),
+    (UNKNOWN, 'Unknown'),
+)
+
+WHO_DEFINING_ILLNESSES = (
+    ('A1', 'Asymptomatic'),
+    ('A2', 'Persistent generalized lymphadenopathy (PGL)'),
+
+    ('B010', 'Weigh loss, moderate unexplained (<10% of presumed or measured body weight)'),
+    ('B011', 'Weight loss, severe (>10% of presumed or measured body weight)'),
+    ('B020', 'Respiratory tract infections, recurrent (RTIs, sinusitis, bronchitis, otitis media, pharyngitis)'),
+    ('B030', 'Herpes zoster'),
+    ('B040', 'Angular cheilitis'),
+    ('B050', 'Oral ulcerations, recurrent'),
+    ('B060', 'Papular pruritic eruptions'),
+    ('B070', 'Seborrhoeic dermatitis'),
+    ('B080', 'Fungal nail infections of fingers'),
+
+    ('C020', 'Chronic diarrhoea, unexplained, (for longer than one month)'),
+    ('C030', 'Persistent fever, unexplained (intermittent or constant for longer than one month)'),
+    ('C040', 'Oral candidiasis'),
+    ('C050', 'Oral hairy leukoplakia'),
+    ('C060', 'Pulmonary tuberculosis (TB) diagnosed in last two years'),
+    ('C070', 'Bacterial infections, severe presumed  (e.g. pneumonia, empyema, pyomyositis, bone or'),
+    ('C080', 'Joint infection, meningitis, bacteraemia'),
+    ('C090', 'Acute necrotizing ulcerative stomatitis, gingivitis or periodontitis'),
+    ('C100', 'Anaemia, unexplained (<8 g/dl), and or neutropenia (<500/mm3) and or'),
+    ('C110', 'Thrombocytopenia (<50 000/ mm3) for more than one month'),
+
+    ('D010', 'HIV wasting syndrome'),
+    ('D020', 'Pneumocystis pneumonia'),
+    ('D030', 'Recurrent severe or radiological bacterial pneumonia'),
+    ('D040', 'Chronic herpes simplex infection (orolabial, genital or anorectal of more than one month’s duration)'),
+    ('D050', 'Oesophageal candidiasis'),
+    ('D060', 'Extrapulmonary TB'),
+    ('D070', 'Kaposi’s sarcoma'),
+    ('D080', 'Central nervous system (CNS) toxoplasmosis'),
+    ('D090', 'HIV encephalopathy'),
+
+    # Conditions where confirmatory diagnostic testing is necessary
+    ('E110', 'Extrapulmonary cryptococcosis including meningitis'),
+    ('E120', 'Disseminated non-tuberculous mycobacteria infection'),
+    ('E130', 'Progressive multifocal leukoencephalopathy (PML)'),
+    ('E140', 'Candida of trachea, bronchi or lungs'),
+    ('E150', 'Cryptosporidiosis'),
+    ('E160', 'Isosporiasis'),
+    ('E170', 'Visceral herpes simplex infection'),
+    ('E180', 'Cytomegalovirus (CMV) infection (retinitis or of an organ other than liver, spleen or lymph nodes)'),
+    ('E190', 'Any disseminated mycosis (e.g. histoplasmosis, coccidiomycosis, penicilliosis)'),
+    ('E200', 'Recurrent non-typhoidal salmonella septicaemia'),
+    ('E210', 'Lymphoma (cerebral or B cell non-Hodgkin)'),
+    ('E220', 'Invasive cervical carcinoma'),
+    ('E230', 'Visceral leishmaniasis'),
 )
 
 
@@ -53,13 +137,10 @@ PREGNANCY = (
     ('date_of_delivery', 'Date of Delivery'))
 
 TRANSFER = (
-    ('into_idcc', 'Into IDCC'),
-    ('out_of_idcc', 'Out of IDCC'),
-    ('into private_clinic', 'Into Private Clinic'),
-    ('out_of_private_clinic', 'Out of Private Clinic'),
-    ('into_bipai', 'Into BIPAI'),
-    ('out_of_bipai', 'Out of BIPAI'),
-    ('OTHER', 'Other, specify'))
+    ('idcc', 'IDCC'),
+    ('private', 'Private Clinic'),
+    ('bipai', 'BIPAI'),
+    (OTHER, 'Other, specify'))
 
 RELATIONSHIP = (
     ('mother', 'Mother'),

@@ -1,26 +1,19 @@
-import uuid
-
-from django.contrib import admin, admindocs
+from django.contrib import admin
 
 from edc_base.modeladmin.mixins import (
     ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin, ModelAdminFormAutoNumberMixin,
-    ModelAdminAuditFieldsMixin)
+    ModelAdminAuditFieldsMixin, TabularInlineMixin)
 from edc_visit_tracking.admin import VisitAdminMixin
 
+from .admin_site import ba_namotswe_admin
 from .forms import (
-    SubjectConsentForm, SubjectVisitForm, TBHistoryForm, TreatmentForm, EnrollmentForm, ExtractionForm,
-    AdherenceCounsellingForm, ArvHistoryForm, AssessmentHistoryForm, DeathForm, PregnancyHistoryForm,
-    TransferHistoryForm, OiForm, ArtRegimenForm, ExtractionChecklistForm)
+    SubjectVisitForm, TBRecordForm, EnrollmentForm, ArtRecordForm, LabRecordForm,
+    AdherenceCounsellingForm, DeathForm, PregnancyHistoryForm, WhoStagingForm,
+    TransferRecordForm, OiRecordForm, ExtractionChecklistForm, EntryToCareForm)
 from .models import (
-    SubjectConsent, SubjectVisit, ExtractionChecklist, Enrollment, Oi, Extraction, Treatment, ArtRegimen,
-    Appointment, TbHistory, AdherenceCounselling, ArvHistory, AssessmentHistory, Death, PregnancyHistory,
-    TransferHistory)
-from ba_namotswe.admin_site import ba_namotswe_admin
-from ba_namotswe.models.arv import Arv
-from ba_namotswe.models.oi_history import OiHistory
-from ba_namotswe.models.tb import Tb
-from ba_namotswe.models.pregnancy import Pregnancy
-from ba_namotswe.models.transfer import Transfer
+    SubjectConsent, SubjectVisit, ExtractionChecklist, Enrollment, OiRecord, Oi, EntryToCare,
+    Appointment, TbRecord, Tb, AdherenceCounselling, ArtRecord, ArtRegimen, Death, PregnancyHistory, Pregnancy,
+    TransferRecord, Transfer, LabRecord, LabTest, WhoStaging, WhoDiagnosis)
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
@@ -36,16 +29,53 @@ class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsM
 
 class BaseCrfModelAdmin(BaseModelAdmin):
 
+    instructions = (
+        'Please complete the questions below. Required questions are in bold. '
+        'When all required questions are complete click SAVE. Based on your responses, additional questions may be '
+        'required or some answers may need to be corrected.')
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'subject_visit' and request.GET.get('subject_visit'):
             kwargs["queryset"] = SubjectVisit.objects.filter(pk=request.GET.get('subject_visit', 0))
         return super(BaseCrfModelAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+class BaseCrfModelInlineAdmin(TabularInlineMixin, admin.TabularInline):
+    pass
+
+
+@admin.register(Enrollment, site=ba_namotswe_admin)
+class EnrollmentAdmin(BaseModelAdmin):
+    form = EnrollmentForm
+    radio_fields = {
+        'gender': admin.VERTICAL,
+        'caregiver_relation': admin.VERTICAL}
+
+    list_display = ('subject_identifier', 'dashboard')
+
+
+@admin.register(Appointment, site=ba_namotswe_admin)
+class AppointmentAdmin(BaseModelAdmin):
+    list_filter = ('best_appt_datetime', )
+    list_filter = ('subject_identifier', 'appt_datetime', 'visit_code')
+
+
+@admin.register(SubjectVisit, site=ba_namotswe_admin)
+class SubjectVisitAdmin(VisitAdminMixin, BaseModelAdmin):
+
+    form = SubjectVisitForm
+    list_filter = ('subject_identifier', 'visit_datetime', 'visit_code')
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'appointment' and request.GET.get('appointment'):
+            kwargs["queryset"] = Appointment.objects.filter(pk=request.GET.get('appointment', 0))
+        return super(VisitAdminMixin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+
 @admin.register(ExtractionChecklist, site=ba_namotswe_admin)
 class ExtractionChecklistAdmin(BaseCrfModelAdmin):
     form = ExtractionChecklistForm
-    list_filter = ('subject_visit', 'arv_changes', 'tb_diagnosis', )
+    list_filter = ('subject_visit', 'report_datetime', 'arv_changes', 'tb_diagnosis', )
     radio_fields = {
         'arv_changes': admin.VERTICAL,
         'tb_diagnosis': admin.VERTICAL,
@@ -57,159 +87,109 @@ class ExtractionChecklistAdmin(BaseCrfModelAdmin):
         'death': admin.VERTICAL}
 
 
-@admin.register(Enrollment, site=ba_namotswe_admin)
-class EnrollmentAdmin(BaseModelAdmin):
-    form = EnrollmentForm
-    radio_fields = {
-        'caregiver_relation': admin.VERTICAL,
-        'gender': admin.VERTICAL,
-        'weight_measured': admin.VERTICAL,
-        'height_measured': admin.VERTICAL}
-
-    list_display = ('dashboard', 'initial_visit_date', 'hiv_diagnosis_date', 'art_initiation_date', )
+@admin.register(Death, site=ba_namotswe_admin)
+class DeathAdmin(BaseCrfModelAdmin):
+    form = DeathForm
+    list_filter = ('subject_visit', 'report_datetime')
 
 
-@admin.register(Appointment, site=ba_namotswe_admin)
-class AppointmentAdmin(BaseModelAdmin):
-    list_filter = ('best_appt_datetime', )
+@admin.register(EntryToCare, site=ba_namotswe_admin)
+class EntryToCareAdmin(BaseCrfModelAdmin):
+    form = EntryToCareForm
+    list_filter = ('subject_visit', 'report_datetime')
 
 
-@admin.register(SubjectVisit, site=ba_namotswe_admin)
-class SubjectVisitAdmin(VisitAdminMixin, BaseModelAdmin):
-
-    form = SubjectVisitForm
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'appointment' and request.GET.get('appointment'):
-            kwargs["queryset"] = Appointment.objects.filter(pk=request.GET.get('appointment', 0))
-        return super(VisitAdminMixin, self).formfield_for_foreignkey(db_field, request, **kwargs)
-
-
-@admin.register(Extraction, site=ba_namotswe_admin)
-class ExtractionAdmin(BaseCrfModelAdmin):
-    list_filter = ('subject_visit', )
-    form = ExtractionForm
-    # fields = ()
-    readonly_fields = ('subject_visit', )
-    filter_horizontal = ('art_history', 'io_history')
-    radio_fields = {
-        'height_measured': admin.VERTICAL,
-        'weight_measured': admin.VERTICAL,
-        'hospitalized': admin.VERTICAL,
-        'tb': admin.VERTICAL,
-        'tb_type': admin.VERTICAL,
-        'tb_method': admin.VERTICAL,
-        'io': admin.VERTICAL,
-        'ctx': admin.VERTICAL,
-        'ctx_table': admin.VERTICAL,
-        'pregnant_and_rx': admin.VERTICAL,
-        'hiv_status_aware': admin.VERTICAL,
-        'hiv_disclosed_others': admin.VERTICAL,
-        'hiv_caregiver_disclosed_others': admin.VERTICAL,
-        'transferred': admin.VERTICAL,
-        'transferred_to': admin.VERTICAL,
-        'deceased': admin.VERTICAL,
-    }
-
-
-class ArvInline(admin.TabularInline):
-    model = Arv
+class LabTestInlineAdmin(BaseCrfModelInlineAdmin):
+    model = LabTest
     extra = 1
 
 
-class OiInline(admin.TabularInline):
-    model = Oi
-    extra = 1
+@admin.register(LabRecord, site=ba_namotswe_admin)
+class LabRecordAdmin(BaseCrfModelAdmin):
+    form = LabRecordForm
+    inlines = [LabTestInlineAdmin]
+    list_filter = ('subject_visit', 'report_datetime')
 
 
-class PregnancyInline(admin.TabularInline):
-    model = Pregnancy
-    extra = 1
-
-
-class TbInline(admin.TabularInline):
-    model = Tb
-    extra = 1
-
-
-class TransferInline(admin.TabularInline):
+class TransferInlineAdmin(BaseCrfModelInlineAdmin):
     model = Transfer
     extra = 1
 
 
-@admin.register(Death, site=ba_namotswe_admin)
-class DeathAdmin(BaseCrfModelAdmin):
-    list_filter = ('subject_visit', )
-    form = DeathForm
+@admin.register(TransferRecord, site=ba_namotswe_admin)
+class TransferRecordAdmin(BaseCrfModelAdmin):
+    form = TransferRecordForm
+    inlines = [TransferInlineAdmin]
+    list_filter = ('subject_visit', 'report_datetime')
 
 
-@admin.register(AssessmentHistory, site=ba_namotswe_admin)
-class AssessmentHistoryAdmin(BaseCrfModelAdmin):
-    list_filter = ('subject_visit', )
-    form = AssessmentHistoryForm
-
-
-@admin.register(ArvHistory, site=ba_namotswe_admin)
-class ArvHistoryAdmin(BaseCrfModelAdmin):
-    list_display = ('subject_identifier', 'report_datetime',)
-    form = ArvHistoryForm
-    inlines = [ArvInline]
-
-    def subject_identifier(self, object):
-        return object.subject_visit.subject_identifier
-
-
-@admin.register(TransferHistory, site=ba_namotswe_admin)
-class TransferHistoryAdmin(BaseCrfModelAdmin):
-    form = TransferHistoryForm
-    inlines = [TransferInline]
+class PregnancyInlineAdmin(BaseCrfModelInlineAdmin):
+    model = Pregnancy
+    extra = 1
 
 
 @admin.register(PregnancyHistory, site=ba_namotswe_admin)
 class PregnancyHistoryAdmin(BaseCrfModelAdmin):
     form = PregnancyHistoryForm
-    inlines = [PregnancyInline]
+    inlines = [PregnancyInlineAdmin]
+    list_filter = ('subject_visit', 'report_datetime')
 
 
 @admin.register(AdherenceCounselling, site=ba_namotswe_admin)
 class AdherenceCounsellingAdmin(BaseCrfModelAdmin):
-    list_filter = ('subject_visit', )
     form = AdherenceCounsellingForm
+    list_filter = ('subject_visit', 'report_datetime')
 
 
-@admin.register(Treatment, site=ba_namotswe_admin)
-class TreatmentAdmin(BaseCrfModelAdmin):
-    list_filter = ('perinatal_infection', )
-    form = TreatmentForm
+class OiInlineAdmin(BaseCrfModelInlineAdmin):
+    model = Oi
+    extra = 1
 
 
-@admin.register(OiHistory, site=ba_namotswe_admin)
+@admin.register(OiRecord, site=ba_namotswe_admin)
 class OiHistoryAdmin(BaseCrfModelAdmin):
-    list_display = ('subject_identifier', 'report_datetime',)
-    inlines = [OiInline]
-    form = OiForm
-
-    def subject_identifier(self, object):
-        return object.subject_visit.subject_identifier
+    form = OiRecordForm
+    inlines = [OiInlineAdmin]
+    list_filter = ('subject_visit', 'report_datetime')
 
 
-@admin.register(TbHistory, site=ba_namotswe_admin)
-class TbHistoryAdmin(BaseCrfModelAdmin):
-    form = TBHistoryForm
-    inlines = [TbInline]
-#     radio_fields = {
-#         'tb_type': admin.VERTICAL,
-#         'tb_test': admin.VERTICAL}
+class TbInlineAdmin(BaseCrfModelInlineAdmin):
+    model = Tb
+    extra = 1
 
 
-@admin.register(ArtRegimen, site=ba_namotswe_admin)
-class ARTRegimenAdmin(BaseCrfModelAdmin):
-    list_filter = ('name', )
-    form = ArtRegimenForm
+@admin.register(TbRecord, site=ba_namotswe_admin)
+class TbRecordAdmin(BaseCrfModelAdmin):
+    form = TBRecordForm
+    inlines = [TbInlineAdmin]
+    list_filter = ('subject_visit', 'report_datetime')
+
+
+class ArtRegimenInlineAdmin(BaseCrfModelInlineAdmin):
+    model = ArtRegimen
+    extra = 1
+
+
+@admin.register(ArtRecord, site=ba_namotswe_admin)
+class ArtRecordAdmin(BaseCrfModelAdmin):
+    form = ArtRecordForm
+    inlines = [ArtRegimenInlineAdmin]
+    list_filter = ('subject_visit', 'report_datetime')
 
 
 @admin.register(SubjectConsent, site=ba_namotswe_admin)
 class SubjectConsentAdmin(BaseModelAdmin):
 
     dashboard_type = 'subject'
-    form = SubjectConsentForm
+
+
+class WhoDiagnosisInlineAdmin(BaseCrfModelInlineAdmin):
+    model = WhoDiagnosis
+    extra = 1
+
+
+@admin.register(WhoStaging, site=ba_namotswe_admin)
+class WhoStagingAdmin(BaseCrfModelAdmin):
+    form = WhoStagingForm
+    inlines = [WhoDiagnosisInlineAdmin]
+    list_filter = ('subject_visit', 'report_datetime')

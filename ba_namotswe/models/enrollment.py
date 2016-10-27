@@ -1,16 +1,17 @@
+from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
-from django.core.urlresolvers import reverse
-from django.conf import settings
 
+from edc_appointment.model_mixins import CreateAppointmentsMixin
+from edc_base.model.models.base_uuid_model import BaseUuidModel
 from edc_base.model.validators.date import date_not_future
 from edc_base.utils.age import formatted_age
-from edc_base.model.models.base_uuid_model import BaseUuidModel
-from edc_appointment.model_mixins import CreateAppointmentsMixin
-from edc_constants.choices import YES_NO, GENDER
+from edc_constants.choices import GENDER
+
+from ..choices import RELATIONSHIP
 
 from .subject_consent import SubjectConsent
-from ..choices import RELATIONSHIP
 
 
 class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
@@ -20,12 +21,26 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
         max_length=50,
         editable=False)
 
+    report_datetime = models.DateTimeField(default=timezone.now, editable=False)
+
     study_site = models.CharField(
         max_length=10,
         default=settings.STUDY_SITE,
         editable=False)
 
-    initials = models.CharField(max_length=3)
+    slh_identifier = models.CharField(
+        verbose_name='SLH Number',
+        max_length=25,
+        unique=True)
+
+    cm_identifier = models.CharField(
+        verbose_name='CM Number',
+        max_length=25,
+        blank=True,
+        null=True,
+        help_text='Provide if available.')
+
+    initials = models.CharField(max_length=3, null=True, blank=True)
 
     gender = models.CharField(
         verbose_name="Gender",
@@ -36,22 +51,18 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
         verbose_name=("Date of birth"),
         help_text=("Format is YYYY-MM-DD"))
 
-    report_datetime = models.DateTimeField(default=timezone.now)
-
-    is_eligible = models.BooleanField(default=True)
-
-    initial_visit_date = models.DateField(
-        verbose_name='Date of Initial Clinic Visit',
-        validators=[date_not_future, ])
+    age_at_entry = models.IntegerField(
+        editable=False,
+        null=True)
 
     # TODO: skip_logic caregiver_relation: display field only if 10 years ago _ DOB _ 13 years ago? (adolescents only--ASK AT SLH)
     caregiver_relation = models.CharField(
         verbose_name='Caregiver/Next of Kin Relationship',
         max_length=25,
         blank=True,
-        default=None,
+        null=True,
         choices=RELATIONSHIP,
-        help_text='Please describe the caregiver/next of kin\'s relationship to patient')
+        help_text='Required if 10-13 years old, otherwise leave blank.')
 
     # TODO: skip_logic caregiver_relation_other: display field only if Caregiver/Next of Kin Relationship= OTHER
     caregiver_relation_other = models.CharField(
@@ -60,49 +71,9 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
         blank=True,
         null=True)
 
-    weight_measured = models.CharField(
-        max_length=25,
-        verbose_name='Weight was measured at Initial Clinic Visit',
-        choices=YES_NO)
-
-    weight = models.DecimalField(
-        verbose_name='Weight in kg',
-        decimal_places=2,
-        max_digits=5,
-        blank=True,
-        null=True)
-
-    height_measured = models.CharField(
-        max_length=25,
-        verbose_name='Height was measured at Initial Clinic Visit',
-        choices=YES_NO)
-
-    height = models.DecimalField(
-        verbose_name='Height in cm',
-        decimal_places=2,
-        max_digits=5,
-        blank=True,
-        null=True)
-
-    hiv_diagnosis_date = models.DateField(
-        verbose_name='HIV Diagnosis Date ',
-        validators=[date_not_future, ],
-        blank=True,
-        null=True,
-        help_text='Leave blank if diagnosis date is same as initial visit date')
-
-    art_initiation_date = models.DateField(
-        verbose_name='ART Initiation Date',
-        validators=[date_not_future, ])
-
     def save(self, *args, **kwargs):
-        if not self.hiv_diagnosis_date:
-            self.hiv_diagnosis_date = self.initial_visit_date
+        self.age_at_entry = formatted_age(self.dob, self.entry_date)
         super(Enrollment, self).save(*args, **kwargs)
-
-    @property
-    def age_at_visit(self):
-        return formatted_age(self.dob, self.initial_visit_date)
 
     @property
     def subject_consent(self):
@@ -122,7 +93,6 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
 
     def dashboard(self):
         """Returns a hyperink for the Admin page."""
-        print('subject={}'.format(self.subject_identifier))
         url = reverse(
             'subject_dashboard_url',
             kwargs={
@@ -136,3 +106,4 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
         app_label = 'ba_namotswe'
         consent_model = 'ba_namotswe.subjectconsent'
         visit_schedule_name = 'visit_schedule'
+        verbose_name = 'Enrollment'
