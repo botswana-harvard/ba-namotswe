@@ -1,12 +1,45 @@
-from edc_constants.constants import YES, NO, UNKNOWN
+from edc_constants.constants import UNKNOWN, OTHER, ON_STUDY, OFF_STUDY, NOT_APPLICABLE
 
-from .constants import (CANDIDIASIS_OF_BRONCHI, INVASIVE_CERVICAL_CANCER, COCCIDIOIDOMYCOSIS, CRYPTOCOCCOSIS,
-                        CRYPTOSPORIDIOSIS, ENCEPHALOPHALOPATHY, HERPES_SIMPLEX, HISTOPLASMOSIS,
-                        ISOSPORIASIS, KAPOSI_SARCOMA, LYMPHOMA, MYCOBACTERIUM_AVIUM_COMPLEX, TUBERCULOSIS, PNEUMOCYSTIS,
-                        PNEUMONIA, PROGRESSIVE_MULTILOCAL_LEUKOENCEPHALOPATHY, SALMONELLA_SEPTICEMIA_RECURRENT,
-                        TOXOPLASMOSIS_OF_BRAIN, WASTING_SYNDROME_DUE_TO_HIV, PULMONARY_TB, NON_PULMONARY_TB,
-                        CULTURE_POSITIVE, CXR, OTHER_IMAGING_MODALITY, CLINICAL_DIAGNOSIS, OTHER, UNCERTAIN)
+from .constants import (
+    CANDIDIASIS_OF_BRONCHI, INVASIVE_CERVICAL_CANCER, COCCIDIOIDOMYCOSIS, CRYPTOCOCCOSIS,
+    CRYPTOSPORIDIOSIS, ENCEPHALOPHALOPATHY, HERPES_SIMPLEX, HISTOPLASMOSIS,
+    ISOSPORIASIS, KAPOSI_SARCOMA, LYMPHOMA, MYCOBACTERIUM_AVIUM_COMPLEX, TUBERCULOSIS, PNEUMOCYSTIS,
+    PNEUMONIA, PROGRESSIVE_MULTILOCAL_LEUKOENCEPHALOPATHY, SALMONELLA_SEPTICEMIA_RECURRENT,
+    TOXOPLASMOSIS_OF_BRAIN, WASTING_SYNDROME_DUE_TO_HIV, PULMONARY_TB, NON_PULMONARY_TB,
+    CULTURE_POSITIVE, CXR, OTHER_IMAGING_MODALITY, CLINICAL_DIAGNOSIS, ONGOING, RESOLVED)
 
+
+ART_STATUS = (
+    (ONGOING, 'Ongoing'),
+    ('HELD', 'Held'),
+    ('STOPPED', 'Stopped'),
+)
+
+OI_STATUS = (
+    (ONGOING, 'Ongoing'),
+    (RESOLVED, 'Resolved'),
+)
+
+ART_REGIMENS = (
+    ('EFV/TDF/FTC', 'NNRTI: EFV + TDF/FTC'),
+    ('EFV + ABC/3TC', 'NNRTI: EFV + ABC/3TC'),
+    ('RPV/TDF/FTC', 'NNRTI: RPV + TDF/FTC)'),
+    ('(DRV/r) + TDF/FTC', 'PI: Darunavir/ritonavir (DRV/r) + TDF/FTC'),
+    ('ATV/r + ABC/3TC', 'PI: ATV/r + ABC/3TC'),
+    ('DRV/r + ABC/3TC', 'PI: DRV/r + ABC/3TC'),
+    ('LPV/r + ABC/3TC', 'PI: Lopinavir/ritonavir LPV/r + ABC/3TC'),
+    ('LPV/r + ABC/3TC', 'PI: Lopinavir/ritonavir LPV/r + TDF/FTC'),
+    ('(RAL) + TDF/FTC', 'INSTI: Raltegravir (RAL) + TDF/FTC'),
+    ('RAL + ABC/3TC', 'INSTI: Raltegravir (RAL) + ABC/3TC'),
+    ('EVG/COBI/TDF/FTC', 'INSTI: EVG/COBI/TDF/FTC'),
+    ('(DTG) + ABC/3TC', 'INSTI: Dolutegravir (DTG) + ABC/3TC'),
+    ('DTG + TDF/FTC', 'INSTI: Dolutegravir (DTG) + + TDF/FTC'),
+)
+
+VISIT_STUDY_STATUS = (
+    (ON_STUDY, 'On Study'),
+    (OFF_STUDY, 'Off Study'),
+)
 
 UTEST_IDS = (
     ('CD4', 'CD4 absolute'),
@@ -20,12 +53,14 @@ MATERNAL_ARVS = (
     ('AZT-sdNVP', 'AZT and dsNVP'),
     ('tripleARV', 'triple ARV'),
     (OTHER, 'Other, please specify'),
+    (NOT_APPLICABLE, 'Not applicable'),
+
 )
 
 QUANTIFIERS = (
     ('<', '<'),
     ('<=', '<='),
-    ('=', '= EQUALS'),
+    ('=', '= '),
     ('>=', '>='),
     ('>', '>'),
 )
@@ -35,6 +70,7 @@ INFANT_PROPHYLAXIS = (
     ('AZT', 'AZT Monotherapy'),
     ('AZT-sdNVP', 'AZT and dsNVP'),
     ('extNVP', 'Extended NVP'),
+    (NOT_APPLICABLE, 'Not applicable'),
 )
 
 WHO_STAGE = (
@@ -151,5 +187,7 @@ RELATIONSHIP = (
     ('uncle', 'Uncle'),
     ('sister', 'Sister'),
     ('legal_guardian', 'Legal Guardian'),
-    ('not_applicable', 'Not Applicable'),
-    ('OTHER', 'Other, specify'))
+    (NOT_APPLICABLE, 'Not Applicable'),
+    (OTHER, 'Other, specify'),
+    (UNKNOWN, 'Unknown'),
+)

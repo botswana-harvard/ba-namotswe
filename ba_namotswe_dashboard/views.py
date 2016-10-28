@@ -8,7 +8,8 @@ from edc_base.view_mixins import EdcBaseViewMixin
 from ba_namotswe.models import RequisitionMetadata, CrfMetadata, Enrollment, Appointment, SubjectVisit
 from ba_namotswe.models.entry_to_care import EntryToCare
 from edc_metadata.constants import REQUIRED
-from ba_namotswe.comment_form import CommentForm
+from edc_constants.constants import OTHER
+# from ba_namotswe.comment_form import CommentForm
 
 
 class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
@@ -26,6 +27,7 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         self.context = super(SubjectDashboardView, self).get_context_data(**kwargs)
+        enrollment = self.enrollment_model.objects.get(subject_identifier=self.subject_identifier)
         self.context.update({
             'requisitions': self.requisitions,
             'crfs': self.crfs,
@@ -36,8 +38,8 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
             'dashboard_url': self.dashboard_url,
             'subject_identifier': self.subject_identifier,
             'demographics': self.demographics,
-            'enrollment_model': self.enrollment_model._meta.verbose_name,
-            'comment_form': CommentForm()
+            'enrollment_model_name': self.enrollment_model._meta.verbose_name,
+            'enrollment': enrollment,
         })
         return self.context
 
@@ -70,6 +72,8 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
                                 obj.reviewed = False if obj.reviewed else True
                                 obj.save(update_fields=['reviewed'])
                         crf.url = obj.get_absolute_url()
+                        crf.changelist_url = reverse('{}:{}_{}_changelist'.format(
+                            crf.model_class.ADMIN_SITE_NAME, *crf.model_class._meta.label_lower.split('.')))
                         crf.instance = obj
                     crf.title = crf.model_class()._meta.verbose_name
                     self._crfs.append(crf)
@@ -109,12 +113,18 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
 
     @property
     def demographics(self):
+        if self.enrollment.caregiver_relation == OTHER:
+            caregiver = self.enrollment.get_caregiver_relation_other
+        else:
+            caregiver = self.enrollment.get_caregiver_relation_display()
         demographics = OrderedDict()
         demographics.update({'initials': self.enrollment.initials})
         demographics.update({'gender': self.enrollment.get_gender_display()})
-        demographics.update({'age': self.enrollment.age_at_entry})
+        demographics.update({'age': self.enrollment.age})
         demographics.update({'born': self.enrollment.dob.strftime('%Y-%m-%d')})
+        demographics.update({'caregiver': caregiver})
         try:
+            demographics.update({'age_at_entry': self.entry_to_care.age_at_entry})
             demographics.update({'height': self.entry_to_care.entry_height})
             demographics.update({'weight': self.entry_to_care.entry_weight})
         except AttributeError:

@@ -18,11 +18,26 @@
    {% endif %}
           <div class="panel-group">
           <div class="panel panel-default">
-            <div class="panel-body">{% crispy form %}
-            <a href="{% url 'ba_namotswe_admin:ba_namotswe_enrollment_add' %}" class="btn btn-sm btn-default" role="button">Add Enrollment</a>
+          <div class="panel-body">
+              <span class="pull-left"><a href="{% url 'ba_namotswe_admin:ba_namotswe_enrollment_add' %}?next={% url 'home_url' %}" class="btn btn-sm btn-default" role="button">Enroll Patient</a></span>
+              <span class="pull-right">{% crispy form %}</span>
+            {% if enrollments %}
+                <table class="table table-condensed table-striped table-responsive">
+                  <tbody>
+              {% for enrollment in enrollments %}
+                  <tr>
+                    <td><a href="{% url dashboard_url_name subject_identifier=enrollment.subject_identifier %}" role="button" class="btn btn-sm btn-default">Go</a></td>
+                    <td>{{ enrollment.subject_identifier }} (SLH: {{ enrollment.slh_identifier }} CM: {{ enrollment.cm_identifier }})</td>
+                    <td>{{ enrollment.age }} {{ enrollment.get_gender_display }}</td>
+                    <td>Enrolled {{ enrollment.report_datetime|date:"Y-m-d" }}</td>
+                  </tr>
+              {% endfor %}
+                  </tbody>
+                </table>
+            {% endif %}
             </div>
-
           </div>          
+
             <div class="panel panel-warning">
               <div class="panel-heading">Administration</div>
                   <div class="panel-body">

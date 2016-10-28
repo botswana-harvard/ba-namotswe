@@ -17,31 +17,32 @@ class Transfer(models.Model):
 
     transfer_date = models.DateField()
 
-    transferred_from = models.CharField(
-        verbose_name='Transfered from ...',
+    transfer_from = models.CharField(
+        verbose_name='From ...',
         max_length=25,
         choices=TRANSFER)
 
     transfer_from_other = models.CharField(
-        max_length=25,
-        verbose_name='... from "Other", please specify',
+        max_length=15,
+        verbose_name='... from "Other"',
         blank=True,
         null=True)
 
-    transferred_to = models.CharField(
-        verbose_name='Transfered to ...',
+    transfer_to = models.CharField(
+        verbose_name='To ...',
         max_length=25,
         choices=TRANSFER)
 
     transfer_to_other = models.CharField(
-        max_length=25,
-        verbose_name='... to "Other", please specify',
+        max_length=15,
+        verbose_name='... to "Other"',
         blank=True,
         null=True)
 
-    transfer_reason = models.TextField(
+    reason = models.TextField(
         verbose_name='Reason',
-        max_length=50)
+        null=True,
+        blank=True)
 
     class Meta(CrfModel.Meta):
         app_label = 'ba_namotswe'

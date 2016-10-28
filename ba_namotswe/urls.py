@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 
 from edc_base.views import LoginView, LogoutView
 
@@ -30,4 +31,8 @@ urlpatterns = [
     url(r'^edc/', include('edc_base.urls', namespace='edc-base')),
     url(r'^(?P<subject_identifier>[0-9\-]{14})/$', HomeView.as_view(), name='home_url'),
     url(r'^', HomeView.as_view(), name='home_url'),
+    url(r'^admin/password_reset/$', auth_views.password_reset, name='admin_password_reset'),
+    url(r'^admin/password_reset/done/$', auth_views.password_reset_done, name='password_reset_done'),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$', auth_views.password_reset_confirm, name='password_reset_confirm'),
+    url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
 ]

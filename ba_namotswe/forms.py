@@ -1,23 +1,72 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django import forms
-from django.contrib.admin.widgets import AdminRadioSelect, AdminRadioFieldRenderer
+from django.contrib.admin.widgets import AdminRadioSelect, AdminRadioFieldRenderer, AdminDateWidget
+from django.utils import timezone
 
 from edc_base.utils.age import age
-from edc_constants.constants import ON_STUDY, OTHER, YES, NO
+from edc_constants.constants import ON_STUDY, OTHER, YES, NO, UNKNOWN, NOT_APPLICABLE
 from edc_visit_tracking.choices import VISIT_REASON, VISIT_INFO_SOURCE
+from edc_visit_tracking.constants import SCHEDULED
 from edc_visit_tracking.form_mixins import VisitFormMixin
 
 from .models import (
-    SubjectVisit, OiRecord, Enrollment, EntryToCare, Death, AdherenceCounselling, ExtractionChecklist,
-    TbRecord, PregnancyHistory, TransferRecord, ArtRecord, LabRecord, WhoStaging)
+    SubjectVisit, Oi, OiRecord, Enrollment, EntryToCare, Death, AdherenceCounselling, ExtractionChecklist,
+    Tb, TbRecord, PregnancyHistory, TransferRecord, ArtRecord, ArtRegimen, LabRecord, WhoStaging)
+from .choices import VISIT_STUDY_STATUS
+from .constants import ONGOING
+from ba_namotswe.models.transfer_record import Transfer
+
+
+class SimpleYesNoValidationMixin:
+
+    def require_if_yes(self, yesno_field, required_field, required_msg=None, not_required_msg=None):
+        if self.cleaned_data.get(yesno_field) in [NO, UNKNOWN] and self.cleaned_data.get(required_field):
+            raise forms.ValidationError({
+                required_field: [not_required_msg or 'Field is not required based on answer above']})
+        elif self.cleaned_data.get(yesno_field) == YES and not self.cleaned_data.get(required_field):
+            raise forms.ValidationError({
+                required_field: [required_msg or 'Field is required based on answer of YES above']})
+
+
+class SimpleOtherSpecifyValidationMixin:
+
+    def require_if_other(self, other_field, specify_field, required_msg=None, not_required_msg=None):
+        if self.cleaned_data.get(other_field) != OTHER and self.cleaned_data.get(specify_field):
+            raise forms.ValidationError({
+                specify_field: [not_required_msg or 'Field is not required']})
+        elif self.cleaned_data.get(other_field) == OTHER and not self.cleaned_data.get(specify_field):
+            raise forms.ValidationError({
+                specify_field: [required_msg or 'Specify answer for OTHER']})
+
+
+class SimpleStartStopDateValidationMixin:
+    def validate_start_stop_dates(self):
+        cleaned_data = self.cleaned_data
+        if not cleaned_data.get('started'):
+            raise forms.ValidationError({'started': 'Required'})
+        if cleaned_data.get('status') != ONGOING and not cleaned_data.get('stopped'):
+            raise forms.ValidationError({'stopped': 'Required'})
+        if cleaned_data.get('status') == ONGOING and cleaned_data.get('stopped'):
+            raise forms.ValidationError({'stopped': 'Expected blank'})
+        if cleaned_data.get('started') - cleaned_data.get('stopped') == timedelta(days=0):
+            raise forms.ValidationError({'stopped': 'Cannot be equal'})
+        if cleaned_data.get('started') - cleaned_data.get('stopped') > timedelta(days=0):
+            raise forms.ValidationError({'stopped': 'Cannot be less than started'})
 
 
 class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
 
+    report_datetime = forms.DateTimeField(
+        label='Report date',
+        initial=timezone.now,
+        help_text="",
+        widget=AdminDateWidget(),
+    )
+
     study_status = forms.ChoiceField(
-        label='What is the mother\'s current study status',
-        choices=VISIT_REASON,
+        label='Study status',
+        choices=VISIT_STUDY_STATUS,
         initial=ON_STUDY,
         help_text="",
         widget=AdminRadioSelect(renderer=AdminRadioFieldRenderer)
@@ -26,11 +75,13 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
     reason = forms.ChoiceField(
         label='Reason for visit',
         choices=[choice for choice in VISIT_REASON],
+        initial=SCHEDULED,
         help_text="",
         widget=AdminRadioSelect(renderer=AdminRadioFieldRenderer))
 
     info_source = forms.ChoiceField(
         label='Source of information',
+        initial='chart',
         required=False,
         choices=[choice for choice in VISIT_INFO_SOURCE],
         widget=AdminRadioSelect(renderer=AdminRadioFieldRenderer))
@@ -39,7 +90,7 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
 
     class Meta:
         model = SubjectVisit
-        fields = '__all__'
+        fields = ['appointment', 'report_datetime', 'study_status', 'reason', 'info_source']
 
 
 class EnrollmentForm(forms.ModelForm):
@@ -48,8 +99,6 @@ class EnrollmentForm(forms.ModelForm):
         self.validate_initial_visit_date()
         self.validate_caregiver_relation_age()
         self.validate_caregiver_relation_other()
-        self.validate_weight()
-        self.validate_height()
         self.validate_hiv_diagnosis_date()
         self.validate_hiv_art_initiation()
         return self.cleaned_data
@@ -67,52 +116,6 @@ class EnrollmentForm(forms.ModelForm):
                     'initial_visit_date': [
                         'Initial visit date should come before June 1st, 2016']})
 
-    def validate_weight(self):
-        if self.cleaned_data.get('weight_measured') == NO:
-            if self.cleaned_data.get('weight'):
-                raise forms.ValidationError({
-                    'weight': [
-                        'You should not enter weight']})
-        elif self.cleaned_data.get('weight_measured') == YES:
-            if not self.cleaned_data.get('weight'):
-                raise forms.ValidationError({
-                    'weight': [
-                        'You should enter the weight']})
-            self.ensure_right_weight()
-
-    def ensure_right_weight(self):
-        if self.cleaned_data.get('weight') > 136:
-                raise forms.ValidationError({
-                    'weight': [
-                        'Weight should be less than 136 kilos']})
-        elif self.cleaned_data.get('weight') < 20:
-                raise forms.ValidationError({
-                    'weight': [
-                        'Weight should be greater than 20 kilos']})
-
-    def validate_height(self):
-        if self.cleaned_data.get('height_measured') == NO:
-            if self.cleaned_data.get('height'):
-                raise forms.ValidationError({
-                    'height': [
-                        'You should not enter height']})
-        elif self.cleaned_data.get('height_measured') == YES:
-            if not self.cleaned_data.get('height'):
-                raise forms.ValidationError({
-                    'height': [
-                        'You should enter the height']})
-            self.ensure_right_height()
-
-    def ensure_right_height(self):
-        if self.cleaned_data.get('height') > 244:
-                raise forms.ValidationError({
-                    'height': [
-                        'Height should be less than 244cm']})
-        elif self.cleaned_data.get('height') < 100:
-                raise forms.ValidationError({
-                    'height': [
-                        'Height should be greater than 100cm']})
-
     def validate_caregiver_relation_age(self):
         registered_subject = self.cleaned_data.get('registered_subject')
         if registered_subject:
@@ -129,7 +132,7 @@ class EnrollmentForm(forms.ModelForm):
                                 'Subject was between 10 and 13 years of age, you have to provide caregiver']})
 
     def validate_caregiver_relation_other(self):
-        if self.cleaned_data.get('caregiver_relation') != 'OTHER':
+        if self.cleaned_data.get('caregiver_relation') != OTHER:
             if self.cleaned_data.get('caregiver_relation_other'):
                 raise forms.ValidationError({
                     'caregiver_relation_other': [
@@ -161,26 +164,33 @@ class EnrollmentForm(forms.ModelForm):
         fields = '__all__'
 
 
-class EntryToCareForm(forms.ModelForm):
+class EntryToCareForm(SimpleYesNoValidationMixin, SimpleOtherSpecifyValidationMixin, forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(EntryToCareForm, self).clean()
-        self.validate_perinatal_infection_pmtct()
+        self.validate_weight()
+        self.validate_height()
+        self.validate_perinatal_infection_arvs()
+        self.validate_art_preg_type()
         return cleaned_data
 
-    def validate_perinatal_infection_pmtct(self):
+    def validate_perinatal_infection_arvs(self):
         cleaned_data = self.cleaned_data
-        if cleaned_data.get('phiv') == YES and not self.cleaned_data.get('art_preg'):
-            raise forms.ValidationError({
-                'art_preg': ['Infant was perinatally infected, please complete.']})
-        return cleaned_data
-
-    def validate_perinatal_infection_pmtct_rx(self):
-        cleaned_data = self.cleaned_data
-        if cleaned_data.get('art_preg') == YES and not cleaned_data.get('art_preg_type'):
+        if cleaned_data.get('art_preg') == YES and cleaned_data.get('art_preg_type') == NOT_APPLICABLE:
             raise forms.ValidationError({
                 'art_preg_type': ['Mother received ARVs during pregnancy, please complete.']})
-        return cleaned_data
+        elif cleaned_data.get('art_preg') in [NO, UNKNOWN] and cleaned_data.get('art_preg_type') != NOT_APPLICABLE:
+            raise forms.ValidationError({
+                'art_preg_type': ['Mother did not received ARVs during pregnancy, please correct.']})
+
+    def validate_art_preg_type(self):
+        return self.require_if_other('art_preg_type', 'art_preg_type_other')
+
+    def validate_weight(self):
+        return self.require_if_yes('weight_measured', 'entry_weight')
+
+    def validate_height(self):
+        return self.require_if_yes('height_measured', 'entry_height')
 
     class Meta:
         model = EntryToCare
@@ -194,28 +204,30 @@ class ExtractionChecklistForm (forms.ModelForm):
         fields = '__all__'
 
 
-class AdherenceCounsellingForm(forms.ModelForm):
+class AdherenceCounsellingForm(SimpleOtherSpecifyValidationMixin, forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(AdherenceCounsellingForm, self).clean()
-        self.validate_adherence_partne_relation_other()
+        self.validate_counselling_partner()
         return cleaned_data
 
-    def validate_adherence_partner_relation_other(self):
-        if self.cleaned_data.get('adherence_partner_relation') != OTHER:
-            if self.cleaned_data.get('adherence_partner_relation_other'):
-                raise forms.ValidationError({
-                    'adherence_partne_relation_other': [
-                        'You should not enter other adherence_partner relation as you have already entered a adherence_partner relation']})
-        else:
-            if not self.cleaned_data.get('adherence_partner_relation_other'):
-                raise forms.ValidationError({
-                    'adherence_partner_relation_other': [
-                        'You should enter other adherence_partner relation as you have selected OTHER adherence_partner relation']})
-        return self.cleaned_data
+    def validate_counselling_partner(self):
+        return self.require_if_other('relation', 'relation_other')
 
     class Meta:
         model = AdherenceCounselling
+        fields = '__all__'
+
+
+class OiForm(SimpleStartStopDateValidationMixin, forms.ModelForm):
+
+    def clean(self):
+        cleaned_data = super(OiForm, self).clean()
+        if cleaned_data.get('oi'):
+            self.validate_start_stop_dates()
+
+    class Meta:
+        model = Oi
         fields = '__all__'
 
 
@@ -223,6 +235,18 @@ class OiRecordForm (forms.ModelForm):
 
     class Meta:
         model = OiRecord
+        fields = '__all__'
+
+
+class ArtRegimenForm (SimpleStartStopDateValidationMixin, forms.ModelForm):
+
+    def clean(self):
+        cleaned_data = super(ArtRegimenForm, self).clean()
+        if cleaned_data.get('regimen'):
+            self.validate_start_stop_dates()
+
+    class Meta:
+        model = ArtRegimen
         fields = '__all__'
 
 
@@ -240,23 +264,19 @@ class DeathForm (forms.ModelForm):
         fields = '__all__'
 
 
-class TBRecordForm(forms.ModelForm):
+class TbForm(SimpleOtherSpecifyValidationMixin, forms.ModelForm):
 
     def clean(self):
-        cleaned_data = super(TBRecordForm, self).clean()
-        self.validate_dx_method()
+        cleaned_data = super(TbForm, self).clean()
+        self.require_if_other('dx_method', 'dx_method_other')
         return cleaned_data
 
-    def validate_dx_method(self):
-        if self.cleaned_data.get('dx_method') == OTHER and not self.cleaned_data.get('dx_method_other'):
-                raise forms.ValidationError({
-                    'dx_method_other': [
-                        'Option OTHER was selected above, please specify...']})
-        else:
-            if self.cleaned_data.get('dx_method_other'):
-                raise forms.ValidationError({
-                    'dx_method_other': [
-                        'A TB test has been specified above. Expect blank.']})
+    class Meta:
+        model = Tb
+        fields = '__all__'
+
+
+class TBRecordForm(forms.ModelForm):
 
     class Meta:
         model = TbRecord
@@ -267,6 +287,17 @@ class PregnancyHistoryForm (forms.ModelForm):
 
     class Meta:
         model = PregnancyHistory
+        fields = '__all__'
+
+
+class TransferForm(SimpleOtherSpecifyValidationMixin, forms.ModelForm):
+
+    def clean(self):
+        self.require_if_other('transfer_to', 'transfer_to_other')
+        self.require_if_other('transfer_from', 'transfer_from_other')
+
+    class Meta:
+        model = Transfer
         fields = '__all__'
 
 

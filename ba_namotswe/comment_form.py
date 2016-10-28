@@ -16,7 +16,7 @@ class CommentForm(forms.Form):
         super(CommentForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper = FormHelper()
-        # self.helper.form_action = reverse('home_url')
+        self.helper.form_action = reverse('dashboard')
         self.helper.form_id = 'form-comment'
         self.helper.form_method = 'post'
         self.helper.html5_required = True

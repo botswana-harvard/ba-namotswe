@@ -4,6 +4,8 @@ from django.utils import timezone
 from ..choices import OI_OPTIONS
 
 from .crf_model import CrfModel
+from ba_namotswe.constants import ONGOING, RESOLVED
+from ba_namotswe.choices import OI_STATUS
 
 
 class OiRecord(CrfModel):
@@ -25,20 +27,23 @@ class Oi(models.Model):
 
     oi_record = models.ForeignKey(OiRecord)
 
-    oi_type = models.CharField(
+    oi = models.CharField(
         max_length=200,
         choices=OI_OPTIONS)
 
-    start_date = models.DateField()
+    started = models.DateField()
 
-    stop_date = models.DateField(
+    stopped = models.DateField(
         blank=True,
         null=True)
 
-    is_ongoing = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=15,
+        default=RESOLVED,
+        choices=OI_STATUS)
 
     def __str__(self):
-        return self.oi_type
+        return self.oi
 
     class Meta(CrfModel.Meta):
         app_label = 'ba_namotswe'

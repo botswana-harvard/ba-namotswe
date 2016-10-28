@@ -4,19 +4,20 @@
 	<div class="panel panel-warning">
     <div class="panel-heading">Case Report Forms</div>
 	    <div class="panel-body">
-			<table class="table table-bordered table-striped table-hover table-condensed">
+	    	<div class="table-responsive">
+			<table class="table table-no-border table-condensed">
 				<tbody>
 					{% for crf in crfs %}
 						{% if crf.entry_status != 'NOT_REQUIRED' %}
 						<tr>
 							<td>
-					        	{% if not crf.instance.edited%}
+					        	{% if not crf.instance.edited %}
 					        		<span title="{{crf.get_entry_status_display }}" class="glyphicon glyphicon-asterisk small text-danger"></span>
 					        	{% endif %}
 					        	{% if crf.instance.edited and crf.instance.reviewed %}
 					        		<span title="{{crf.get_entry_status_display }}" class="glyphicon glyphicon-ok small text-success"></span>
 					        		<span title="{{crf.get_entry_status_display }}" class="glyphicon glyphicon-ok small text-success"></span>
-					        	{% elif crf.instance.edited and not crf.instance.reviewed%}
+					        	{% elif crf.instance.edited and not crf.instance.reviewed %}
 					        		<span title="{{crf.get_entry_status_display }}" class="glyphicon glyphicon-ok small text-success"></span>
 					        	{% endif %}
 					        	{% if crf.instance.flagged %}
@@ -28,51 +29,41 @@
 						    	{% if not crf.url %}
 						    		{{ crf.title }}
 						    	{% else %}
-					        		<a href="{{ crf.url }}?subject_visit={{ subject_visit.pk }}&next={{ dashboard_url }}" {% if not crf.url %}disabled{% endif %}>{{ crf.title|title }}</a>
+					        		<a href="{{ crf.url }}?subject_visit={{ subject_visit.pk }}&next={{ dashboard_url }}" {% if not crf.url %}disabled{% endif %} role="button" class="btn btn-sm btn-block btn-{% if crf.instance.edited %}success{% else %}default{% endif %}">{{ crf.title|title }}</a>
 						    	{% endif %}
-						    </td>                
-						    <td>
-						    	<a href="{{ crf.url }}?subject_visit={{ subject_visit.pk }}&next={{ dashboard_url }}" role="button" class="btn btn-sm btn-{% if crf.instance.edited %}success{% else %}primary{% endif %}"  {% if not crf.url %}disabled{% endif %}>{% if crf.instance.edited %}Edit{% else %}Add{% endif %}</a>
-						        {% if crf.instance.edited %}
-						          <a href="#" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}>View</a>
-						          <a href="#" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}>Audit</a>
-						        {% endif %}
-						    </td>
+						    </td>              
 						    <td>
 						    	{% if crf.url %}
 						      		<a href="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk selected_crf=crf.model toggle_status='flagged' %}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}><span class="glyphicon glyphicon-flag small text-info"></span></a>
 						      		<a href="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk selected_crf=crf.model toggle_status='reviewed' %}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}><span class="glyphicon glyphicon-ok small text-info"></span><span class="glyphicon glyphicon-ok small text-info"></span></a>
 						      	{% endif %}
+						        {% if crf.instance.edited %}
+						          <a href="#" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}>View</a>
+						          <a href="#" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}>Audit</a>
+						          <a href="{{ crf.changelist_url }}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}>Admin</a>
+						        {% endif %}
 						    </td>
-						    <td>
-								<form  id="form-comment" method="post" action="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk %}">
-									<input type='hidden' name='csrfmiddlewaretoken' value='3Qov24TnJZrYgB695n12Otvs1aqQSX9ffVNbwVr2S2ymnWoXU267Xh0OMBLRbMFt' />
-									<div class="form-group" >
-										<div class="controls ">
-											<div class="input-group">
-												<input class="textinput textInput form-control" id="id_comment" maxlength="50" name="comment" type="text" required />
-												<span class="input-group-btn"><button  class="btn" type="submit"><span class="glyphicon glyphicon-ok text-info"></span></button></span>
-											</div>
-										</div>
-									</div>
-								</form>
-								<div>
-						    	{% if crf.entry_status == 'REQUIRED' and selected_model == crf.model %}
-						    		'hello'
-						    	{% endif %}
-						    	{% if crf.instance.edited %}
-							    	<span class="small">
-							    		{{ crf.instance.user_created }} on {{ crf.instance.created|date:"Y-m-d  H:i" }}
-										{% if crf.instance.user_modified %} | {{ crf.instance.user_modified }} on {{ crf.instance.modified|date:"Y-m-d H:i" }}{% endif %}
-									</span>
-								{% endif %}
-								</div>
-							</td>  
 				  		</tr>
+				    	{% if crf.instance.edited %}
+					  		<tr><td colspan=2></td>
+					  			<td colspan=4>
+									{% if crf.instance.pending_fields %}
+					  					<span class="text small bg-warning">Pending: {{ crf.instance.pending_fields }}</span><br>
+									{% endif %}
+							    	{% if crf.instance.edited %}
+								    	<span class="small">
+								    		{{ crf.instance.user_created }} on {{ crf.instance.created|date:"Y-m-d  H:i" }}
+											{% if crf.instance.user_modified %} | {{ crf.instance.user_modified }} on {{ crf.instance.modified|date:"Y-m-d H:i" }}{% endif %}
+										</span>
+									{% endif %}
+					  			</td>
+					  		</tr>
+				  		{% endif %}
 				  		{% endif %}
 				  	{% endfor %}
 				</tbody>
 			</table>
+			</div>
 		</div>
 	</div>
 </div>

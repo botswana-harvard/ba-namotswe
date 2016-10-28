@@ -2,25 +2,25 @@ from django.db import models
 
 from .crf_model import CrfModel
 from ..choices import RELATIONSHIP
+from edc_constants.constants import UNKNOWN
 
 
 class AdherenceCounselling(CrfModel):
 
-    adherence_date = models.DateField(
+    counselling_date = models.DateField(
         verbose_name='Date of Adherence Counseling',
         blank=True,
         null=True)
 
-    adherence_partner = models.CharField(
+    relation = models.CharField(
         verbose_name='Relationship of Adherence Partner to Individual',
         max_length=25,
-        null=True,
-        blank=True,
+        default=UNKNOWN,
         choices=RELATIONSHIP)
 
-    adherence_partner_other = models.CharField(
+    relation_other = models.CharField(
         max_length=25,
-        verbose_name='adherence partner: "Other"',
+        verbose_name='If \'Other\', please specify',
         blank=True,
         null=True)
 

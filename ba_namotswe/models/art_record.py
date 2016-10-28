@@ -1,16 +1,11 @@
 from django.db import models
 from django.utils import timezone
 
-from edc_constants.constants import OTHER
+from ..choices import ART_STATUS
 
 from .crf_model import CrfModel
-
-REASON_STOPPED_CHOICES = (
-    ('REASON1', 'Reason 1'),
-    ('REASON2', 'Reason 2'),
-    ('REASON3', 'Reason 3'),
-    (OTHER, 'Other, specify ...')
-)
+from ba_namotswe.constants import ONGOING
+from ba_namotswe.choices import ART_REGIMENS
 
 
 class ArtRecord(CrfModel):
@@ -31,32 +26,25 @@ class ArtRegimen(models.Model):
 
     art_record = models.ForeignKey(ArtRecord)
 
-    name = models.CharField(
-        max_length=25,
-        help_text='Use 3 letter abbrev separated by commas.')
-
     regimen = models.CharField(
         max_length=25,
-        null=True,
-        editable=False)
+        choices=ART_REGIMENS)
 
-    date_started = models.DateField()
-
-    date_stopped = models.DateField(
+    started = models.DateField(
         null=True,
         blank=True)
 
-    is_ongoing = models.BooleanField(default=False)
-
-    reason_ended = models.CharField(
-        max_length=50,
-        choices=REASON_STOPPED_CHOICES)
-
-    reason_ended_other = models.TextField(
-        max_length=50,
+    stopped = models.DateField(
+        verbose_name='Stopped/Held',
         null=True,
-        blank=True
-    )
+        blank=True)
+
+    status = models.CharField(
+        max_length=50,
+        default=ONGOING,
+        choices=ART_STATUS)
+
+    comment = models.CharField(max_length=50, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         # self.regimen = self.parse_regimen(self.name)

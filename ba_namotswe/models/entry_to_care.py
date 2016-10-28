@@ -8,28 +8,48 @@ from edc_constants.choices import YES_NO_UNKNOWN
 from ..choices import MATERNAL_ARVS, INFANT_PROPHYLAXIS
 
 from .crf_model import CrfModel
+from edc_constants.constants import NOT_APPLICABLE, UNKNOWN
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class EntryToCare(CrfModel):
 
     report_datetime = models.DateTimeField(default=timezone.now, editable=False)
 
+    age_at_entry = models.IntegerField(
+        editable=False,
+        null=True)
+
     entry_date = models.DateField(
-        verbose_name='Date of Initial Clinic Visit / Entry into care',
+        verbose_name='Date entered into care',
         validators=[date_not_future, ])
+
+    weight_measured = models.CharField(
+        verbose_name='Was weight measured at entry?',
+        max_length=15,
+        default=UNKNOWN,
+        choices=YES_NO_UNKNOWN)
 
     entry_weight = models.DecimalField(
         verbose_name='Weight at entry (kg)',
         decimal_places=2,
         max_digits=5,
+        validators=[MinValueValidator(20), MaxValueValidator(136)],
         blank=True,
         null=True,
         help_text='Provide if available.')
+
+    height_measured = models.CharField(
+        verbose_name='Was height measured at entry?',
+        max_length=15,
+        default=UNKNOWN,
+        choices=YES_NO_UNKNOWN)
 
     entry_height = models.DecimalField(
         verbose_name='Height at entry (cm)',
         decimal_places=2,
         max_digits=5,
+        validators=[MinValueValidator(100), MaxValueValidator(244)],
         blank=True,
         null=True,
         help_text='Provide if available.')
@@ -37,6 +57,7 @@ class EntryToCare(CrfModel):
     hiv_dx_date = models.DateField(
         verbose_name='HIV Diagnosis Date ',
         validators=[date_not_future, ],
+        null=True,
         help_text='Provide if available.')
 
     hiv_dx_date_estimated = models.BooleanField(
@@ -47,39 +68,45 @@ class EntryToCare(CrfModel):
     art_init_date = models.DateField(
         verbose_name='ART Initiation Date',
         validators=[date_not_future, ],
+        null=True,
+        blank=True,
         help_text='Provide if available.')
 
     phiv = models.CharField(
-        verbose_name='Is this an individual who was perinatally infected? (Dx. Prior to 10 years of age)',
+        verbose_name='Was subject "perinatally infected"?',
         max_length=15,
-        choices=YES_NO_UNKNOWN)
+        default=UNKNOWN,
+        choices=YES_NO_UNKNOWN,
+        help_text="Diagnosis prior to 10 years of age")
 
     art_preg = models.CharField(
-        verbose_name='Did the mother of the individual receive antiretrovirals during pregnancy?',
+        verbose_name='Did the subject\'s mother receive ARVs during pregnancy?',
         max_length=15,
+        default=UNKNOWN,
         choices=YES_NO_UNKNOWN)
 
     art_preg_type = models.CharField(
-        verbose_name='Please specify maternal antiretrovirals received during pregnancy:',
+        verbose_name='If "Yes", specify the maternal ARVs received during pregnancy:',
         max_length=25,
         choices=MATERNAL_ARVS,
-        null=True,
-        blank=True)
+        default=NOT_APPLICABLE)
 
     art_preg_type_other = models.CharField(
-        verbose_name='If other maternal antiretrovirals received during pregnancy, please specify:',
+        verbose_name='If "Other" maternal ARVs received during pregnancy, please specify:',
         max_length=25,
         null=True,
         blank=True)
 
     infant_ppx = models.CharField(
-        verbose_name='Did the individual receive infant prophylaxis in the 1st month of life?',
+        verbose_name='Did subject receive infant prophylaxis in the 1st month of life?',
         max_length=15,
+        default=UNKNOWN,
         choices=YES_NO_UNKNOWN)
 
     infant_ppx_type = models.CharField(
-        verbose_name='Please specify type of infant prophylaxis in the 1st month of life:',
+        verbose_name='If "Yes", specify the infant prophylaxis.',
         max_length=25,
+        default=NOT_APPLICABLE,
         choices=INFANT_PROPHYLAXIS)
 
     comment = models.TextField(
@@ -89,6 +116,9 @@ class EntryToCare(CrfModel):
         help_text='DO NOT include any information that could be used to identify the patient.')
 
     def save(self, *args, **kwargs):
+        # self.age_at_entry = formatted_age(self.dob, self.entry_date)
+        if not self.entry_date:
+            self.entry_date = self.report_datetime.date()
         if not self.hiv_dx_date:
             self.hiv_dx_date = self.entry_date
             self.hiv_dx_date_estimated = True

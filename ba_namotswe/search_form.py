@@ -8,8 +8,8 @@ from django.urls.base import reverse
 
 class SearchForm(forms.Form):
 
-    subject_identifier = forms.CharField(
-        label='Subject Identifier',
+    search_term = forms.CharField(
+        label='Search term',
         max_length=36)
 
     def __init__(self, *args, **kwargs):
@@ -18,7 +18,9 @@ class SearchForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_action = reverse('home_url')
         self.helper.form_id = 'form-patient-search'
+        self.helper.form_show_labels = False
+        # self.helper.field_class = 'col-md-9'
         self.helper.form_method = 'post'
         self.helper.html5_required = True
         self.helper.layout = Layout(
-            FieldWithButtons('subject_identifier', StrictButton('Search', type='submit')))
+            FieldWithButtons('search_term', StrictButton('Search', type='submit')))

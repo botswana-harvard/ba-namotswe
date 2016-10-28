@@ -1,9 +1,11 @@
     <div class="panel-group">
     	<div class="panel panel-success">
-          <div class="panel-heading clearfix">{{ subject_identifier }}<span class="pull-right"><a href="{% url 'home_url' subject_identifier %}" role="button" class="btn btn-sm btn-primary">Close</a></span></div>
+          <div class="panel-heading clearfix">{{ subject_identifier }}<span class="pull-right"><a href="{% url 'home_url' subject_identifier=subject_identifier %}" role="button" class="btn btn-sm btn-primary">Close</a></span></div>
       <div class="panel-body"> 
         {% for key, value in demographics.items %}
-    		  <strong>{{ key|title }}: </strong>{{ value }}
+          {% if value %}
+    		    <strong>{{ key|title }}: </strong>{{ value }}
+          {% endif %}
     		{% endfor %}
       </div>
     </div>

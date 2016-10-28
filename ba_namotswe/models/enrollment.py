@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -5,20 +7,28 @@ from django.utils import timezone
 
 from edc_appointment.model_mixins import CreateAppointmentsMixin
 from edc_base.model.models.base_uuid_model import BaseUuidModel
-from edc_base.model.validators.date import date_not_future
 from edc_base.utils.age import formatted_age
 from edc_constants.choices import GENDER
 
 from ..choices import RELATIONSHIP
 
 from .subject_consent import SubjectConsent
+from edc_base.model.models.url_mixin import UrlMixin
 
 
-class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
+def get_uuid():
+    return str(uuid4())
+
+
+class Enrollment(CreateAppointmentsMixin, UrlMixin, BaseUuidModel):
+
+    ADMIN_SITE_NAME = 'ba_namotswe_admin'
 
     subject_identifier = models.CharField(
         verbose_name="Subject Identifier",
         max_length=50,
+        unique=True,
+        default=get_uuid,
         editable=False)
 
     report_datetime = models.DateTimeField(default=timezone.now, editable=False)
@@ -51,10 +61,6 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
         verbose_name=("Date of birth"),
         help_text=("Format is YYYY-MM-DD"))
 
-    age_at_entry = models.IntegerField(
-        editable=False,
-        null=True)
-
     # TODO: skip_logic caregiver_relation: display field only if 10 years ago _ DOB _ 13 years ago? (adolescents only--ASK AT SLH)
     caregiver_relation = models.CharField(
         verbose_name='Caregiver/Next of Kin Relationship',
@@ -71,9 +77,9 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
         blank=True,
         null=True)
 
-    def save(self, *args, **kwargs):
-        self.age_at_entry = formatted_age(self.dob, self.entry_date)
-        super(Enrollment, self).save(*args, **kwargs)
+    def age(self):
+        return formatted_age(self.dob, timezone.now().date())
+    age.allow_tags = True
 
     @property
     def subject_consent(self):
@@ -98,7 +104,7 @@ class Enrollment(CreateAppointmentsMixin, BaseUuidModel):
             kwargs={
                 'subject_identifier': self.subject_identifier
             })
-        ret = """<a href="{url}" >dashboard</a>""".format(url=url)
+        ret = """<a href="{url}" role="button" class="btn btn-sm btn-primary">dashboard</a>""".format(url=url)
         return ret
     dashboard.allow_tags = True
 

@@ -16,12 +16,14 @@ Including another URLconf
 """
 from django.conf.urls import url
 
+from edc_constants.constants import UUID_PATTERN
+
 from ba_namotswe_dashboard.views import SubjectDashboardView
 
 urlpatterns = [
-    url(r'(?P<subject_identifier>[0-9\-]{14})/(?P<appointment_pk>[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})/(?P<selected_crf>[\.\w]+)/(?P<toggle_status>flagged|reviewed|)/',
+    url(r'(?P<subject_identifier>[0-9\-]{14})/(?P<appointment_pk>' + UUID_PATTERN.pattern + ')/(?P<selected_crf>[\.\w]+)/(?P<toggle_status>flagged|reviewed|)/',
         SubjectDashboardView.as_view(), name='subject_dashboard_url'),
-    url(r'(?P<subject_identifier>[0-9\-]{14})/(?P<appointment_pk>[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})/',
+    url(r'(?P<subject_identifier>[0-9\-]{14})/(?P<appointment_pk>' + UUID_PATTERN.pattern + ')/',
         SubjectDashboardView.as_view(), name='subject_dashboard_url'),
     url(r'(?P<subject_identifier>[0-9\-]{14})/',
         SubjectDashboardView.as_view(), name='subject_dashboard_url'),

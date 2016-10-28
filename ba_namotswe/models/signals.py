@@ -1,5 +1,9 @@
+import re
+
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+from edc_constants.constants import UUID_PATTERN
 
 from .enrollment import Enrollment
 
@@ -8,7 +12,7 @@ from .enrollment import Enrollment
 def create_dummy_consent_on_post_save(sender, instance, raw, using, **kwargs):
     if not raw and not kwargs.get('update_fields'):
         try:
-            if not instance.subject_identifier:
+            if not instance.subject_identifier or re.match(UUID_PATTERN, instance.subject_identifier):
                 instance.subject_identifier = instance.subject_consent.subject_identifier
                 instance.save(update_fields=['subject_identifier'])
         except AttributeError as e:

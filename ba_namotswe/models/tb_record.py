@@ -20,21 +20,21 @@ class Tb(models.Model):
     tb_record = models.ForeignKey(TbRecord)
 
     dx_date = models.DateField(
-        verbose_name='Date of TB diagnosis',
+        verbose_name='Date of diagnosis',
         validators=[date_not_future, ])
 
     tb_type = models.CharField(
-        verbose_name='Type of TB',
+        verbose_name='TB type',
         max_length=30,
         choices=TB_TYPE)
 
     dx_method = models.CharField(
-        verbose_name='Method of TB diagnosis',
+        verbose_name='Diagnosis method',
         max_length=30,
         choices=TEST_TYPE)
 
     dx_method_other = models.CharField(
-        verbose_name='Method of TB diagnosis: Other',
+        verbose_name='If \'Other\', specify',
         blank=True,
         null=True,
         max_length=50)
