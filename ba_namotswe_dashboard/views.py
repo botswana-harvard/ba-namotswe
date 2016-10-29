@@ -9,6 +9,8 @@ from ba_namotswe.models import RequisitionMetadata, CrfMetadata, Enrollment, App
 from ba_namotswe.models.entry_to_care import EntryToCare
 from edc_metadata.constants import REQUIRED
 from edc_constants.constants import OTHER
+from edc_base.utils.age import formatted_age
+from django.utils import timezone
 # from ba_namotswe.comment_form import CommentForm
 
 
@@ -67,10 +69,17 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
                         if self.kwargs.get('selected_crf') == crf.model:
                             if self.kwargs.get('toggle_status') == 'flagged':
                                 obj.flagged = False if obj.flagged else True
-                                obj.save(update_fields=['flagged'])
+                                obj.flagged_datetime = timezone.now()
+                                obj.save(update_fields=['flagged', 'flagged_datetime'])
                             elif self.kwargs.get('toggle_status') == 'reviewed':
                                 obj.reviewed = False if obj.reviewed else True
-                                obj.save(update_fields=['reviewed'])
+                                obj.reviewed_datetime = timezone.now()
+                                obj.save(update_fields=['reviewed', 'reviewed_datetime'])
+                            elif self.kwargs.get('toggle_status') == 'no_report':
+                                obj.no_report = False if obj.no_report else True
+                                obj.no_report_datetime = timezone.now()
+                                obj.edited = True
+                                obj.save(update_fields=['no_report', 'no_report_datetime', 'edited'])
                         crf.url = obj.get_absolute_url()
                         crf.changelist_url = reverse('{}:{}_{}_changelist'.format(
                             crf.model_class.ADMIN_SITE_NAME, *crf.model_class._meta.label_lower.split('.')))
@@ -124,9 +133,30 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
         demographics.update({'born': self.enrollment.dob.strftime('%Y-%m-%d')})
         demographics.update({'caregiver': caregiver})
         try:
-            demographics.update({'age_at_entry': self.entry_to_care.age_at_entry})
-            demographics.update({'height': self.entry_to_care.entry_height})
-            demographics.update({'weight': self.entry_to_care.entry_weight})
+            demographics.update({'height': self.entry_to_care.height})
+            demographics.update({'weight': self.entry_to_care.weight})
+            try:
+                demographics.update({
+                    'Entry-to-care':
+                        (self.entry_to_care.entry_date.strftime('%Y-%m-%d') + '/' +
+                         formatted_age(self.enrollment.dob, self.entry_to_care.entry_date))})
+            except AttributeError:
+                pass
+            try:
+                demographics.update({
+                    'HIV Dx':
+                        (self.entry_to_care.hiv_dx_date.strftime('%Y-%m-%d') + '/' +
+                         formatted_age(self.enrollment.dob, self.entry_to_care.hiv_dx_date))})
+            except AttributeError:
+                pass
+            try:
+                demographics.update({
+                    'ART init':
+                        (self.entry_to_care.art_init_date.strftime('%Y-%m-%d') + '/' +
+                         formatted_age(self.enrollment.dob, self.entry_to_care.art_init_date))})
+
+            except AttributeError:
+                pass
         except AttributeError:
             pass
         return demographics
@@ -175,7 +205,7 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
     @property
     def entry_to_care(self):
         try:
-            entry_to_care = EntryToCare.objects.get(subject_visit=self.entry_subject_visit)
+            entry_to_care = EntryToCare.objects.get(subject_visit=self.subject_visit)
         except EntryToCare.DoesNotExist:
             entry_to_care = None
         return entry_to_care

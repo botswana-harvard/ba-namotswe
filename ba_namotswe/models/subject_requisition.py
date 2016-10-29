@@ -1,12 +1,10 @@
 from django.core.urlresolvers import reverse
-from django.db import models
 
 from edc_lab.requisition.managers import RequisitionManager
 from edc_lab.requisition.model_mixins import RequisitionModelMixin
 from edc_visit_tracking.managers import CrfModelManager
 
-from .crf_model import CrfModel
-from .packing_list import PackingList
+from .crf_model import CrfModelMixin
 
 
 class SubjectRequisitionManager(CrfModelManager):
@@ -15,9 +13,7 @@ class SubjectRequisitionManager(CrfModelManager):
         return self.get(requisition_identifier=requisition_identifier)
 
 
-class SubjectRequisition(RequisitionModelMixin, CrfModel):
-
-    packing_list = models.ForeignKey(PackingList, null=True, blank=True)
+class SubjectRequisition(RequisitionModelMixin, CrfModelMixin):
 
     objects = RequisitionManager()
 
@@ -38,7 +34,7 @@ class SubjectRequisition(RequisitionModelMixin, CrfModel):
     def get_visit(self):
         return self.subject_visit
 
-    class Meta(CrfModel.Meta):
+    class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
         verbose_name = 'Subject Requisition'
         verbose_name_plural = 'Subject Laboratory Requisition'

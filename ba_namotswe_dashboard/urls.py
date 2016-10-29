@@ -21,7 +21,7 @@ from edc_constants.constants import UUID_PATTERN
 from ba_namotswe_dashboard.views import SubjectDashboardView
 
 urlpatterns = [
-    url(r'(?P<subject_identifier>[0-9\-]{14})/(?P<appointment_pk>' + UUID_PATTERN.pattern + ')/(?P<selected_crf>[\.\w]+)/(?P<toggle_status>flagged|reviewed|)/',
+    url(r'(?P<subject_identifier>[0-9\-]{14})/(?P<appointment_pk>' + UUID_PATTERN.pattern + ')/(?P<selected_crf>[\.\w]+)/(?P<toggle_status>flagged|reviewed|no_report|)/',
         SubjectDashboardView.as_view(), name='subject_dashboard_url'),
     url(r'(?P<subject_identifier>[0-9\-]{14})/(?P<appointment_pk>' + UUID_PATTERN.pattern + ')/',
         SubjectDashboardView.as_view(), name='subject_dashboard_url'),

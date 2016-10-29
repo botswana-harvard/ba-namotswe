@@ -38,7 +38,7 @@ class SubjectConsent(ConsentModelMixin, RegistrationMixin, PersonalFieldsMixin, 
             self.consent_datetime = timezone.now()
         super(SubjectConsent, self).save(*args, **kwargs)
 
-    class Meta:
+    class Meta(ConsentModelMixin.Meta):
         app_label = 'ba_namotswe'
         get_latest_by = 'consent_datetime'
         ordering = ('created', )

@@ -1,11 +1,11 @@
 from django.db import models
 
-from .crf_model import CrfModel
+from .crf_model import CrfModelMixin
 from ..choices import RELATIONSHIP
 from edc_constants.constants import UNKNOWN
 
 
-class AdherenceCounselling(CrfModel):
+class AdherenceCounselling(CrfModelMixin):
 
     counselling_date = models.DateField(
         verbose_name='Date of Adherence Counseling',
@@ -24,5 +24,5 @@ class AdherenceCounselling(CrfModel):
         blank=True,
         null=True)
 
-    class Meta(CrfModel.Meta):
+    class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'

@@ -3,27 +3,22 @@ from django.utils import timezone
 
 from ..choices import OI_OPTIONS
 
-from .crf_model import CrfModel
-from ba_namotswe.constants import ONGOING, RESOLVED
+from .crf_model import CrfModelMixin, CrfInlineModelMixin
+from ba_namotswe.constants import RESOLVED
 from ba_namotswe.choices import OI_STATUS
 
 
-class OiRecord(CrfModel):
+class OiRecord(CrfModelMixin):
 
     report_datetime = models.DateTimeField(default=timezone.now, editable=False)
 
-    comment = models.TextField(
-        max_length=250,
-        null=True,
-        blank=True)
-
-    class Meta(CrfModel.Meta):
+    class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
         verbose_name = 'Opportunistic Infection'
         verbose_name_plural = 'Opportunistic Infections'
 
 
-class Oi(models.Model):
+class Oi(CrfInlineModelMixin):
 
     oi_record = models.ForeignKey(OiRecord)
 
@@ -45,5 +40,6 @@ class Oi(models.Model):
     def __str__(self):
         return self.oi
 
-    class Meta(CrfModel.Meta):
+    class Meta(CrfInlineModelMixin.Meta):
         app_label = 'ba_namotswe'
+        crf_inline_parent = 'oi_record'

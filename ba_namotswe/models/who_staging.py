@@ -5,30 +5,26 @@ from edc_constants.constants import UNKNOWN
 
 from ..choices import WHO_STAGE, WHO_DEFINING_ILLNESSES
 
-from .crf_model import CrfModel
+from .crf_model import CrfModelMixin, CrfInlineModelMixin
 
 
-class WhoStaging(CrfModel):
+class WhoStaging(CrfModelMixin):
 
     report_datetime = models.DateTimeField(default=timezone.now, editable=False)
 
     who_stage = models.CharField(
+        verbose_name='WHO stage',
         max_length=25,
         choices=WHO_STAGE,
         default=UNKNOWN)
 
-    comment = models.TextField(
-        max_length=250,
-        null=True,
-        blank=True)
-
-    class Meta(CrfModel.Meta):
+    class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
         verbose_name = 'WHO Staging'
         verbose_name_plural = 'WHO Staging'
 
 
-class WhoDiagnosis(models.Model):
+class WhoDiagnosis(CrfInlineModelMixin):
 
     who_staging = models.ForeignKey(WhoStaging)
 
@@ -41,5 +37,9 @@ class WhoDiagnosis(models.Model):
         blank=True,
         help_text='Provide if known')
 
-    class Meta(CrfModel.Meta):
+    class Meta(CrfInlineModelMixin.Meta):
         app_label = 'ba_namotswe'
+        verbose_name = 'WHO Diagnosis'
+        verbose_name_plural = 'WHO Diagnosis'
+        unique_together = (('who_staging', 'dx', 'dx_date'), )
+        crf_inline_parent = 'who_staging'

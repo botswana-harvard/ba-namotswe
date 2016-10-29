@@ -1,5 +1,8 @@
 from uuid import uuid4
+from datetime import date
 
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -14,10 +17,28 @@ from ..choices import RELATIONSHIP
 
 from .subject_consent import SubjectConsent
 from edc_base.model.models.url_mixin import UrlMixin
+from django.core.validators import MaxValueValidator, MinValueValidator
+from dateutil.relativedelta import relativedelta
+from edc_constants.constants import UNKNOWN
 
 
 def get_uuid():
     return str(uuid4())
+
+
+def validate_dob(value):
+    if value:
+        age_in_years = relativedelta(timezone.now().date(), value).years
+        if age_in_years <= 10:
+            raise ValidationError(
+                _('Ensure age is greater than or equal to 10 years old. Got %(age_in_years)s.'),
+                params={'age_in_years': age_in_years},
+            )
+        if age_in_years >= 35:
+            raise ValidationError(
+                _('Ensure age is less than or equal to 35 years old. Got %(age_in_years)s.'),
+                params={'age_in_years': age_in_years},
+            )
 
 
 class Enrollment(CreateAppointmentsMixin, UrlMixin, BaseUuidModel):
@@ -50,6 +71,10 @@ class Enrollment(CreateAppointmentsMixin, UrlMixin, BaseUuidModel):
         null=True,
         help_text='Provide if available.')
 
+    initial_clinic_visit_date = models.DateField(
+        validators=[MinValueValidator(date(2002, 1, 1)), MaxValueValidator(date(2016, 6, 1)), ],
+    )
+
     initials = models.CharField(max_length=3, null=True, blank=True)
 
     gender = models.CharField(
@@ -59,18 +84,15 @@ class Enrollment(CreateAppointmentsMixin, UrlMixin, BaseUuidModel):
 
     dob = models.DateField(
         verbose_name=("Date of birth"),
+        validators=[validate_dob],
         help_text=("Format is YYYY-MM-DD"))
 
-    # TODO: skip_logic caregiver_relation: display field only if 10 years ago _ DOB _ 13 years ago? (adolescents only--ASK AT SLH)
     caregiver_relation = models.CharField(
         verbose_name='Caregiver/Next of Kin Relationship',
         max_length=25,
-        blank=True,
-        null=True,
-        choices=RELATIONSHIP,
-        help_text='Required if 10-13 years old, otherwise leave blank.')
+        default=UNKNOWN,
+        choices=RELATIONSHIP)
 
-    # TODO: skip_logic caregiver_relation_other: display field only if Caregiver/Next of Kin Relationship= OTHER
     caregiver_relation_other = models.CharField(
         max_length=25,
         verbose_name='Caregiver/Next of Kin Relationship: "Other"',

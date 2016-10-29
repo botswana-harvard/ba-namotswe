@@ -1,28 +1,22 @@
 from django.db import models
 from django.utils import timezone
 
-from ..choices import ART_STATUS
+from ..choices import ART_STATUS, ART_REGIMENS
+from ..constants import ONGOING
 
-from .crf_model import CrfModel
-from ba_namotswe.constants import ONGOING
-from ba_namotswe.choices import ART_REGIMENS
+from .crf_model import CrfModelMixin, CrfInlineModelMixin
 
 
-class ArtRecord(CrfModel):
+class ArtRecord(CrfModelMixin):
 
     report_datetime = models.DateTimeField(default=timezone.now, editable=False)
 
-    comment = models.TextField(
-        max_length=250,
-        null=True,
-        blank=True)
-
-    class Meta(CrfModel.Meta):
+    class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
         verbose_name = 'ART Record'
 
 
-class ArtRegimen(models.Model):
+class ArtRegimen(CrfInlineModelMixin, models.Model):
 
     art_record = models.ForeignKey(ArtRecord)
 
@@ -44,12 +38,9 @@ class ArtRegimen(models.Model):
         default=ONGOING,
         choices=ART_STATUS)
 
-    comment = models.CharField(max_length=50, null=True, blank=True)
+    reason = models.CharField(max_length=25, null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        # self.regimen = self.parse_regimen(self.name)
-        super(ArtRegimen, self).save(*args, **kwargs)
-
-    class Meta(CrfModel.Meta):
+    class Meta(CrfInlineModelMixin.Meta):
         app_label = 'ba_namotswe'
         verbose_name = 'ART Regimen'
+        crf_inline_parent = 'art_record'

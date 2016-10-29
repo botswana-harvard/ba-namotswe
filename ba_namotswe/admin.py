@@ -7,15 +7,15 @@ from edc_visit_tracking.admin import VisitAdminMixin
 
 from .admin_site import ba_namotswe_admin
 from .forms import (
-    SubjectVisitForm, TBRecordForm, EnrollmentForm, ArtRecordForm, LabRecordForm,
-    AdherenceCounsellingForm, DeathForm, PregnancyHistoryForm, WhoStagingForm,
-    TransferRecordForm, OiRecordForm, ExtractionChecklistForm, EntryToCareForm,
+    SubjectVisitForm, TBRecordForm, EnrollmentForm, ArtRecordForm, LabRecordForm, LabTestForm,
+    AdherenceCounsellingForm, DeathForm, PregnancyHistoryForm, WhoStagingForm, WhoDiagnosisForm,
+    TransferRecordForm, OiRecordForm, EntryToCareForm, InCareForm, LostToFollowupForm,
     ArtRegimenForm, OiForm, TransferForm, TbForm)
 from .list_filters import VisitCodeListFilter, PendingFieldsListFilter
 from .models import (
-    SubjectConsent, SubjectVisit, ExtractionChecklist, Enrollment, OiRecord, Oi, EntryToCare,
+    SubjectConsent, SubjectVisit, Enrollment, OiRecord, Oi, EntryToCare,
     Appointment, TbRecord, Tb, AdherenceCounselling, ArtRecord, ArtRegimen, Death, PregnancyHistory, Pregnancy,
-    TransferRecord, Transfer, LabRecord, LabTest, WhoStaging, WhoDiagnosis)
+    TransferRecord, Transfer, LabRecord, LabTest, WhoStaging, WhoDiagnosis, LostToFollowup, InCare)
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
@@ -32,8 +32,10 @@ class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsM
 class BaseCrfModelAdmin(BaseModelAdmin):
 
     list_display = (
-        'dashboard', 'subject_identifier', 'visit_code', 'edited', 'pending_fields', 'flagged', 'reviewed')
+        'dashboard', 'subject_identifier', 'visit_code', 'edited', 'pending_fields',
+        'flagged', 'no_report', 'reviewed')
     list_display_links = ('dashboard', )
+    search_fields = ['pending_fields']
     instructions = (
         'Please complete the questions below. Required questions are in bold. '
         'When all required questions are complete click SAVE. Based on your responses, additional questions may be '
@@ -42,6 +44,7 @@ class BaseCrfModelAdmin(BaseModelAdmin):
     def get_list_filter(self, request):
         list_filter = super(BaseCrfModelAdmin, self).get_list_filter(request)
         list_filter = list(list_filter)
+        list_filter.insert(0, 'no_report')
         list_filter.insert(0, 'edited')
         list_filter.insert(0, 'flagged')
         list_filter.insert(0, 'reviewed')
@@ -55,11 +58,11 @@ class BaseCrfModelAdmin(BaseModelAdmin):
         return super(BaseCrfModelAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-class BaseCrfModelTabularInlineAdmin(TabularInlineMixin, admin.TabularInline):
+class BaseTabularInlineCrfModelAdmin(TabularInlineMixin, admin.TabularInline):
     pass
 
 
-class BaseCrfModelStackedInlineAdmin(StackedInlineMixin, admin.StackedInline):
+class BaseStackedInlineCrfModelAdmin(StackedInlineMixin, admin.StackedInline):
     pass
 
 
@@ -87,31 +90,22 @@ class SubjectVisitAdmin(VisitAdminMixin, BaseModelAdmin):
     list_filter = ('subject_identifier', 'visit_datetime', 'visit_code')
 
 
-@admin.register(ExtractionChecklist, site=ba_namotswe_admin)
-class ExtractionChecklistAdmin(BaseCrfModelAdmin):
-    form = ExtractionChecklistForm
-    list_filter = ('subject_visit', 'report_datetime', 'arv_changes', 'tb_diagnosis', )
-    radio_fields = {
-        'arv_changes': admin.VERTICAL,
-        'tb_diagnosis': admin.VERTICAL,
-        'oi_diagnosis': admin.VERTICAL,
-        'preg_diagnosis': admin.VERTICAL,
-        'counselling_adhere': admin.VERTICAL,
-        'treatment': admin.VERTICAL,
-        'transfer': admin.VERTICAL,
-        'death': admin.VERTICAL}
-
-
 @admin.register(Death, site=ba_namotswe_admin)
-class DeathAdmin(BaseCrfModelAdmin):
+class DeathAdmin(BaseModelAdmin):
     form = DeathForm
+
+
+@admin.register(LostToFollowup, site=ba_namotswe_admin)
+class LostToFollowupAdmin(BaseModelAdmin):
+    form = LostToFollowupForm
 
 
 @admin.register(EntryToCare, site=ba_namotswe_admin)
 class EntryToCareAdmin(BaseCrfModelAdmin):
     form = EntryToCareForm
-
     radio_fields = {
+        'weight_measured': admin.VERTICAL,
+        'height_measured': admin.VERTICAL,
         'phiv': admin.VERTICAL,
         'art_preg': admin.VERTICAL,
         'art_preg_type': admin.VERTICAL,
@@ -120,8 +114,24 @@ class EntryToCareAdmin(BaseCrfModelAdmin):
     }
 
 
-class LabTestInlineAdmin(BaseCrfModelTabularInlineAdmin):
+@admin.register(InCare, site=ba_namotswe_admin)
+class InCareAdmin(BaseCrfModelAdmin):
+    form = InCareForm
+    search_fields = ['pending_fields']
+    radio_fields = {
+        'attended': admin.VERTICAL,
+        'weight_measured': admin.VERTICAL,
+        'height_measured': admin.VERTICAL,
+        'hospital': admin.VERTICAL,
+        'disclosure_to_patient': admin.VERTICAL,
+        'disclosure_to_others': admin.VERTICAL,
+        'disclosure_by_caregiver': admin.VERTICAL,
+    }
+
+
+class LabTestInlineAdmin(BaseTabularInlineCrfModelAdmin):
     model = LabTest
+    form = LabTestForm
     extra = 1
 
 
@@ -131,7 +141,7 @@ class LabRecordAdmin(BaseCrfModelAdmin):
     inlines = [LabTestInlineAdmin]
 
 
-class TransferInlineAdmin(BaseCrfModelStackedInlineAdmin):
+class TransferInlineAdmin(BaseStackedInlineCrfModelAdmin):
     model = Transfer
     form = TransferForm
     extra = 0
@@ -143,7 +153,7 @@ class TransferRecordAdmin(BaseCrfModelAdmin):
     inlines = [TransferInlineAdmin]
 
 
-class PregnancyInlineAdmin(BaseCrfModelTabularInlineAdmin):
+class PregnancyInlineAdmin(BaseTabularInlineCrfModelAdmin):
     model = Pregnancy
     extra = 1
 
@@ -162,7 +172,7 @@ class AdherenceCounsellingAdmin(BaseCrfModelAdmin):
     }
 
 
-class OiInlineAdmin(BaseCrfModelTabularInlineAdmin):
+class OiInlineAdmin(BaseTabularInlineCrfModelAdmin):
     model = Oi
     form = OiForm
     extra = 1
@@ -174,7 +184,7 @@ class OiHistoryAdmin(BaseCrfModelAdmin):
     inlines = [OiInlineAdmin]
 
 
-class TbInlineAdmin(BaseCrfModelTabularInlineAdmin):
+class TbInlineAdmin(BaseTabularInlineCrfModelAdmin):
     model = Tb
     form = TbForm
     extra = 1
@@ -186,7 +196,7 @@ class TbRecordAdmin(BaseCrfModelAdmin):
     inlines = [TbInlineAdmin]
 
 
-class ArtRegimenInlineAdmin(BaseCrfModelTabularInlineAdmin):
+class ArtRegimenInlineAdmin(BaseTabularInlineCrfModelAdmin):
     model = ArtRegimen
     form = ArtRegimenForm
     extra = 0
@@ -204,8 +214,9 @@ class SubjectConsentAdmin(BaseModelAdmin):
     dashboard_type = 'subject'
 
 
-class WhoDiagnosisInlineAdmin(BaseCrfModelTabularInlineAdmin):
+class WhoDiagnosisInlineAdmin(BaseTabularInlineCrfModelAdmin):
     model = WhoDiagnosis
+    form = WhoDiagnosisForm
     extra = 1
 
 
@@ -213,3 +224,11 @@ class WhoDiagnosisInlineAdmin(BaseCrfModelTabularInlineAdmin):
 class WhoStagingAdmin(BaseCrfModelAdmin):
     form = WhoStagingForm
     inlines = [WhoDiagnosisInlineAdmin]
+    radio_fields = {
+        'who_stage': admin.VERTICAL,
+    }
+
+
+@admin.register(WhoDiagnosis, site=ba_namotswe_admin)
+class WhoDiagnosisAdmin(BaseCrfModelAdmin):
+    form = WhoDiagnosisForm

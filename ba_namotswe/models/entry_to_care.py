@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.utils import timezone
 
@@ -7,12 +8,12 @@ from edc_constants.choices import YES_NO_UNKNOWN
 
 from ..choices import MATERNAL_ARVS, INFANT_PROPHYLAXIS
 
-from .crf_model import CrfModel
+from .crf_model import CrfModelMixin
 from edc_constants.constants import NOT_APPLICABLE, UNKNOWN
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
-class EntryToCare(CrfModel):
+class EntryToCare(CrfModelMixin):
 
     report_datetime = models.DateTimeField(default=timezone.now, editable=False)
 
@@ -22,7 +23,9 @@ class EntryToCare(CrfModel):
 
     entry_date = models.DateField(
         verbose_name='Date entered into care',
-        validators=[date_not_future, ])
+        null=True,
+        blank=True,
+        validators=[date_not_future, MinValueValidator(date(2002, 1, 1))])
 
     weight_measured = models.CharField(
         verbose_name='Was weight measured at entry?',
@@ -30,7 +33,7 @@ class EntryToCare(CrfModel):
         default=UNKNOWN,
         choices=YES_NO_UNKNOWN)
 
-    entry_weight = models.DecimalField(
+    weight = models.DecimalField(
         verbose_name='Weight at entry (kg)',
         decimal_places=2,
         max_digits=5,
@@ -45,7 +48,7 @@ class EntryToCare(CrfModel):
         default=UNKNOWN,
         choices=YES_NO_UNKNOWN)
 
-    entry_height = models.DecimalField(
+    height = models.DecimalField(
         verbose_name='Height at entry (cm)',
         decimal_places=2,
         max_digits=5,
@@ -58,7 +61,8 @@ class EntryToCare(CrfModel):
         verbose_name='HIV Diagnosis Date ',
         validators=[date_not_future, ],
         null=True,
-        help_text='Provide if available.')
+        blank=True,
+        help_text='Provide if available. Use date entered into care if unknown.')
 
     hiv_dx_date_estimated = models.BooleanField(
         default=False,
@@ -109,20 +113,16 @@ class EntryToCare(CrfModel):
         default=NOT_APPLICABLE,
         choices=INFANT_PROPHYLAXIS)
 
-    comment = models.TextField(
-        max_length=150,
-        null=True,
-        blank=True,
-        help_text='DO NOT include any information that could be used to identify the patient.')
-
-    def save(self, *args, **kwargs):
-        # self.age_at_entry = formatted_age(self.dob, self.entry_date)
-        if not self.entry_date:
-            self.entry_date = self.report_datetime.date()
+    def get_pending_fields(self):
+        pending_fields = super(EntryToCare, self).get_pending_fields()
         if not self.hiv_dx_date:
-            self.hiv_dx_date = self.entry_date
-            self.hiv_dx_date_estimated = True
-        super(EntryToCare, self).save(*args, **kwargs)
+            pending_fields.append('hiv_dx_date')
+        if not self.entry_date:
+            pending_fields.append('entry_date')
+        if not self.art_init_date:
+            pending_fields.append('art_init_date')
+        pending_fields.sort()
+        return pending_fields
 
-    class Meta(CrfModel.Meta):
+    class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'

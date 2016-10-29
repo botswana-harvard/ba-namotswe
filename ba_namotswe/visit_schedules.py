@@ -1,37 +1,32 @@
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 from edc_visit_schedule.visit_schedule import VisitSchedule
 from edc_visit_schedule.schedule import Schedule
-from edc_visit_schedule.visit import Crf, Requisition
-
-from .lab_profiles import hiv_diagnostics_panel
+from edc_visit_schedule.visit import Crf
 
 entry_to_care_crfs = (
     Crf(show_order=10, model='ba_namotswe.entrytocare'),
-    Crf(show_order=20, model='ba_namotswe.artrecord'),
-    Crf(show_order=30, model='ba_namotswe.labrecord'),
-    Crf(show_order=40, model='ba_namotswe.whostaging'),
-
-    Crf(show_order=50, model='ba_namotswe.adherencecounselling'),
-    Crf(show_order=60, model='ba_namotswe.artrecord'),
+    Crf(show_order=20, model='ba_namotswe.whostaging'),
+    Crf(show_order=30, model='ba_namotswe.adherencecounselling'),
+    Crf(show_order=40, model='ba_namotswe.pregnancyhistory'),
+    Crf(show_order=50, model='ba_namotswe.artrecord'),
+    Crf(show_order=60, model='ba_namotswe.labrecord'),
     Crf(show_order=70, model='ba_namotswe.oirecord'),
-    Crf(show_order=80, model='ba_namotswe.pregnancyhistory'),
-    Crf(show_order=90, model='ba_namotswe.tbrecord'),
-    Crf(show_order=100, model='ba_namotswe.transferrecord'),
-    Crf(show_order=110, model='ba_namotswe.death', required=False),
+    Crf(show_order=80, model='ba_namotswe.tbrecord'),
+    Crf(show_order=90, model='ba_namotswe.transferrecord'),
 )
 
 in_care_crfs = (
-    Crf(show_order=10, model='ba_namotswe.extractionchecklist'),
-    Crf(show_order=20, model='ba_namotswe.artrecord'),
-    Crf(show_order=60, model='ba_namotswe.oirecord'),
+    Crf(show_order=10, model='ba_namotswe.incare'),
+    Crf(show_order=30, model='ba_namotswe.adherencecounselling'),
+    Crf(show_order=40, model='ba_namotswe.pregnancyhistory'),
+    Crf(show_order=50, model='ba_namotswe.artrecord'),
+    Crf(show_order=60, model='ba_namotswe.labrecord'),
+    Crf(show_order=70, model='ba_namotswe.oirecord'),
     Crf(show_order=80, model='ba_namotswe.tbrecord'),
     Crf(show_order=90, model='ba_namotswe.transferrecord'),
-    Crf(show_order=110, model='ba_namotswe.death', required=False),
 )
 
-requisitions = (
-    Requisition(show_order=10, model='ba_namotswe.SubjectRequisition', panel=hiv_diagnostics_panel),
-)
+requisitions = ()
 
 visit_schedule = VisitSchedule(
     name='visit_schedule',

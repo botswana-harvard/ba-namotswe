@@ -2,23 +2,23 @@ from django.db import models
 from django.utils import timezone
 
 from edc_base.model.validators.date import date_not_future
+from edc_lab.choices import UNITS
 
 from ..choices import UTEST_IDS, QUANTIFIERS
 
-from .crf_model import CrfModel
-from edc_lab.choices import UNITS
+from .crf_model import CrfModelMixin, CrfInlineModelMixin
 
 
-class LabRecord(CrfModel):
+class LabRecord(CrfModelMixin):
     """A model completed by the user of lab record or assessments."""
 
     report_datetime = models.DateTimeField(default=timezone.now, editable=False)
 
-    class Meta(CrfModel.Meta):
+    class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
 
 
-class LabTest(models.Model):
+class LabTest(CrfInlineModelMixin):
     """Inline model for Lab."""
 
     lab_record = models.ForeignKey(LabRecord)
@@ -44,5 +44,6 @@ class LabTest(models.Model):
         max_length=10,
         choices=UNITS)
 
-    class Meta:
+    class Meta(CrfInlineModelMixin.Meta):
         app_label = 'ba_namotswe'
+        crf_inline_parent = 'lab_record'

@@ -1,64 +1,27 @@
-from datetime import date, timedelta
-
 from django import forms
 from django.contrib.admin.widgets import AdminRadioSelect, AdminRadioFieldRenderer, AdminDateWidget
 from django.utils import timezone
 
-from edc_base.utils.age import age
-from edc_constants.constants import ON_STUDY, OTHER, YES, NO, UNKNOWN, NOT_APPLICABLE
+from edc_constants.constants import ON_STUDY, YES, NO, UNKNOWN, NOT_APPLICABLE
 from edc_visit_tracking.choices import VISIT_REASON, VISIT_INFO_SOURCE
-from edc_visit_tracking.constants import SCHEDULED
+from edc_visit_tracking.constants import SCHEDULED, CHART
 from edc_visit_tracking.form_mixins import VisitFormMixin
 
-from .models import (
-    SubjectVisit, Oi, OiRecord, Enrollment, EntryToCare, Death, AdherenceCounselling, ExtractionChecklist,
-    Tb, TbRecord, PregnancyHistory, TransferRecord, ArtRecord, ArtRegimen, LabRecord, WhoStaging)
 from .choices import VISIT_STUDY_STATUS
-from .constants import ONGOING
-from ba_namotswe.models.transfer_record import Transfer
-
-
-class SimpleYesNoValidationMixin:
-
-    def require_if_yes(self, yesno_field, required_field, required_msg=None, not_required_msg=None):
-        if self.cleaned_data.get(yesno_field) in [NO, UNKNOWN] and self.cleaned_data.get(required_field):
-            raise forms.ValidationError({
-                required_field: [not_required_msg or 'Field is not required based on answer above']})
-        elif self.cleaned_data.get(yesno_field) == YES and not self.cleaned_data.get(required_field):
-            raise forms.ValidationError({
-                required_field: [required_msg or 'Field is required based on answer of YES above']})
-
-
-class SimpleOtherSpecifyValidationMixin:
-
-    def require_if_other(self, other_field, specify_field, required_msg=None, not_required_msg=None):
-        if self.cleaned_data.get(other_field) != OTHER and self.cleaned_data.get(specify_field):
-            raise forms.ValidationError({
-                specify_field: [not_required_msg or 'Field is not required']})
-        elif self.cleaned_data.get(other_field) == OTHER and not self.cleaned_data.get(specify_field):
-            raise forms.ValidationError({
-                specify_field: [required_msg or 'Specify answer for OTHER']})
-
-
-class SimpleStartStopDateValidationMixin:
-    def validate_start_stop_dates(self):
-        cleaned_data = self.cleaned_data
-        if not cleaned_data.get('started'):
-            raise forms.ValidationError({'started': 'Required'})
-        if cleaned_data.get('status') != ONGOING and not cleaned_data.get('stopped'):
-            raise forms.ValidationError({'stopped': 'Required'})
-        if cleaned_data.get('status') == ONGOING and cleaned_data.get('stopped'):
-            raise forms.ValidationError({'stopped': 'Expected blank'})
-        if cleaned_data.get('started') - cleaned_data.get('stopped') == timedelta(days=0):
-            raise forms.ValidationError({'stopped': 'Cannot be equal'})
-        if cleaned_data.get('started') - cleaned_data.get('stopped') > timedelta(days=0):
-            raise forms.ValidationError({'stopped': 'Cannot be less than started'})
+from .models import (
+    SubjectVisit, Oi, OiRecord, Enrollment, EntryToCare, Death, AdherenceCounselling,
+    Tb, TbRecord, PregnancyHistory, Transfer, TransferRecord, ArtRecord, ArtRegimen, LabRecord, LabTest,
+    WhoStaging, WhoDiagnosis, LostToFollowup)
+from .validators import (
+    SimpleYesNoValidationMixin, SimpleOtherSpecifyValidationMixin,
+    SimpleDateFieldValidatorMixin, SimpleStartStopDateValidationMixin)
+from ba_namotswe.validators import SimpleApplicableByAgeValidatorMixin
 
 
 class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
 
     report_datetime = forms.DateTimeField(
-        label='Report date',
+        label='Clinic visit date',
         initial=timezone.now,
         help_text="",
         widget=AdminDateWidget(),
@@ -68,6 +31,7 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
         label='Study status',
         choices=VISIT_STUDY_STATUS,
         initial=ON_STUDY,
+        required=False,
         help_text="",
         widget=AdminRadioSelect(renderer=AdminRadioFieldRenderer)
     )
@@ -76,6 +40,7 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
         label='Reason for visit',
         choices=[choice for choice in VISIT_REASON],
         initial=SCHEDULED,
+        required=False,
         help_text="",
         widget=AdminRadioSelect(renderer=AdminRadioFieldRenderer))
 
@@ -88,90 +53,46 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
 
     dashboard_type = 'subject'
 
+    def clean(self):
+        self.cleaned_data['study_status'] = ON_STUDY
+        self.cleaned_data['reason'] = SCHEDULED
+        self.cleaned_data['info_source'] = CHART
+        cleaned_data = super(SubjectVisitForm, self).clean()
+        return cleaned_data
+
     class Meta:
         model = SubjectVisit
-        fields = ['appointment', 'report_datetime', 'study_status', 'reason', 'info_source']
+        fields = ['appointment', 'report_datetime']
 
 
-class EnrollmentForm(forms.ModelForm):
+class EnrollmentForm(SimpleOtherSpecifyValidationMixin, forms.ModelForm):
 
     def clean(self):
-        self.validate_initial_visit_date()
-        self.validate_caregiver_relation_age()
-        self.validate_caregiver_relation_other()
-        self.validate_hiv_diagnosis_date()
-        self.validate_hiv_art_initiation()
+        self.require_if_other('caregiver_relation', 'caregiver_relation_other')
         return self.cleaned_data
-
-    def validate_initial_visit_date(self):
-        start_date = date(2002, 1, 1)
-        end_date = date(2016, 6, 1)
-        if self.cleaned_data.get('initial_visit_date'):
-            if self.cleaned_data.get('initial_visit_date') < start_date:
-                raise forms.ValidationError({
-                    'initial_visit_date': [
-                        'Initial visit date should come after January 1st, 2002']})
-            elif self.cleaned_data.get('initial_visit_date') > end_date:
-                raise forms.ValidationError({
-                    'initial_visit_date': [
-                        'Initial visit date should come before June 1st, 2016']})
-
-    def validate_caregiver_relation_age(self):
-        registered_subject = self.cleaned_data.get('registered_subject')
-        if registered_subject:
-            if self.cleaned_data.get('initial_visit_date'):
-                age_at_visit = age(registered_subject.dob, self.cleaned_data.get('initial_visit_date')).years
-                if (age_at_visit >= 10) & (age_at_visit <= 13):
-                    if not self.cleaned_data.get('caregiver_relation'):
-                        raise forms.ValidationError({
-                            'caregiver_relation': [
-                                'Subject was between 10 and 13, you have to provide']})
-                    elif self.cleaned_data.get('caregiver_relation') == 'not_applicable':
-                        raise forms.ValidationError({
-                            'caregiver_relation': [
-                                'Subject was between 10 and 13 years of age, you have to provide caregiver']})
-
-    def validate_caregiver_relation_other(self):
-        if self.cleaned_data.get('caregiver_relation') != OTHER:
-            if self.cleaned_data.get('caregiver_relation_other'):
-                raise forms.ValidationError({
-                    'caregiver_relation_other': [
-                        'You should not enter other caregiver relation as you have already entered a caregiver relation']})
-        else:
-            if not self.cleaned_data.get('caregiver_relation_other'):
-                raise forms.ValidationError({
-                    'caregiver_relation_other': [
-                        'You should enter other caregiver relation as you have selected OTHER caregiver relation']})
-
-    def validate_hiv_diagnosis_date(self):
-        if self.cleaned_data.get('registered_subject'):
-            if self.cleaned_data.get('hiv_diagnosis_date'):
-                if self.cleaned_data.get('hiv_diagnosis_date') < self.cleaned_data.get('registered_subject').dob:
-                    raise forms.ValidationError({
-                        'hiv_diagnosis_date': [
-                            'Diagnosis date should come after date of birth']})
-
-    def validate_hiv_art_initiation(self):
-        if self.cleaned_data.get('art_initiation_date'):
-            if self.cleaned_data.get('hiv_diagnosis_date'):
-                if self.cleaned_data.get('art_initiation_date') < self.cleaned_data.get('hiv_diagnosis_date'):
-                    raise forms.ValidationError({
-                        'art_initiation_date': [
-                            'ART Initiation date should come after diagnosis date']})
 
     class Meta:
         model = Enrollment
         fields = '__all__'
 
 
-class EntryToCareForm(SimpleYesNoValidationMixin, SimpleOtherSpecifyValidationMixin, forms.ModelForm):
+class EntryToCareForm(SimpleYesNoValidationMixin, SimpleOtherSpecifyValidationMixin,
+                      SimpleDateFieldValidatorMixin, forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(EntryToCareForm, self).clean()
-        self.validate_weight()
-        self.validate_height()
+        self.validate_date_with_dob('entry_date', 'gte', verbose_name='Entry date')
+        self.validate_date_with_dob('hiv_dx_date', 'gte', verbose_name='HIV Dx date')
+        self.validate_dates(
+            'hiv_dx_date', 'lte', 'entry_date',
+            verbose_name1='HIV Dx date', verbose_name2='Entry date')
+        self.validate_dates(
+            'art_init_date', 'gte', 'hiv_dx_date',
+            verbose_name1='ART initiation date', verbose_name2='HIV Dx date')
+        self.require_if_yes('weight_measured', 'weight')
+        self.require_if_yes('height_measured', 'height')
         self.validate_perinatal_infection_arvs()
-        self.validate_art_preg_type()
+        self.require_if_other('art_preg_type', 'art_preg_type_other')
         return cleaned_data
 
     def validate_perinatal_infection_arvs(self):
@@ -183,31 +104,40 @@ class EntryToCareForm(SimpleYesNoValidationMixin, SimpleOtherSpecifyValidationMi
             raise forms.ValidationError({
                 'art_preg_type': ['Mother did not received ARVs during pregnancy, please correct.']})
 
-    def validate_art_preg_type(self):
-        return self.require_if_other('art_preg_type', 'art_preg_type_other')
-
-    def validate_weight(self):
-        return self.require_if_yes('weight_measured', 'entry_weight')
-
-    def validate_height(self):
-        return self.require_if_yes('height_measured', 'entry_height')
-
     class Meta:
         model = EntryToCare
         fields = '__all__'
 
 
-class ExtractionChecklistForm (forms.ModelForm):
+class InCareForm(SimpleYesNoValidationMixin, SimpleOtherSpecifyValidationMixin,
+                 SimpleDateFieldValidatorMixin, SimpleApplicableByAgeValidatorMixin, forms.ModelForm):
 
-    class Meta:
-        model = ExtractionChecklist
-        fields = '__all__'
+    def clean(self):
+        cleaned_data = super(InCareForm, self).clean()
+        self.require_if_yes('weight_measured', 'weight')
+        self.require_if_yes('height_measured', 'height')
+        self.require_if_yes('hospital', 'hospital_date')
+        self.require_if_yes('hospital', 'hospital_reason')
+        self.require_if_yes('disclosure_to_patient', 'disclosure_to_patient_date')
+        self.require_if_yes('disclosure_to_others', 'disclosure_to_others_date')
+        self.validate_date_with_previous_visit(
+            'hospital_date', 'gte', verbose_name='Hospital date')
+        self.validate_date_with_previous_visit(
+            'disclosure_to_patient_date', 'gte', verbose_name='Disclosure date')
+        self.validate_date_with_previous_visit(
+            'disclosure_to_others_date', 'gte', verbose_name='Disclosure date')
+        self.validate_date_with_previous_visit(
+            'disclosure_by_caregiver_date', 'gte', verbose_name='Disclosure date')
+        self.validate_applicable_by_age('disclosure_by_caregiver', 'lte', 18)
+        return cleaned_data
 
 
-class AdherenceCounsellingForm(SimpleOtherSpecifyValidationMixin, forms.ModelForm):
+class AdherenceCounsellingForm(SimpleOtherSpecifyValidationMixin, SimpleDateFieldValidatorMixin, forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(AdherenceCounsellingForm, self).clean()
+        self.validate_date_with_entry_to_care_date(
+            'counselling_date', 'gte', verbose_name='Counselling date')
         self.validate_counselling_partner()
         return cleaned_data
 
@@ -261,6 +191,13 @@ class DeathForm (forms.ModelForm):
 
     class Meta:
         model = Death
+        fields = '__all__'
+
+
+class LostToFollowupForm (forms.ModelForm):
+
+    class Meta:
+        model = LostToFollowup
         fields = '__all__'
 
 
@@ -325,10 +262,35 @@ class TransferRecordForm (forms.ModelForm):
         fields = '__all__'
 
 
+class LabTestForm(forms.ModelForm):
+
+    class Meta:
+        model = LabTest
+        fields = '__all__'
+
+
 class LabRecordForm(forms.ModelForm):
 
     class Meta:
         model = LabRecord
+        fields = '__all__'
+
+
+class WhoDiagnosisForm(SimpleDateFieldValidatorMixin, forms.ModelForm):
+
+    def clean(self):
+        cleaned_data = super(WhoDiagnosisForm, self).clean()
+        subject_identifier = cleaned_data.get('who_staging').subject_identifier
+        self.validate_date_with_dob(
+            'dx_date', 'gte', verbose_name='Dx date', subject_identifier=subject_identifier)
+        self.validate_date_with_hiv_dx(
+            'dx_date', 'gte', verbose_name='Dx date', subject_identifier=subject_identifier)
+        self.validate_date_with_art_init(
+            'dx_date', 'lte', verbose_name='Dx date', subject_identifier=subject_identifier)
+        return cleaned_data
+
+    class Meta:
+        model = WhoDiagnosis
         fields = '__all__'
 
 

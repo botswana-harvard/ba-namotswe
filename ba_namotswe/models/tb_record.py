@@ -4,18 +4,18 @@ from edc_base.model.validators.date import date_not_future
 
 from ..choices import TB_TYPE, TEST_TYPE
 
-from .crf_model import CrfModel
+from .crf_model import CrfModelMixin, CrfInlineModelMixin
 
 
-class TbRecord(CrfModel):
+class TbRecord(CrfModelMixin):
 
-    class Meta(CrfModel.Meta):
+    class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
         verbose_name = 'Tuberculosis Infection History'
         verbose_name_plural = 'Tuberculosis Infection History'
 
 
-class Tb(models.Model):
+class Tb(CrfInlineModelMixin):
 
     tb_record = models.ForeignKey(TbRecord)
 
@@ -39,6 +39,7 @@ class Tb(models.Model):
         null=True,
         max_length=50)
 
-    class Meta(CrfModel.Meta):
+    class Meta(CrfInlineModelMixin.Meta):
         app_label = 'ba_namotswe'
         verbose_name = 'TB History'
+        crf_inline_parent = 'tb_record'

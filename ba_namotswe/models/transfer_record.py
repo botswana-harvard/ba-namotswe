@@ -2,16 +2,16 @@ from django.db import models
 
 from ..choices import TRANSFER
 
-from .crf_model import CrfModel
+from .crf_model import CrfModelMixin, CrfInlineModelMixin
 
 
-class TransferRecord(CrfModel):
+class TransferRecord(CrfModelMixin):
 
-    class Meta(CrfModel.Meta):
+    class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
 
 
-class Transfer(models.Model):
+class Transfer(CrfInlineModelMixin, models.Model):
 
     transfer_record = models.ForeignKey(TransferRecord)
 
@@ -44,5 +44,6 @@ class Transfer(models.Model):
         null=True,
         blank=True)
 
-    class Meta(CrfModel.Meta):
+    class Meta(CrfInlineModelMixin.Meta):
         app_label = 'ba_namotswe'
+        crf_inline_parent = 'transfer_record'

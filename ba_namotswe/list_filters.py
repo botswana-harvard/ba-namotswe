@@ -10,16 +10,24 @@ class VisitCodeListFilter(admin.SimpleListFilter):
     parameter_name = 'visit_code'
 
     def lookups(self, request, model_admin):
+        inline_attr = self.get_inline_attr(model_admin)
         qs = model_admin.get_queryset(request).values(
-            'subject_visit__appointment__visit_code').annotate(
-                Count('subject_visit__appointment__visit_code'))
-        return [(item['subject_visit__appointment__visit_code'],
-                 item['subject_visit__appointment__visit_code']) for item in qs]
+            '{}subject_visit__appointment__visit_code'.format(inline_attr)).annotate(
+                Count('{}subject_visit__appointment__visit_code'.format(inline_attr)))
+        return [(item['{}subject_visit__appointment__visit_code'.format(inline_attr)],
+                 item['{}subject_visit__appointment__visit_code'.format(inline_attr)]) for item in qs]
 
     def queryset(self, request, queryset):
+        inline_attr = self.get_inline_attr(queryset)
         if self.value():
-            return queryset.filter(subject_visit__appointment__visit_code=self.value())
+            return queryset.filter(**{'{}subject_visit__appointment__visit_code'.format(inline_attr): self.value()})
         return queryset
+
+    def get_inline_attr(self, model_admin):
+        try:
+            return model_admin.model._meta.crf_inline_parent + '__'
+        except AttributeError:
+            return ''
 
 
 class PendingFieldsListFilter(admin.SimpleListFilter):

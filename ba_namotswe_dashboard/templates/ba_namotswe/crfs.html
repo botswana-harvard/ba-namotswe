@@ -29,7 +29,7 @@
 						    	{% if not crf.url %}
 						    		{{ crf.title }}
 						    	{% else %}
-					        		<a href="{{ crf.url }}?subject_visit={{ subject_visit.pk }}&next={{ dashboard_url }}" {% if not crf.url %}disabled{% endif %} role="button" class="btn btn-sm btn-block btn-{% if crf.instance.edited %}success{% else %}default{% endif %}">{{ crf.title|title }}</a>
+					        		<a href="{{ crf.url }}?subject_visit={{ subject_visit.pk }}&next={{ dashboard_url }}" {% if not crf.url %}disabled{% endif %} role="button" class="btn btn-sm btn-block btn-{% if crf.instance.edited %}success{% else %}default{% endif %}">{{ crf.title|title }} {% if crf.instance.no_report %}<span class="glyphicon glyphicon-ban-circle"></span>{% endif %}</a>
 						    	{% endif %}
 						    </td>              
 						    <td>
@@ -37,11 +37,14 @@
 						      		<a href="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk selected_crf=crf.model toggle_status='flagged' %}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}><span class="glyphicon glyphicon-flag small text-info"></span></a>
 						      		<a href="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk selected_crf=crf.model toggle_status='reviewed' %}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}><span class="glyphicon glyphicon-ok small text-info"></span><span class="glyphicon glyphicon-ok small text-info"></span></a>
 						      	{% endif %}
+						        {% if not crf.instance.edited %}
+						      		<a href="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk selected_crf=crf.model toggle_status='no_report' %}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}><span class="text text-info">NR</span></a>
+						      	{% endif %}	
 						        {% if crf.instance.edited %}
 						          <a href="#" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}>View</a>
 						          <a href="#" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}>Audit</a>
-						          <a href="{{ crf.changelist_url }}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}>Admin</a>
 						        {% endif %}
+					            <a href="{{ crf.changelist_url }}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}>Admin</a>
 						    </td>
 				  		</tr>
 				    	{% if crf.instance.edited %}

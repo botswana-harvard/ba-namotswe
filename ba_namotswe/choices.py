@@ -6,34 +6,59 @@ from .constants import (
     ISOSPORIASIS, KAPOSI_SARCOMA, LYMPHOMA, MYCOBACTERIUM_AVIUM_COMPLEX, TUBERCULOSIS, PNEUMOCYSTIS,
     PNEUMONIA, PROGRESSIVE_MULTILOCAL_LEUKOENCEPHALOPATHY, SALMONELLA_SEPTICEMIA_RECURRENT,
     TOXOPLASMOSIS_OF_BRAIN, WASTING_SYNDROME_DUE_TO_HIV, PULMONARY_TB, NON_PULMONARY_TB,
-    CULTURE_POSITIVE, CXR, OTHER_IMAGING_MODALITY, CLINICAL_DIAGNOSIS, ONGOING, RESOLVED)
+    CULTURE_POSITIVE, CXR, OTHER_IMAGING_MODALITY, CLINICAL_DIAGNOSIS, ONGOING, RESOLVED, RESOLVED_EST)
 
 
 ART_STATUS = (
     (ONGOING, 'Ongoing'),
     ('HELD', 'Held'),
     ('STOPPED', 'Stopped'),
+    ('INITIAL', 'Initial'),
 )
 
 OI_STATUS = (
     (ONGOING, 'Ongoing'),
     (RESOLVED, 'Resolved'),
+    (RESOLVED_EST, 'Resolved/Estimated'),
 )
 
+# ART_REGIMENS = (
+#     ('EFV/TDF/FTC', 'NNRTI: EFV + TDF/FTC'),
+#     ('EFV + ABC/3TC', 'NNRTI: EFV + ABC/3TC'),
+#     ('RPV/TDF/FTC', 'NNRTI: RPV + TDF/FTC)'),
+#     ('(DRV/r) + TDF/FTC', 'PI: Darunavir/ritonavir (DRV/r) + TDF/FTC'),
+#     ('ATV/r + ABC/3TC', 'PI: ATV/r + ABC/3TC'),
+#     ('DRV/r + ABC/3TC', 'PI: DRV/r + ABC/3TC'),
+#     ('LPV/r + ABC/3TC', 'PI: Lopinavir/ritonavir LPV/r + ABC/3TC'),
+#     ('LPV/r + ABC/3TC', 'PI: Lopinavir/ritonavir LPV/r + TDF/FTC'),
+#     ('(RAL) + TDF/FTC', 'INSTI: Raltegravir (RAL) + TDF/FTC'),
+#     ('RAL + ABC/3TC', 'INSTI: Raltegravir (RAL) + ABC/3TC'),
+#     ('EVG/COBI/TDF/FTC', 'INSTI: EVG/COBI/TDF/FTC'),
+#     ('(DTG) + ABC/3TC', 'INSTI: Dolutegravir (DTG) + ABC/3TC'),
+#     ('DTG + TDF/FTC', 'INSTI: Dolutegravir (DTG) + + TDF/FTC'),
+# )
+
 ART_REGIMENS = (
-    ('EFV/TDF/FTC', 'NNRTI: EFV + TDF/FTC'),
-    ('EFV + ABC/3TC', 'NNRTI: EFV + ABC/3TC'),
-    ('RPV/TDF/FTC', 'NNRTI: RPV + TDF/FTC)'),
-    ('(DRV/r) + TDF/FTC', 'PI: Darunavir/ritonavir (DRV/r) + TDF/FTC'),
-    ('ATV/r + ABC/3TC', 'PI: ATV/r + ABC/3TC'),
-    ('DRV/r + ABC/3TC', 'PI: DRV/r + ABC/3TC'),
-    ('LPV/r + ABC/3TC', 'PI: Lopinavir/ritonavir LPV/r + ABC/3TC'),
-    ('LPV/r + ABC/3TC', 'PI: Lopinavir/ritonavir LPV/r + TDF/FTC'),
-    ('(RAL) + TDF/FTC', 'INSTI: Raltegravir (RAL) + TDF/FTC'),
-    ('RAL + ABC/3TC', 'INSTI: Raltegravir (RAL) + ABC/3TC'),
-    ('EVG/COBI/TDF/FTC', 'INSTI: EVG/COBI/TDF/FTC'),
-    ('(DTG) + ABC/3TC', 'INSTI: Dolutegravir (DTG) + ABC/3TC'),
-    ('DTG + TDF/FTC', 'INSTI: Dolutegravir (DTG) + + TDF/FTC'),
+    ('EFV+FTC+TDF', 'Atripla (FTC, TDF, EFV)'),
+    ('3TC+AZT', 'Combivir (AZT, 3TC)'),
+    ('3TC+ABC+AZT', 'Trizivir (AZT, 3TC, ABC)'),
+    ('FTC+TDF', 'Truvada (TDF, FTC)'),
+    ('3TC', '3TC'),
+    ('ABC', 'Abacavir/ABC'),
+    ('AZT', 'ATZ'),
+    ('D4T', 'D4T'),
+    ('DDI', 'DDI'),
+    ('DTG', 'Dolutegravir/DTG'),
+    ('EFV', 'Efavirenz/EFV (or Sustiva)'),
+    ('FTC', 'Emtricitabine/FTC (Emtriva)'),
+    ('IDV', 'Indinavir/IDV'),
+    ('KTA', 'Kaletra/KTA (or Alulia)'),
+    ('NFV', 'Nelfinavir/NFV'),
+    ('NVP', 'Nevirapine/NVP'),
+    ('RAL', 'Raltegravir/RAL'),
+    ('TDF', 'Tenofovir/TDF'),
+    (UNKNOWN, 'Unknown'),
+    (OTHER, 'Other, specify...'),
 )
 
 VISIT_STUDY_STATUS = (
@@ -85,50 +110,50 @@ WHO_DEFINING_ILLNESSES = (
     ('A1', 'Asymptomatic'),
     ('A2', 'Persistent generalized lymphadenopathy (PGL)'),
 
-    ('B010', 'Weigh loss, moderate unexplained (<10% of presumed or measured body weight)'),
-    ('B011', 'Weight loss, severe (>10% of presumed or measured body weight)'),
-    ('B020', 'Respiratory tract infections, recurrent (RTIs, sinusitis, bronchitis, otitis media, pharyngitis)'),
-    ('B030', 'Herpes zoster'),
     ('B040', 'Angular cheilitis'),
+    ('B080', 'Fungal nail infections of fingers'),
+    ('B030', 'Herpes zoster'),
     ('B050', 'Oral ulcerations, recurrent'),
     ('B060', 'Papular pruritic eruptions'),
+    ('B020', 'Respiratory tract infections, recurrent (RTIs, sinusitis, bronchitis, otitis media, pharyngitis)'),
     ('B070', 'Seborrhoeic dermatitis'),
-    ('B080', 'Fungal nail infections of fingers'),
+    ('B010', 'Weigh loss, moderate unexplained (<10% of presumed or measured body weight)'),
+    ('B011', 'Weight loss, severe (>10% of presumed or measured body weight)'),
 
-    ('C020', 'Chronic diarrhoea, unexplained, (for longer than one month)'),
-    ('C030', 'Persistent fever, unexplained (intermittent or constant for longer than one month)'),
-    ('C040', 'Oral candidiasis'),
-    ('C050', 'Oral hairy leukoplakia'),
-    ('C060', 'Pulmonary tuberculosis (TB) diagnosed in last two years'),
-    ('C070', 'Bacterial infections, severe presumed  (e.g. pneumonia, empyema, pyomyositis, bone or'),
-    ('C080', 'Joint infection, meningitis, bacteraemia'),
     ('C090', 'Acute necrotizing ulcerative stomatitis, gingivitis or periodontitis'),
     ('C100', 'Anaemia, unexplained (<8 g/dl), and or neutropenia (<500/mm3) and or'),
+    ('C070', 'Bacterial infections, severe presumed  (e.g. pneumonia, empyema, pyomyositis, bone or'),
+    ('C020', 'Chronic diarrhoea, unexplained, (for longer than one month)'),
+    ('C080', 'Joint infection, meningitis, bacteraemia'),
+    ('C040', 'Oral candidiasis'),
+    ('C050', 'Oral hairy leukoplakia'),
+    ('C030', 'Persistent fever, unexplained (intermittent or constant for longer than one month)'),
+    ('C060', 'Pulmonary tuberculosis (TB) diagnosed in last two years'),
     ('C110', 'Thrombocytopenia (<50 000/ mm3) for more than one month'),
 
+    ('D080', 'Central nervous system (CNS) toxoplasmosis'),
+    ('D040', 'Chronic herpes simplex infection (orolabial, genital or anorectal of more than one month’s duration)'),
+    ('D060', 'Extrapulmonary TB'),
+    ('D090', 'HIV encephalopathy'),
     ('D010', 'HIV wasting syndrome'),
+    ('D070', 'Kaposi’s sarcoma'),
+    ('D050', 'Oesophageal candidiasis'),
     ('D020', 'Pneumocystis pneumonia'),
     ('D030', 'Recurrent severe or radiological bacterial pneumonia'),
-    ('D040', 'Chronic herpes simplex infection (orolabial, genital or anorectal of more than one month’s duration)'),
-    ('D050', 'Oesophageal candidiasis'),
-    ('D060', 'Extrapulmonary TB'),
-    ('D070', 'Kaposi’s sarcoma'),
-    ('D080', 'Central nervous system (CNS) toxoplasmosis'),
-    ('D090', 'HIV encephalopathy'),
 
     # Conditions where confirmatory diagnostic testing is necessary
-    ('E110', 'Extrapulmonary cryptococcosis including meningitis'),
-    ('E120', 'Disseminated non-tuberculous mycobacteria infection'),
-    ('E130', 'Progressive multifocal leukoencephalopathy (PML)'),
+    ('E190', 'Any disseminated mycosis (e.g. histoplasmosis, coccidiomycosis, penicilliosis)'),
     ('E140', 'Candida of trachea, bronchi or lungs'),
     ('E150', 'Cryptosporidiosis'),
-    ('E160', 'Isosporiasis'),
-    ('E170', 'Visceral herpes simplex infection'),
     ('E180', 'Cytomegalovirus (CMV) infection (retinitis or of an organ other than liver, spleen or lymph nodes)'),
-    ('E190', 'Any disseminated mycosis (e.g. histoplasmosis, coccidiomycosis, penicilliosis)'),
-    ('E200', 'Recurrent non-typhoidal salmonella septicaemia'),
-    ('E210', 'Lymphoma (cerebral or B cell non-Hodgkin)'),
+    ('E120', 'Disseminated non-tuberculous mycobacteria infection'),
+    ('E110', 'Extrapulmonary cryptococcosis including meningitis'),
     ('E220', 'Invasive cervical carcinoma'),
+    ('E160', 'Isosporiasis'),
+    ('E210', 'Lymphoma (cerebral or B cell non-Hodgkin)'),
+    ('E130', 'Progressive multifocal leukoencephalopathy (PML)'),
+    ('E200', 'Recurrent non-typhoidal salmonella septicaemia'),
+    ('E170', 'Visceral herpes simplex infection'),
     ('E230', 'Visceral leishmaniasis'),
 )
 
@@ -136,6 +161,7 @@ WHO_DEFINING_ILLNESSES = (
 TB_TYPE = (
     (PULMONARY_TB, 'Pulmonary TB'),
     (NON_PULMONARY_TB, 'Non pulmonary TB'),
+    (UNKNOWN, 'Unknown'),
 )
 
 TEST_TYPE = (
@@ -143,7 +169,8 @@ TEST_TYPE = (
     (CXR, 'CXR'),
     (OTHER_IMAGING_MODALITY, 'Other Imaging Modality'),
     (CLINICAL_DIAGNOSIS, 'Clinical Diagnosis'),
-    (OTHER, 'Other, describe')
+    (OTHER, 'Other, describe'),
+    (UNKNOWN, 'Unknown'),
 )
 
 OI_OPTIONS = (
@@ -167,10 +194,6 @@ OI_OPTIONS = (
     (TOXOPLASMOSIS_OF_BRAIN, 'Toxoplasmosis of brain'),
     (WASTING_SYNDROME_DUE_TO_HIV, 'Wasting syndrome due to HIV')
 )
-
-PREGNANCY = (
-    ('date_of_first_clinical_documentation_of_pregnancy', 'Date of First Clinical Documentation of Pregnancy'),
-    ('date_of_delivery', 'Date of Delivery'))
 
 TRANSFER = (
     ('idcc', 'IDCC'),
