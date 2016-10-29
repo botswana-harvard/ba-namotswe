@@ -71,10 +71,6 @@ class Enrollment(CreateAppointmentsMixin, UrlMixin, BaseUuidModel):
         null=True,
         help_text='Provide if available.')
 
-    initial_clinic_visit_date = models.DateField(
-        validators=[MinValueValidator(date(2002, 1, 1)), MaxValueValidator(date(2016, 6, 1)), ],
-    )
-
     initials = models.CharField(max_length=3, null=True, blank=True)
 
     gender = models.CharField(

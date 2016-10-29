@@ -19,7 +19,7 @@ class SimpleApplicableByAgeValidatorMixin:
     def validate_applicable_by_age(self, field, op, age, subject_identifier=None, errmsg=None):
         subject_identifier = subject_identifier or self.cleaned_data.get('subject_visit').subject_identifier
         dob = Enrollment.objects.get(subject_identifier=subject_identifier).dob
-        age_delta = relativedelta(self.cleaned_data.get('subject_visit').previous_visit().report_datetime.date(), dob)
+        age_delta = relativedelta(self.cleaned_data.get('subject_visit').previous_visit().visit_date, dob)
         applicable = True
         if self.cleaned_data.get(field):
             applicable = False
@@ -125,11 +125,11 @@ class SimpleDateFieldValidatorMixin:
         """Validate that date is greater than subject's previous visit date."""
         subject_identifier = subject_identifier or self.cleaned_data.get('subject_visit').subject_identifier
         previous_visit = self.cleaned_data.get('subject_visit').previous_visit()
-        self.validate_dates(field1, op, value2=previous_visit.report_datetime.date(),
+        self.validate_dates(field1, op, value2=previous_visit.visit_date,
                             verbose_name1=verbose_name,
                             verbose_name2='previous visit {} on {}'.format(
                                 previous_visit.visit_code,
-                                previous_visit.report_datetime.date().strftime('%Y-%m-%d')))
+                                previous_visit.visit_date.strftime('%Y-%m-%d')))
 
     def validate_dates(self, field1=None, op=None, field2=None, errmsg=None,
                        verbose_name1=None, verbose_name2=None, value1=None, value2=None):

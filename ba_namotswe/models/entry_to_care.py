@@ -25,7 +25,9 @@ class EntryToCare(CrfModelMixin):
         verbose_name='Date entered into care',
         null=True,
         blank=True,
-        validators=[date_not_future, MinValueValidator(date(2002, 1, 1))])
+        validators=[date_not_future,
+                    MinValueValidator(date(2002, 1, 1)),
+                    MaxValueValidator(date(2016, 6, 1))])
 
     weight_measured = models.CharField(
         verbose_name='Was weight measured at entry?',

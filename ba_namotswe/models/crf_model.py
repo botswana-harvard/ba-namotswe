@@ -132,7 +132,7 @@ class CrfModelMixin(DashboardMixin, VisitTrackingCrfModelMixin, ReviewFieldsMixi
         try:
             LostToFollowup = django_apps.get_model(self._meta.app_label, 'losttofollowup')
             lfu = LostToFollowup.objects.get(subject_identifier=self.subject_identifier)
-            if lfu.last_contact_date < self.subject_visit.report_datetime.date():
+            if lfu.last_contact_date < self.subject_visit.visit_date:
                 raise ValidationError('Subject was report LFU on {}'.format(lfu.last_contact_date))
         except LostToFollowup.DoesNotExist:
             pass

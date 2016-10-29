@@ -20,9 +20,17 @@ from ba_namotswe.validators import SimpleApplicableByAgeValidatorMixin
 
 class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
 
+    visit_date = forms.DateField(
+        label='Clinic visit date',
+        initial=timezone.now,
+        help_text="",
+        widget=AdminDateWidget(),
+    )
+
     report_datetime = forms.DateTimeField(
         label='Clinic visit date',
         initial=timezone.now,
+        required=False,
         help_text="",
         widget=AdminDateWidget(),
     )
@@ -62,7 +70,7 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
 
     class Meta:
         model = SubjectVisit
-        fields = ['appointment', 'report_datetime']
+        fields = ['appointment', 'visit_date']
 
 
 class EnrollmentForm(SimpleOtherSpecifyValidationMixin, forms.ModelForm):
