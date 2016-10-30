@@ -15,6 +15,7 @@ from edc_constants.constants import UNKNOWN
 from edc_metadata.model_mixins import UpdatesCrfMetadataModelMixin
 
 from .subject_visit import SubjectVisit
+from django.utils.html import format_html
 
 REPORT_STATUS = (
     ('REMIND', 'Remind'),
@@ -81,9 +82,25 @@ class ReviewFieldsMixin(models.Model):
     def save(self, *args, **kwargs):
         if not kwargs.get('update_fields'):
             self.edited = True
+            self.reviewed = False
+            self.reviewed_datetime = None
             self.no_report = False
             self.no_report_datetime = None
         super(ReviewFieldsMixin, self).save(*args, **kwargs)
+
+    @property
+    def flag(self):
+        if self.flagged:
+            return format_html('<span class="fa fa-flag"></span>')
+        else:
+            return None
+
+    @property
+    def NR(self):
+        if self.no_report:
+            return format_html('<span class="fa fa-minus-square"></span>')
+        else:
+            return None
 
     class Meta:
         abstract = True

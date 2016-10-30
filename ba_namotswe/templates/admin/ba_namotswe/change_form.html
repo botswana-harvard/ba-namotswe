@@ -8,3 +8,8 @@
 {% endif %}
 {{ block.super }}
 {% endblock %}
+
+{% block after_field_sets %}
+{{ block.super }}
+<p class="help">Edc Revision {{ revision|default:'unknown?' }}</p>
+{% endblock %}

@@ -1,9 +1,9 @@
 	<div class="panel-group">
 		<div class="panel panel-warning">
 			{% if selected_appointment %}
-				<div class="panel-heading clearfix"><B>{{ selected_appointment.title }}</B>: {{ selected_appointment.subject_visit.visit_date|date:"Y-m-d"| capfirst }}<span class="pull-right"><a href="{% url 'subject_dashboard_url' subject_identifier=selected_appointment.subject_identifier %} role="button" class="btn btn-sm btn-default">appointments</a></span></div>
+				<div class="panel-heading clearfix">{{ selected_appointment.visit_code }}: {{ selected_appointment.title|title }} on {{ selected_appointment.subjectvisit.visit_date|date:"Y-m-d"| capfirst }}<span class="pull-right"><a href="{% url 'subject_dashboard_url' subject_identifier=selected_appointment.subject_identifier %} role="button" class="btn btn-sm btn-default">appointments</a></span></div>
 			{% else %}
-				<div class="panel-heading clearfix">Appointments <span class="pull-right"><a href="{{ enrollment.get_absolute_url }}?next={% url 'subject_dashboard_url' subject_identifier=subject_identifier %}" role="button" class="btn btn-sm btn-default">{{ enrollment_model_name }}</a></span></div>
+				<div class="panel-heading clearfix">Clinic Visit Reports <span class="pull-right"><a href="{{ enrollment.get_absolute_url }}?next={% url 'subject_dashboard_url' subject_identifier=subject_identifier %}" role="button" class="btn btn-sm btn-default">{{ enrollment_model_name }}</a></span></div>
 		     	<div class="panel-body">                              
 				    <table class="table table-striped table-hover table-condensed table-responsive">
 					    <tbody>
@@ -14,13 +14,22 @@
 					            <tr>
 					            <td>{{appointment.visit_code}}</td>
 						        <td>{{appointment.title}}</td>
-								<td><a href="{% url 'ba_namotswe_admin:ba_namotswe_appointment_change' appointment.pk %}?next={% url 'subject_dashboard_url' subject_identifier=appointment.subject_identifier %}">{{ appointment.get_appt_status_display | capfirst }}</a></td>
+								<td>
+						        	{% if appointment.subjectvisit %}
+										<span class="fa fa-toggle-on"></span> <span class="text small text-info">submitted by {{appointment.subjectvisit.user_modified }} on {{ appointment.subjectvisit.report_datetime|date:"d M Y" }}</span></td>
+									{% else %}
+										<span class="fa fa-toggle-off"></span>
+									{% endif %}
 						        <td>
-						        	{% if appointment.subject_visit %}
-						        		<a href="{% url 'ba_namotswe_admin:ba_namotswe_subjectvisit_change' appointment.subject_visit.pk %}?appointment={{appointment.pk}}&next={% url 'subject_dashboard_url' subject_identifier=appointment.subject_identifier %}">{{ appointment.subject_visit.visit_date |date:"d M Y"| capfirst }}</a>
-						        		<span class="pull-right"><a href="{% url 'subject_dashboard_url' subject_identifier=appointment.subject_identifier appointment_pk=appointment.pk %}" role="button" class="btn btn-sm btn-default">forms</a></span>
+						        	{% if appointment.subjectvisit %}
+						        		<a href="{% url 'ba_namotswe_admin:ba_namotswe_subjectvisit_change' appointment.subjectvisit.pk %}?appointment={{appointment.pk}}&next={% url 'subject_dashboard_url' subject_identifier=appointment.subject_identifier %}"><small>{{ appointment.subjectvisit.visit_date |date:"d M Y"| capfirst }}</small></a>
 						        	{% else %}
-						        		<a href="{% url 'ba_namotswe_admin:ba_namotswe_subjectvisit_add' %}?appointment={{appointment.pk}}&next={% url 'subject_dashboard_url' subject_identifier=appointment.subject_identifier %}">Add Report</a>
+						        		<a href="{% url 'ba_namotswe_admin:ba_namotswe_subjectvisit_add' %}?appointment={{appointment.pk}}&next={% url 'subject_dashboard_url' subject_identifier=appointment.subject_identifier %}"><small>Add Report</small></a>
+						        	{% endif %}
+						        </td>
+						        <td>
+						        	{% if appointment.subjectvisit %}
+						        		<a href="{% url 'subject_dashboard_url' subject_identifier=appointment.subject_identifier appointment_pk=appointment.pk %}" role="button" class="btn btn-sm btn-default">forms</a>
 						        	{% endif %}
 						        </td>
 					            </tr>

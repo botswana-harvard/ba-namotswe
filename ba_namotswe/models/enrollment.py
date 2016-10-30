@@ -1,25 +1,24 @@
+from dateutil.relativedelta import relativedelta
 from uuid import uuid4
-from datetime import date
 
-from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 from edc_appointment.model_mixins import CreateAppointmentsMixin
 from edc_base.model.models.base_uuid_model import BaseUuidModel
+from edc_base.model.models.url_mixin import UrlMixin
 from edc_base.utils.age import formatted_age
-from edc_constants.choices import GENDER
+from edc_constants.choices import GENDER, YES_NO
+from edc_constants.constants import UNKNOWN, YES
 
 from ..choices import RELATIONSHIP
 
 from .subject_consent import SubjectConsent
-from edc_base.model.models.url_mixin import UrlMixin
-from django.core.validators import MaxValueValidator, MinValueValidator
-from dateutil.relativedelta import relativedelta
-from edc_constants.constants import UNKNOWN
 
 
 def get_uuid():
@@ -72,6 +71,18 @@ class Enrollment(CreateAppointmentsMixin, UrlMixin, BaseUuidModel):
         help_text='Provide if available.')
 
     initials = models.CharField(max_length=3, null=True, blank=True)
+
+    entry_to_care = models.CharField(
+        verbose_name='Patient entered into care on or after 1 Jan 2001?',
+        max_length=10,
+        choices=YES_NO,
+        validators=[RegexValidator('^' + YES + '$', message='Patient is not eligible for enrollment.')])
+
+    initiation = models.CharField(
+        verbose_name='Patient initiated ART on or before 1 June 2016?',
+        max_length=10,
+        choices=YES_NO,
+        validators=[RegexValidator('^' + YES + '$', message='Patient is not eligible for enrollment.')])
 
     gender = models.CharField(
         verbose_name="Gender",

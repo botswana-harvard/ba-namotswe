@@ -1,6 +1,5 @@
 from datetime import date
 from django.db import models
-from django.utils import timezone
 from django.core.validators import MinValueValidator
 
 from edc_base.model.models.base_uuid_model import BaseUuidModel
@@ -9,13 +8,12 @@ from edc_consent.model_mixins import RequiresConsentMixin
 from edc_constants.constants import ON_STUDY, YES
 from edc_metadata.model_mixins import CreatesMetadataModelMixin
 from edc_visit_tracking.constants import SCHEDULED, CHART
-from edc_visit_tracking.model_mixins import VisitModelMixin, PreviousVisitModelMixin
+from edc_visit_tracking.model_mixins import VisitModelMixin
 
 from .appointment import Appointment
 
 
-class SubjectVisit(VisitModelMixin, CreatesMetadataModelMixin, RequiresConsentMixin,
-                   PreviousVisitModelMixin, BaseUuidModel):
+class SubjectVisit(VisitModelMixin, CreatesMetadataModelMixin, RequiresConsentMixin, BaseUuidModel):
 
     appointment = models.OneToOneField(Appointment)
 
@@ -27,13 +25,17 @@ class SubjectVisit(VisitModelMixin, CreatesMetadataModelMixin, RequiresConsentMi
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.report_datetime = timezone.now()
             self.study_status = ON_STUDY
             self.reason = SCHEDULED
             self.require_crfs = YES
             self.info_source = CHART
         super(SubjectVisit, self).save(*args, **kwargs)
 
-    class Meta:
+    class Meta(VisitModelMixin.Meta):
         app_label = 'ba_namotswe'
         consent_model = 'ba_namotswe.subjectconsent'
+        unique_together = (
+            ('visit_schedule_name', 'schedule_name', 'visit_code'),
+            ('visit_schedule_name', 'schedule_name', 'visit_date'),
+        )
+        ordering = (('visit_schedule_name', 'schedule_name', 'visit_code', 'visit_date', ))

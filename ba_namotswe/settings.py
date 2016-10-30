@@ -134,6 +134,17 @@ if socket.gethostname() == 'banamotswe':
             'PASSWORD': 'cc3721b'
         }
     }
+elif socket.gethostname() == 'mac2-2.local':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'banamotswe',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+            'USER': 'root',
+            'PASSWORD': 'cc3721b'
+        }
+    }
 else:
     DATABASES = {
         'default': {

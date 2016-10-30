@@ -7,6 +7,12 @@
     <script type="text/javascript" src="{% static "" %}"></script>
   {% endblock extra-scripts %}
 
+
+  {% block settings_url %}
+  <li id="li-topbar-settings"><a class="glyphicon glyphicon-wrench" title="settings" href="{% url 'ba_namotswe_admin:app_list' 'ba_namotswe' %}"></a></li>
+  <li id="li-topbar-settings"><a class="fa fa-group" title="settings" href="{% url 'admin:app_list' 'auth' %}"></a></li>
+  {% endblock settings_url %}
+
   {% block main %}
 
    <div class="container">
@@ -39,13 +45,14 @@
           </div>          
 
             <div class="panel panel-warning">
-              <div class="panel-heading">Administration</div>
+              <div class="panel-heading">Reports</div>
                   <div class="panel-body">
-                      <ul id="nav-pill-home" class="nav nav-pills nav-stacked">
-                         <li><a href="{% url 'ba_namotswe_admin:index' %}" >Admin<span class="glyphicon glyphicon-wrench pull-right" aria-hidden="true"></span></a></li>
-                         <li>
-					      <a id="link-enrollment" href="{% url 'ba_namotswe_admin:ba_namotswe_enrollment_changelist' %}">Enrollment</a></li>
-                      </ul>
+                  </div>
+              </div>
+          </div>
+            <div class="panel panel-warning">
+              <div class="panel-heading">Statistics</div>
+                  <div class="panel-body">
                   </div>
               </div>
           </div>

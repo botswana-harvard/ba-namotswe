@@ -20,6 +20,8 @@ from ba_namotswe.validators import SimpleApplicableByAgeValidatorMixin
 
 class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
 
+    participant_label = 'patient'
+
     visit_date = forms.DateField(
         label='Clinic visit date',
         initial=timezone.now,
@@ -66,6 +68,30 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
         self.cleaned_data['reason'] = SCHEDULED
         self.cleaned_data['info_source'] = CHART
         cleaned_data = super(SubjectVisitForm, self).clean()
+        try:
+            obj = SubjectVisit.objects.filter(
+                visit_date=cleaned_data['visit_date']).exclude(pk=self.instance.pk)
+        except AttributeError:
+            obj = SubjectVisit.objects.filter(
+                visit_date=cleaned_data['visit_date'])
+        if obj:
+            raise forms.ValidationError({
+                'visit_date': 'Visit already reported for {}'.format(
+                    cleaned_data['visit_date'].strftime('%Y-%m-%d'))})
+        try:
+            previous_visit_code = cleaned_data['appointment'].schedule.get_previous_visit(
+                cleaned_data['appointment'].visit_code).code
+            try:
+                obj = SubjectVisit.objects.get(visit_code=previous_visit_code)
+                if obj.visit_date > cleaned_data['visit_date']:
+                    raise forms.ValidationError({
+                        'visit_date': 'Visit date must be after {}. See visit {}.'.format(
+                            obj.visit_date.strftime('%Y-%m-%d'),
+                            previous_visit_code)})
+            except SubjectVisit.DoesNotExist:
+                pass
+        except AttributeError:
+            pass
         return cleaned_data
 
     class Meta:

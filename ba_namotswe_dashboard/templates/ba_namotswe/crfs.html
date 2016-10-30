@@ -2,7 +2,7 @@
 
 <div class="panel-group">
 	<div class="panel panel-warning">
-    <div class="panel-heading">Case Report Forms</div>
+    <div class="panel-heading">{{ selected_appointment.visit_code }}: Case Report Forms</div>
 	    <div class="panel-body">
 	    	<div class="table-responsive">
 			<table class="table table-no-border table-condensed">
@@ -10,20 +10,6 @@
 					{% for crf in crfs %}
 						{% if crf.entry_status != 'NOT_REQUIRED' %}
 						<tr>
-							<td>
-					        	{% if not crf.instance.edited %}
-					        		<span title="{{crf.get_entry_status_display }}" class="glyphicon glyphicon-asterisk small text-danger"></span>
-					        	{% endif %}
-					        	{% if crf.instance.edited and crf.instance.reviewed %}
-					        		<span title="{{crf.get_entry_status_display }}" class="glyphicon glyphicon-ok small text-success"></span>
-					        		<span title="{{crf.get_entry_status_display }}" class="glyphicon glyphicon-ok small text-success"></span>
-					        	{% elif crf.instance.edited and not crf.instance.reviewed %}
-					        		<span title="{{crf.get_entry_status_display }}" class="glyphicon glyphicon-ok small text-success"></span>
-					        	{% endif %}
-					        	{% if crf.instance.flagged %}
-					        		<span title="{{crf.get_entry_status_display }}" class="glyphicon glyphicon-flag small text-warning"></span>
-					        	{% endif %}
-							</td>						
 						    <td>{{ forloop.counter }}</td>
 						    <td>
 						    	{% if not crf.url %}
@@ -34,12 +20,12 @@
 						    </td>              
 						    <td>
 						    	{% if crf.url %}
-						      		<a href="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk selected_crf=crf.model toggle_status='flagged' %}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}><span class="glyphicon glyphicon-flag small text-info"></span></a>
-						      		<a href="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk selected_crf=crf.model toggle_status='reviewed' %}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}><span class="glyphicon glyphicon-ok small text-info"></span><span class="glyphicon glyphicon-ok small text-info"></span></a>
+						      		<a href="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk selected_crf=crf.model toggle_status='flagged' %}" role="button" class="btn btn-sm {% if crf.instance.flagged %}btn-warning{% else %}btn-default{% endif %}" {% if not crf.url  %}disabled{% endif %}><span class="glyphicon glyphicon-flag small text-info"></span></a>
+							        {% if not crf.instance.edited %}
+							      		<a href="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk selected_crf=crf.model toggle_status='no_report' %}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}><span class="text text-info">NR</span></a>
+							      	{% endif %}	
+						      		<a href="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk selected_crf=crf.model toggle_status='reviewed' %}" role="button" class="btn btn-sm {% if crf.instance.reviewed %}btn-success{% else %}btn-default{% endif %}" {% if not crf.instance.edited %}disabled{% endif %}><span class="glyphicon glyphicon-ok small {% if crf.instance.reviewed %}text-default{% else %}text-info{% endif %}"></span><span class="glyphicon glyphicon-ok small {% if crf.instance.reviewed %}text-default{% else %}text-info{% endif %}"></span></a>
 						      	{% endif %}
-						        {% if not crf.instance.edited %}
-						      		<a href="{% url 'subject_dashboard_url' subject_identifier=subject_identifier appointment_pk=selected_appointment.pk selected_crf=crf.model toggle_status='no_report' %}" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}><span class="text text-info">NR</span></a>
-						      	{% endif %}	
 						        {% if crf.instance.edited %}
 						          <a href="#" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}>View</a>
 						          <a href="#" role="button" class="btn btn-sm btn-default" {% if not crf.url %}disabled{% endif %}>Audit</a>
@@ -48,8 +34,8 @@
 						    </td>
 				  		</tr>
 				    	{% if crf.instance.edited %}
-					  		<tr><td colspan=2></td>
-					  			<td colspan=4>
+					  		<tr>
+					  			<td></td><td colspan=5>
 									{% if crf.instance.pending_fields %}
 					  					<span class="text small bg-warning">Pending: {{ crf.instance.pending_fields }}</span><br>
 									{% endif %}

@@ -4,7 +4,8 @@ from django.test import TestCase
 from dateutil.relativedelta import relativedelta
 
 from edc_constants.constants import YES, MALE
-from ba_namotswe.forms.enrollment_form import EnrollmentForm
+
+from ba_namotswe.forms import EnrollmentForm
 
 
 class TestEnrollment(TestCase):

@@ -19,7 +19,7 @@ class SimpleApplicableByAgeValidatorMixin:
     def validate_applicable_by_age(self, field, op, age, subject_identifier=None, errmsg=None):
         subject_identifier = subject_identifier or self.cleaned_data.get('subject_visit').subject_identifier
         dob = Enrollment.objects.get(subject_identifier=subject_identifier).dob
-        age_delta = relativedelta(self.cleaned_data.get('subject_visit').previous_visit().visit_date, dob)
+        age_delta = relativedelta(self.cleaned_data.get('subject_visit').previous_visit.visit_date, dob)
         applicable = True
         if self.cleaned_data.get(field):
             applicable = False
@@ -114,17 +114,25 @@ class SimpleDateFieldValidatorMixin:
             subject_visit__subject_identifier=subject_identifier).hiv_dx_date
         self.validate_dates(field1, op, value2=value2, verbose_name1=verbose_name, verbose_name2='HIV Dx date')
 
+    def entry_to_care(self, subject_identifier):
+        try:
+            entry_to_care = EntryToCare.objects.get(
+                subject_visit__subject_identifier=subject_identifier)
+        except EntryToCare.DoesNotExist:
+            raise forms.ValidationError('The date the patient was entered into care is required to validate this form. '
+                                        'Please go back and complete the \'Entry-To-Care\' form before proceeding.')
+        return entry_to_care
+
     def validate_date_with_entry_to_care_date(self, field1, op, verbose_name=None, subject_identifier=None):
         """Validate that date is greater than subject's Entry-to-care date."""
         subject_identifier = subject_identifier or self.cleaned_data.get('subject_visit').subject_identifier
-        value2 = EntryToCare.objects.get(
-            subject_visit__subject_identifier=subject_identifier).entry_date
+        value2 = self.entry_to_care(subject_identifier).entry_date
         self.validate_dates(field1, op, value2=value2, verbose_name1=verbose_name, verbose_name2='Entry-to-care date')
 
     def validate_date_with_previous_visit(self, field1, op, verbose_name=None, subject_identifier=None):
         """Validate that date is greater than subject's previous visit date."""
         subject_identifier = subject_identifier or self.cleaned_data.get('subject_visit').subject_identifier
-        previous_visit = self.cleaned_data.get('subject_visit').previous_visit()
+        previous_visit = self.cleaned_data.get('subject_visit').previous_visit
         self.validate_dates(field1, op, value2=previous_visit.visit_date,
                             verbose_name1=verbose_name,
                             verbose_name2='previous visit {} on {}'.format(

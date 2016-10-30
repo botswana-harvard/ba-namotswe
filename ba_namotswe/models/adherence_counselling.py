@@ -24,5 +24,12 @@ class AdherenceCounselling(CrfModelMixin):
         blank=True,
         null=True)
 
+    def get_pending_fields(self):
+        pending_fields = super(AdherenceCounselling, self).get_pending_fields()
+        if not self.counselling_date:
+            pending_fields.append('counselling_date')
+        pending_fields.sort()
+        return pending_fields
+
     class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'

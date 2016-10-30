@@ -7,18 +7,6 @@ from edc_appointment.model_mixins import AppointmentModelMixin
 
 class Appointment(AppointmentModelMixin, RequiresConsentMixin, BaseUuidModel):
 
-    class Meta:
+    class Meta(AppointmentModelMixin.Meta):
         consent_model = 'ba_namotswe.subjectconsent'
         app_label = 'ba_namotswe'
-
-    @property
-    def str_pk(self):
-        return str(self.pk)
-
-    @property
-    def subject_visit(self):
-        from .subject_visit import SubjectVisit
-        try:
-            return SubjectVisit.objects.get(appointment=self)
-        except SubjectVisit.DoesNotExist:
-            return None

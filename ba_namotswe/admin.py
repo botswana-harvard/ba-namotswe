@@ -16,10 +16,12 @@ from .models import (
     SubjectConsent, SubjectVisit, Enrollment, OiRecord, Oi, EntryToCare,
     Appointment, TbRecord, Tb, AdherenceCounselling, ArtRecord, ArtRegimen, Death, PregnancyHistory, Pregnancy,
     TransferRecord, Transfer, LabRecord, LabTest, WhoStaging, WhoDiagnosis, LostToFollowup, InCare)
+from django_revision.modeladmin_mixin import ModelAdminRevisionMixin
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
-                     ModelAdminFormAutoNumberMixin, ModelAdminAuditFieldsMixin, admin.ModelAdmin):
+                     ModelAdminFormAutoNumberMixin, ModelAdminRevisionMixin, ModelAdminAuditFieldsMixin,
+                     admin.ModelAdmin):
 
     list_per_page = 10
     date_hierarchy = 'modified'
@@ -33,7 +35,7 @@ class BaseCrfModelAdmin(BaseModelAdmin):
 
     list_display = (
         'dashboard', 'subject_identifier', 'visit_code', 'edited', 'pending_fields',
-        'flagged', 'no_report', 'reviewed')
+        'flag', 'NR', 'reviewed')
     list_display_links = ('dashboard', )
     search_fields = ['pending_fields']
     instructions = (
@@ -70,10 +72,13 @@ class BaseStackedInlineCrfModelAdmin(StackedInlineMixin, admin.StackedInline):
 class EnrollmentAdmin(BaseModelAdmin):
     form = EnrollmentForm
     radio_fields = {
+        'entry_to_care': admin.VERTICAL,
+        'initiation': admin.VERTICAL,
         'gender': admin.VERTICAL,
         'caregiver_relation': admin.VERTICAL}
-
-    list_display = ('subject_identifier', 'report_datetime', 'age', 'dashboard', 'slh_identifier', 'cm_identifier')
+    search_fields = ('subject_identifier', 'slh_identifier', 'cm_identifier')
+    list_display_links = ('dashboard', )
+    list_display = ('dashboard', 'subject_identifier', 'report_datetime', 'age', 'slh_identifier', 'cm_identifier')
     list_filter = ('report_datetime', )
 
 
