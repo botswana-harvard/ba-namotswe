@@ -1,5 +1,4 @@
 from edc_base.model.models.base_uuid_model import BaseUuidModel
-
 from edc_metadata.model_mixins import CrfMetadataModelMixin
 
 

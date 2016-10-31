@@ -5,7 +5,7 @@ from edc_constants.constants import UNKNOWN
 
 from ..choices import WHO_STAGE, WHO_DEFINING_ILLNESSES
 
-from .crf_model import CrfModelMixin, CrfInlineModelMixin
+from .crf_model_mixin import CrfModelMixin, CrfInlineModelMixin
 
 
 class WhoStaging(CrfModelMixin):

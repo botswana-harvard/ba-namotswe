@@ -1,16 +1,16 @@
 from datetime import date
+
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 
 from edc_base.model.validators.date import date_not_future
-
 from edc_constants.choices import YES_NO_UNKNOWN
+from edc_constants.constants import NOT_APPLICABLE, UNKNOWN
 
 from ..choices import MATERNAL_ARVS, INFANT_PROPHYLAXIS
 
-from .crf_model import CrfModelMixin
-from edc_constants.constants import NOT_APPLICABLE, UNKNOWN
-from django.core.validators import MaxValueValidator, MinValueValidator
+from .crf_model_mixin import CrfModelMixin
 
 
 class EntryToCare(CrfModelMixin):

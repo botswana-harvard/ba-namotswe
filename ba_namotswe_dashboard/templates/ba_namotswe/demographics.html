@@ -1,6 +1,11 @@
     <div class="panel-group">
-    	<div class="panel panel-success">
-          <div class="panel-heading clearfix">{{ subject_identifier }}<span class="pull-right"><a href="{% url 'home_url' subject_identifier=subject_identifier %}" role="button" class="btn btn-sm btn-primary">Close</a></span></div>
+    	<div class="panel panel-info">
+          <div class="panel-heading clearfix">{{ subject_identifier }}
+            <span class="pull-right">
+              {% if lost_to_followup.last_contact_date %}<span class="label label-warning">Subject LFTU last contact {{ lost_to_followup.last_contact_date|date:"Y-m-d" }}</span>{% endif %}
+              {% if death.death_date %}<span class="label label-danger">Subject deceased on {{ death.death_date|date:"Y-m-d" }}</span>{% endif %}
+              <a href="{% url 'home_url' subject_identifier=subject_identifier %}" role="button" class="btn btn-sm btn-primary">Close</a>
+            </span></div>
       <div class="panel-body"> 
         {% for key, value in demographics.items %}
           {% if value %}

@@ -11,6 +11,8 @@ from edc_metadata.constants import REQUIRED
 from edc_constants.constants import OTHER
 from edc_base.utils.age import formatted_age
 from django.utils import timezone
+from ba_namotswe.models.death import Death
+from ba_namotswe.models.lost_to_followup import LostToFollowup
 # from ba_namotswe.comment_form import CommentForm
 
 
@@ -30,6 +32,14 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
     def get_context_data(self, **kwargs):
         self.context = super(SubjectDashboardView, self).get_context_data(**kwargs)
         enrollment = self.enrollment_model.objects.get(subject_identifier=self.subject_identifier)
+        try:
+            death = Death.objects.get(subject_identifier=self.subject_identifier)
+        except Death.DoesNotExist:
+            death = Death()
+        try:
+            lost_to_followup = LostToFollowup.objects.get(subject_identifier=self.subject_identifier)
+        except LostToFollowup.DoesNotExist:
+            lost_to_followup = LostToFollowup()
         self.context.update({
             'requisitions': self.requisitions,
             'crfs': self.crfs,
@@ -42,6 +52,8 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
             'demographics': self.demographics,
             'enrollment_model_name': self.enrollment_model._meta.verbose_name,
             'enrollment': enrollment,
+            'death': death,
+            'lost_to_followup': lost_to_followup,
         })
         return self.context
 

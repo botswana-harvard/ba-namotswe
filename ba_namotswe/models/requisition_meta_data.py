@@ -1,7 +1,7 @@
 from edc_base.model.models.base_uuid_model import BaseUuidModel
-
 from edc_metadata.model_mixins import RequisitionMetadataModelMixin
-from ba_namotswe.models.subject_requisition import SubjectRequisition
+
+from .subject_requisition import SubjectRequisition
 
 
 class RequisitionMetadata(RequisitionMetadataModelMixin, BaseUuidModel):

@@ -2,7 +2,7 @@ from django.db import models
 
 from ..choices import TRANSFER
 
-from .crf_model import CrfModelMixin, CrfInlineModelMixin
+from .crf_model_mixin import CrfModelMixin, CrfInlineModelMixin
 
 
 class TransferRecord(CrfModelMixin):

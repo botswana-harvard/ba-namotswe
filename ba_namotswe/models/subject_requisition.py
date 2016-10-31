@@ -4,7 +4,7 @@ from edc_lab.requisition.managers import RequisitionManager
 from edc_lab.requisition.model_mixins import RequisitionModelMixin
 from edc_visit_tracking.managers import CrfModelManager
 
-from .crf_model import CrfModelMixin
+from .crf_model_mixin import CrfModelMixin
 
 
 class SubjectRequisitionManager(CrfModelManager):

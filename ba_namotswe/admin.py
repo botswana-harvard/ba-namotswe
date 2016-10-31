@@ -98,11 +98,13 @@ class SubjectVisitAdmin(VisitAdminMixin, BaseModelAdmin):
 @admin.register(Death, site=ba_namotswe_admin)
 class DeathAdmin(BaseModelAdmin):
     form = DeathForm
+    list_display = ('dashboard', 'subject_identifier', 'report_datetime', 'death_date')
 
 
 @admin.register(LostToFollowup, site=ba_namotswe_admin)
 class LostToFollowupAdmin(BaseModelAdmin):
     form = LostToFollowupForm
+    list_display = ('dashboard', 'subject_identifier', 'report_datetime', 'last_contact_date')
 
 
 @admin.register(EntryToCare, site=ba_namotswe_admin)

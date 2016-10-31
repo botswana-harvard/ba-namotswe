@@ -1,8 +1,10 @@
 from django.db import models
 
-from .crf_model import CrfModelMixin
-from ..choices import RELATIONSHIP
 from edc_constants.constants import UNKNOWN
+
+from ..choices import RELATIONSHIP
+
+from .crf_model_mixin import CrfModelMixin
 
 
 class AdherenceCounselling(CrfModelMixin):

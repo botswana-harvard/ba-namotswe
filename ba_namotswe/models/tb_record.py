@@ -4,7 +4,7 @@ from edc_base.model.validators.date import date_not_future
 
 from ..choices import TB_TYPE, TEST_TYPE
 
-from .crf_model import CrfModelMixin, CrfInlineModelMixin
+from .crf_model_mixin import CrfModelMixin, CrfInlineModelMixin
 
 
 class TbRecord(CrfModelMixin):

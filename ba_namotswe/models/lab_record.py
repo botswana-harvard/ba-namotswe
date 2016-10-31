@@ -6,7 +6,7 @@ from edc_lab.choices import UNITS
 
 from ..choices import UTEST_IDS, QUANTIFIERS
 
-from .crf_model import CrfModelMixin, CrfInlineModelMixin
+from .crf_model_mixin import CrfModelMixin, CrfInlineModelMixin
 
 
 class LabRecord(CrfModelMixin):

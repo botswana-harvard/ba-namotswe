@@ -4,7 +4,7 @@ from django.utils import timezone
 from ..choices import ART_STATUS, ART_REGIMENS
 from ..constants import ONGOING
 
-from .crf_model import CrfModelMixin, CrfInlineModelMixin
+from .crf_model_mixin import CrfModelMixin, CrfInlineModelMixin
 
 
 class ArtRecord(CrfModelMixin):

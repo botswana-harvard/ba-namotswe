@@ -5,7 +5,7 @@ from django.utils import timezone
 from edc_constants.choices import YES_NO_UNKNOWN, YES_NO_UNKNOWN_NA
 from edc_constants.constants import UNKNOWN
 
-from .crf_model import CrfModelMixin
+from .crf_model_mixin import CrfModelMixin
 
 
 class InCare(CrfModelMixin):

@@ -2,7 +2,6 @@ from .adherence_counselling import AdherenceCounselling
 from .appointment import Appointment
 from .art_record import ArtRecord, ArtRegimen
 from .crf_metadata import CrfMetadata
-from .crf_model import CrfModelMixin, CrfInlineModelMixin
 from .death import Death
 from .enrollment import Enrollment
 from .entry_to_care import EntryToCare

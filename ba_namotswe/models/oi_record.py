@@ -1,11 +1,10 @@
 from django.db import models
 from django.utils import timezone
 
-from ..choices import OI_OPTIONS
+from ..constants import RESOLVED
+from ..choices import OI_STATUS, OI_OPTIONS
 
-from .crf_model import CrfModelMixin, CrfInlineModelMixin
-from ba_namotswe.constants import RESOLVED
-from ba_namotswe.choices import OI_STATUS
+from .crf_model_mixin import CrfModelMixin, CrfInlineModelMixin
 
 
 class OiRecord(CrfModelMixin):

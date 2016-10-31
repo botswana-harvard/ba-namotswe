@@ -1,6 +1,6 @@
 from django.db import models
 
-from .crf_model import CrfModelMixin, CrfInlineModelMixin
+from .crf_model_mixin import CrfModelMixin, CrfInlineModelMixin
 
 
 class PregnancyHistory(CrfModelMixin):

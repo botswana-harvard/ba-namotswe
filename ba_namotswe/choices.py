@@ -22,22 +22,6 @@ OI_STATUS = (
     (RESOLVED_EST, 'Resolved/Estimated'),
 )
 
-# ART_REGIMENS = (
-#     ('EFV/TDF/FTC', 'NNRTI: EFV + TDF/FTC'),
-#     ('EFV + ABC/3TC', 'NNRTI: EFV + ABC/3TC'),
-#     ('RPV/TDF/FTC', 'NNRTI: RPV + TDF/FTC)'),
-#     ('(DRV/r) + TDF/FTC', 'PI: Darunavir/ritonavir (DRV/r) + TDF/FTC'),
-#     ('ATV/r + ABC/3TC', 'PI: ATV/r + ABC/3TC'),
-#     ('DRV/r + ABC/3TC', 'PI: DRV/r + ABC/3TC'),
-#     ('LPV/r + ABC/3TC', 'PI: Lopinavir/ritonavir LPV/r + ABC/3TC'),
-#     ('LPV/r + ABC/3TC', 'PI: Lopinavir/ritonavir LPV/r + TDF/FTC'),
-#     ('(RAL) + TDF/FTC', 'INSTI: Raltegravir (RAL) + TDF/FTC'),
-#     ('RAL + ABC/3TC', 'INSTI: Raltegravir (RAL) + ABC/3TC'),
-#     ('EVG/COBI/TDF/FTC', 'INSTI: EVG/COBI/TDF/FTC'),
-#     ('(DTG) + ABC/3TC', 'INSTI: Dolutegravir (DTG) + ABC/3TC'),
-#     ('DTG + TDF/FTC', 'INSTI: Dolutegravir (DTG) + + TDF/FTC'),
-# )
-
 ART_REGIMENS = (
     ('EFV+FTC+TDF', 'Atripla (FTC, TDF, EFV)'),
     ('3TC+AZT', 'Combivir (AZT, 3TC)'),
