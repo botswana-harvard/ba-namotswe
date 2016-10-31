@@ -1,7 +1,7 @@
 	<div class="panel-group">
 		<div class="panel panel-warning">
 			{% if selected_appointment %}
-				<div class="panel-heading clearfix">{{ selected_appointment.visit_code }}: {{ selected_appointment.title|title }} on {{ selected_appointment.subjectvisit.visit_date|date:"Y-m-d"| capfirst }}<span class="pull-right"><a href="{% url 'subject_dashboard_url' subject_identifier=selected_appointment.subject_identifier %} role="button" class="btn btn-sm btn-default">appointments</a></span></div>
+				<div class="panel-heading clearfix">{{ selected_appointment.visit_code }}: {{ selected_appointment.title|title }} on {{ selected_appointment.subjectvisit.visit_date|date:"Y-m-d"| capfirst }}<span class="pull-right"><a href="{% url 'subject_dashboard_url' subject_identifier=selected_appointment.subject_identifier %} role="button" class="btn btn-sm btn-default">Clinic Visit Reports</a></span></div>
 			{% else %}
 				<div class="panel-heading clearfix">Clinic Visit Reports
 					<span class="pull-right">
