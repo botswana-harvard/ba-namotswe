@@ -35,7 +35,7 @@ class SubjectVisit(VisitModelMixin, CreatesMetadataModelMixin, RequiresConsentMi
         app_label = 'ba_namotswe'
         consent_model = 'ba_namotswe.subjectconsent'
         unique_together = (
-            ('visit_schedule_name', 'schedule_name', 'visit_code'),
-            ('visit_schedule_name', 'schedule_name', 'visit_date'),
+            ('subject_identifier', 'visit_schedule_name', 'schedule_name', 'visit_code'),
+            ('subject_identifier', 'visit_schedule_name', 'schedule_name', 'visit_date'),
         )
-        ordering = (('visit_schedule_name', 'schedule_name', 'visit_code', 'visit_date', ))
+        ordering = (('subject_identifier', 'visit_schedule_name', 'schedule_name', 'visit_code', 'visit_date', ))
