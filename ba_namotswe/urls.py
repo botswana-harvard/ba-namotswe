@@ -21,12 +21,16 @@ from edc_base.views import LoginView, LogoutView
 
 from .admin_site import ba_namotswe_admin
 from .views import HomeView
+from edc_metadata.admin import edc_metadata_admin
+from edc_registration.admin import edc_registration_admin
 
 urlpatterns = [
     url(r'^dashboard/', include('ba_namotswe_dashboard.urls')),
     url(r'login', LoginView.as_view(), name='login_url'),
     url(r'logout', LogoutView.as_view(pattern_name='login_url'), name='logout_url'),
     url(r'^admin/', ba_namotswe_admin.urls),
+    url(r'^edc_metadata/', edc_metadata_admin.urls),
+    url(r'^edc_registration/', edc_registration_admin.urls),
     url(r'^admin/', admin.site.urls),
     url(r'^edc/', include('edc_base.urls', namespace='edc-base')),
     url(r'^(?P<subject_identifier>[0-9\-]{14})/$', HomeView.as_view(), name='home_url'),

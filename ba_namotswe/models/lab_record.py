@@ -29,7 +29,10 @@ class LabTest(CrfInlineModelMixin):
         choices=UTEST_IDS)
 
     test_date = models.DateField(
-        validators=[date_not_future])
+        validators=[date_not_future],
+        null=True,
+        blank=True,
+        help_text='Leave blank to use visit date')
 
     quantifier = models.CharField(
         verbose_name='quantifier',
@@ -42,8 +45,16 @@ class LabTest(CrfInlineModelMixin):
 
     units = models.CharField(
         max_length=10,
-        choices=UNITS)
+        choices=UNITS,
+        null=True,
+        editable=False)
+
+    def save(self, *args, **kwargs):
+        if not self.test_date:
+            self.test_date = self.lab_record.subject_visit.visit_date
+        return super(LabTest, self).save(*args, **kwargs)
 
     class Meta(CrfInlineModelMixin.Meta):
         app_label = 'ba_namotswe'
         crf_inline_parent = 'lab_record'
+        unique_together = (('lab_record', 'utest_id', 'test_date'), )

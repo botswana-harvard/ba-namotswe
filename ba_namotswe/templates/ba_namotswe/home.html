@@ -22,74 +22,46 @@
    {% else %}   
       <div class="col-md-3">
    {% endif %}
-          <div class="panel-group">
-          <div class="panel panel-default">
+      <div class="panel-group">
+        <div class="panel panel-default">
           <div class="panel-body">
-              <span class="pull-left"><a href="{% url 'ba_namotswe_admin:ba_namotswe_enrollment_add' %}?next={% url 'home_url' %}" class="btn btn-sm btn-default" role="button">Enroll Patient</a></span>
-              <span class="pull-right">{% crispy form %}</span>
+            <span class="pull-left"><a href="{% url 'ba_namotswe_admin:ba_namotswe_enrollment_add' %}?next={% url 'home_url' %}" class="btn btn-sm btn-default" role="button">Enroll Patient</a></span>
+            <span class="pull-right">{% crispy form %}</span>
             {% if enrollments %}
-                <table class="table table-condensed table-striped table-responsive">
-                  <tbody>
-              {% for enrollment in enrollments %}
+              <table class="table table-condensed table-striped table-responsive">
+                <tbody>
+                  {% for enrollment in enrollments %}
                   <tr>
                     <td><a href="{% url dashboard_url_name subject_identifier=enrollment.subject_identifier %}" role="button" class="btn btn-sm btn-default">Go</a></td>
                     <td>{{ enrollment.subject_identifier }} (SLH: {{ enrollment.slh_identifier }} CM: {{ enrollment.cm_identifier }})</td>
                     <td>{{ enrollment.age }} {{ enrollment.get_gender_display }}</td>
                     <td>Enrolled {{ enrollment.report_datetime|date:"Y-m-d" }}</td>
                   </tr>
-              {% endfor %}
-                  </tbody>
-                </table>
-            {% endif %}
-            </div>
-          </div>          
-
-            <div class="panel panel-warning">
-              <div class="panel-heading">Reports</div>
-                  <div class="panel-body">
-                  </div>
-              </div>
-          </div>
-            <div class="panel panel-warning">
-              <div class="panel-heading">Statistics</div>
-                  <div class="panel-body">
-                  </div>
-              </div>
-          </div>
-      </div>
-
-
-   {% if not patient %}
-      <div class="col-md-12">
-   {% else %}   
-      <div class="col-md-9">
-   {% endif %}
-
-        <div class="panel-group">
-          {% if patient %}
-            <div class="panel panel-success"> 
-              <div class="panel-heading"><b>Patient:</b> <a title="Edit patient information" >{{ enrollment.subject_identifier }}</a> <b>Initials:</b> {{ enrollment.initials }} <b>Gender:</b> {{ enrollment.gender }} <b>DOB:</b> {{ enrollment.dob }}  <b>Age:</b> {{ patient.registered_subject.subject_age }}</div>
-            </div>
-            <div class="panel panel-default"> 
-              <div class="panel-heading clearfix">Enrollment history
-                <a class="btn btn-sm btn-default pull-right" role="button">Add</a>
-              </div>
-            <div class="panel-body">
-              <table id="tbl-dispense-data" class="table table-striped table-responsive">
-                <thead><th>Initial Clinic Visit</th><th>HIV Diagnosis Date</th><th>ART Initiation Date</th><th></th></thead>
-                <tbody>
-                  <tr> 
-                    <td>{{ enrollment.initial_visit_date }}</td>
-                    <td>{{ enrollment.hiv_diagnosis_date }}</td>
-                    <td>{{ enrollment.art_initiation_date }}</td>
-                    </tr>
+                  {% endfor %}
                 </tbody>
               </table>
-            </div>
-            </div>
-          {% endif %} <!--- end if patient --->
-        </div>                        
-      </div>  
+            {% endif %}
+          </div>
+        </div>          
 
-  </div> <!-- container -->
+        <div class="panel panel-warning">
+          <div class="panel-heading">Reports</div>
+            <div class="panel-body">
+            </div>
+        </div>
+        <div class="panel panel-warning">
+          <div class="panel-heading">Statistics</div>
+            <div class="panel-body">
+            </div>
+        </div>
+        <div class="panel panel-warning">
+          <div class="panel-heading">Edc</div>
+            <div class="panel-body">
+              <a href="{% url "edc_metadata_admin:ba_namotswe_crfmetadata_changelist" %}">Metadata</a> |
+              <a href="{% url "edc_registration_admin:ba_namotswe_registeredsubject_changelist" %}">Registration</a>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock main %} s

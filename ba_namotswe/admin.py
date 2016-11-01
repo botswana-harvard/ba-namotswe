@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib import admin
 
 from edc_base.modeladmin.mixins import (
@@ -17,6 +19,11 @@ from .models import (
     Appointment, TbRecord, Tb, AdherenceCounselling, ArtRecord, ArtRegimen, Death, PregnancyHistory, Pregnancy,
     TransferRecord, Transfer, LabRecord, LabTest, WhoStaging, WhoDiagnosis, LostToFollowup, InCare)
 from django_revision.modeladmin_mixin import ModelAdminRevisionMixin
+from ba_namotswe.models.crf_metadata import CrfMetadata
+from edc_metadata.admin import edc_metadata_admin
+from edc_metadata.modeladmin_mixins import CrfMetaDataAdminMixin
+from ba_namotswe.models.registered_subject import RegisteredSubject
+from edc_registration.admin import RegisteredSubjectModelAdminMixin, edc_registration_admin
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
@@ -239,3 +246,15 @@ class WhoStagingAdmin(BaseCrfModelAdmin):
 @admin.register(WhoDiagnosis, site=ba_namotswe_admin)
 class WhoDiagnosisAdmin(BaseCrfModelAdmin):
     form = WhoDiagnosisForm
+
+
+@admin.register(CrfMetadata, site=edc_metadata_admin)
+class CrfMetadataAdmin(CrfMetaDataAdminMixin, admin.ModelAdmin):
+    pass
+
+
+@admin.register(RegisteredSubject, site=edc_registration_admin)
+class RegisteredSubjectAdmin(admin.ModelAdmin):
+    list_display = ('subject_identifier', 'gender', 'dob', 'registration_datetime', 'user_created', 'created')
+    search_fields = ('subject_identifier', )
+    list_filter = ('gender', 'created')

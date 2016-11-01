@@ -19,5 +19,7 @@ class LostToFollowup(DashboardModelMixin, UrlMixin, BaseUuidModel):
 
     last_contact_date = models.DateField()
 
+    last_visit_date = models.DateField()
+
     class Meta:
         app_label = 'ba_namotswe'

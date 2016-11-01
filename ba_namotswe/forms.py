@@ -70,9 +70,11 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
         cleaned_data = super(SubjectVisitForm, self).clean()
         try:
             obj = SubjectVisit.objects.filter(
+                subject_identifier=cleaned_data['appointment'].subject_identifier,
                 visit_date=cleaned_data['visit_date']).exclude(pk=self.instance.pk)
         except AttributeError:
             obj = SubjectVisit.objects.filter(
+                subject_identifier=cleaned_data['appointment'].subject_identifier,
                 visit_date=cleaned_data['visit_date'])
         if obj:
             raise forms.ValidationError({
@@ -82,7 +84,9 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
             previous_visit_code = cleaned_data['appointment'].schedule.get_previous_visit(
                 cleaned_data['appointment'].visit_code).code
             try:
-                obj = SubjectVisit.objects.get(visit_code=previous_visit_code)
+                obj = SubjectVisit.objects.get(
+                    subject_identifier=cleaned_data['appointment'].subject_identifier,
+                    visit_code=previous_visit_code)
                 if obj.visit_date > cleaned_data['visit_date']:
                     raise forms.ValidationError({
                         'visit_date': 'Visit date must be after {}. See visit {}.'.format(
@@ -300,7 +304,27 @@ class LabTestForm(forms.ModelForm):
 
     class Meta:
         model = LabTest
-        fields = '__all__'
+        fields = ['utest_id', 'quantifier', 'value', 'test_date']
+
+    def clean(self):
+        super(LabTestForm, self).clean()
+        if not self.cleaned_data['test_date']:
+            self.cleaned_data['test_date'] = self.cleaned_data['lab_record'].subject_visit.visit_date
+        print(self.cleaned_data)
+        if self.cleaned_data.get('value') and self.cleaned_data.get('utest_id'):
+            self.validate_value()
+        return self.cleaned_data
+
+    def validate_value(self):
+        if self.cleaned_data['utest_id'] == 'CD4':
+            if int(self.cleaned_data['value']) < 0 or int(self.cleaned_data['value']) > 2000:
+                raise forms.ValidationError({'value': 'Invalid value'})
+        if self.cleaned_data['utest_id'] == 'CD4_perc':
+            if int(self.cleaned_data['value']) < 0 or int(self.cleaned_data['value']) > 100:
+                raise forms.ValidationError({'value': 'Invalid value'})
+        if self.cleaned_data['utest_id'] == 'VL':
+            if int(self.cleaned_data['value']) < 40 or int(self.cleaned_data['value']) > 750000:
+                raise forms.ValidationError({'value': 'Invalid value'})
 
 
 class LabRecordForm(forms.ModelForm):

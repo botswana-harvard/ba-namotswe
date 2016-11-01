@@ -26,7 +26,6 @@ class AppConfig(DjangoAppConfig):
 
     def ready(self):
         from .models import signals
-        # from .rule_groups import BaNamotsweRuleGroup
 
 
 class EdcRegistrationAppConfig(EdcRegistrationAppConfigParent):

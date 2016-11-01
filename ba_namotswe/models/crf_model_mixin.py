@@ -12,6 +12,7 @@ from edc_visit_tracking.model_mixins import (
 from ..model_mixins import DashboardModelMixin, PendingFieldsModelMixin, ReviewFieldsModelMixin
 
 from .subject_visit import SubjectVisit
+from edc_visit_tracking.managers import CrfModelManager
 
 
 class CrfInlineModelMixin(DashboardModelMixin, VisitTrackingCrfInlineModelMixin, ReviewFieldsModelMixin, UrlMixin,

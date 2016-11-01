@@ -7,8 +7,8 @@ from edc_base.view_mixins import EdcBaseViewMixin
 
 from ba_namotswe.models import RequisitionMetadata, CrfMetadata, Enrollment, Appointment, SubjectVisit
 from ba_namotswe.models.entry_to_care import EntryToCare
-from edc_metadata.constants import REQUIRED
-from edc_constants.constants import OTHER
+from edc_metadata.constants import REQUIRED, NOT_REQUIRED
+from edc_constants.constants import OTHER, MALE
 from edc_base.utils.age import formatted_age
 from django.utils import timezone
 from ba_namotswe.models.death import Death
@@ -64,40 +64,44 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
                 self._crfs = []
                 crfs = CrfMetadata.objects.filter(
                     subject_identifier=self.subject_identifier,
-                    visit_code=self.selected_appointment.visit_code).order_by('show_order')
+                    visit_code=self.selected_appointment.visit_code).exclude(
+                        entry_status=NOT_REQUIRED).order_by('show_order')
                 for crf in crfs:
-                    try:
-                        obj = crf.model_class.objects.get(subject_visit=self.subject_visit)
-                    except crf.model_class.DoesNotExist:
-                        if crf.entry_status == REQUIRED:
-                            obj = crf.model_class.objects.create(subject_visit=self.subject_visit)
-                            obj.edited = False
-                            obj.save(update_fields=['edited'])
-                        else:
-                            obj = None
-                            crf.url = None
-                            crf.instance = None
-                    if obj:
-                        if self.kwargs.get('selected_crf') == crf.model:
-                            if self.kwargs.get('toggle_status') == 'flagged':
-                                obj.flagged = False if obj.flagged else True
-                                obj.flagged_datetime = timezone.now()
-                                obj.save(update_fields=['flagged', 'flagged_datetime'])
-                            elif self.kwargs.get('toggle_status') == 'reviewed':
-                                obj.reviewed = False if obj.reviewed else True
-                                obj.reviewed_datetime = timezone.now()
-                                obj.save(update_fields=['reviewed', 'reviewed_datetime'])
-                            elif self.kwargs.get('toggle_status') == 'no_report':
-                                obj.no_report = False if obj.no_report else True
-                                obj.no_report_datetime = timezone.now()
-                                obj.edited = True
-                                obj.save(update_fields=['no_report', 'no_report_datetime', 'edited'])
-                        crf.url = obj.get_absolute_url()
-                        crf.changelist_url = reverse('{}:{}_{}_changelist'.format(
-                            crf.model_class.ADMIN_SITE_NAME, *crf.model_class._meta.label_lower.split('.')))
-                        crf.instance = obj
-                    crf.title = crf.model_class()._meta.verbose_name
-                    self._crfs.append(crf)
+                    if self.enrollment.gender == MALE and crf.model == 'ba_namotswe.pregnancyhistory':
+                        pass
+                    else:
+                        try:
+                            obj = crf.model_class.objects.get(subject_visit=self.subject_visit)
+                        except crf.model_class.DoesNotExist:
+                            if crf.entry_status == REQUIRED:
+                                obj = crf.model_class.objects.create(subject_visit=self.subject_visit)
+                                obj.edited = False
+                                obj.save(update_fields=['edited'])
+                            else:
+                                obj = None
+                                crf.url = None
+                                crf.instance = None
+                        if obj:
+                            if self.kwargs.get('selected_crf') == crf.model:
+                                if self.kwargs.get('toggle_status') == 'flagged':
+                                    obj.flagged = False if obj.flagged else True
+                                    obj.flagged_datetime = timezone.now()
+                                    obj.save(update_fields=['flagged', 'flagged_datetime'])
+                                elif self.kwargs.get('toggle_status') == 'reviewed':
+                                    obj.reviewed = False if obj.reviewed else True
+                                    obj.reviewed_datetime = timezone.now()
+                                    obj.save(update_fields=['reviewed', 'reviewed_datetime'])
+                                elif self.kwargs.get('toggle_status') == 'no_report':
+                                    obj.no_report = False if obj.no_report else True
+                                    obj.no_report_datetime = timezone.now()
+                                    obj.edited = True
+                                    obj.save(update_fields=['no_report', 'no_report_datetime', 'edited'])
+                            crf.url = obj.get_absolute_url()
+                            crf.changelist_url = reverse('{}:{}_{}_changelist'.format(
+                                crf.model_class.ADMIN_SITE_NAME, *crf.model_class._meta.label_lower.split('.')))
+                            crf.instance = obj
+                        crf.title = crf.model_class()._meta.verbose_name
+                        self._crfs.append(crf)
         return self._crfs
 
     @property
