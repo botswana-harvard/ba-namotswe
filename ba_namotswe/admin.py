@@ -133,7 +133,6 @@ class InCareAdmin(BaseCrfModelAdmin):
     form = InCareForm
     search_fields = ['pending_fields']
     radio_fields = {
-        'attended': admin.VERTICAL,
         'weight_measured': admin.VERTICAL,
         'height_measured': admin.VERTICAL,
         'hospital': admin.VERTICAL,

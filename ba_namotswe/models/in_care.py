@@ -12,12 +12,6 @@ class InCare(CrfModelMixin):
 
     report_datetime = models.DateTimeField(default=timezone.now, editable=False)
 
-    attended = models.CharField(
-        verbose_name='Did the patient attend this clinic visit?',
-        max_length=15,
-        default=UNKNOWN,
-        choices=YES_NO_UNKNOWN)
-
     weight_measured = models.CharField(
         verbose_name='Was weight measured?',
         max_length=15,
