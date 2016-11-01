@@ -33,8 +33,10 @@
 						        	{% endif %}
 						        </td>
 						        <td>
-						        	{% if appointment.subjectvisit %}
+						        	{% if appointment.subjectvisit and appointment.subjectvisit.reason != 'missed' %}
 						        		<a href="{% url 'subject_dashboard_url' subject_identifier=appointment.subject_identifier appointment_pk=appointment.pk %}" role="button" class="btn btn-sm btn-default">forms</a>
+						        	{% elif appointment.subjectvisit.reason == 'missed' %}
+						        		<span class="text small text-muted">missed</span>
 						        	{% endif %}
 						        </td>
 					            </tr>

@@ -3,8 +3,8 @@ from django.contrib.admin.widgets import AdminRadioSelect, AdminRadioFieldRender
 from django.utils import timezone
 
 from edc_constants.constants import ON_STUDY, YES, NO, UNKNOWN, NOT_APPLICABLE
-from edc_visit_tracking.choices import VISIT_REASON, VISIT_INFO_SOURCE
-from edc_visit_tracking.constants import SCHEDULED, CHART
+from edc_visit_tracking.choices import VISIT_INFO_SOURCE
+from edc_visit_tracking.constants import SCHEDULED, CHART, UNSCHEDULED, MISSED_VISIT
 from edc_visit_tracking.form_mixins import VisitFormMixin
 
 from .choices import VISIT_STUDY_STATUS
@@ -16,6 +16,12 @@ from .validators import (
     SimpleYesNoValidationMixin, SimpleOtherSpecifyValidationMixin,
     SimpleDateFieldValidatorMixin, SimpleStartStopDateValidationMixin)
 from ba_namotswe.validators import SimpleApplicableByAgeValidatorMixin
+
+VISIT_REASON = (
+    (SCHEDULED, 'Scheduled visit'),
+    (UNSCHEDULED, 'Unscheduled visit'),
+    (MISSED_VISIT, 'Missed visit'),
+)
 
 
 class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
@@ -47,7 +53,7 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
     )
 
     reason = forms.ChoiceField(
-        label='Reason for visit',
+        label='Reason for report',
         choices=[choice for choice in VISIT_REASON],
         initial=SCHEDULED,
         required=False,
@@ -61,11 +67,16 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
         choices=[choice for choice in VISIT_INFO_SOURCE],
         widget=AdminRadioSelect(renderer=AdminRadioFieldRenderer))
 
+    reason_missed = forms.CharField(
+        label='If \'missed\', provide reason.',
+        required=False,
+        widget=forms.Textarea(attrs={'cols': 40, 'rows': 3})
+    )
+
     dashboard_type = 'subject'
 
     def clean(self):
         self.cleaned_data['study_status'] = ON_STUDY
-        self.cleaned_data['reason'] = SCHEDULED
         self.cleaned_data['info_source'] = CHART
         cleaned_data = super(SubjectVisitForm, self).clean()
         try:
@@ -100,7 +111,7 @@ class SubjectVisitForm(VisitFormMixin, forms.ModelForm):
 
     class Meta:
         model = SubjectVisit
-        fields = ['appointment', 'visit_date']
+        fields = ['appointment', 'visit_date', 'reason', 'reason_missed']
 
 
 class EnrollmentForm(SimpleOtherSpecifyValidationMixin, forms.ModelForm):

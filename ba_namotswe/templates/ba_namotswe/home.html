@@ -55,10 +55,14 @@
             </div>
         </div>
         <div class="panel panel-warning">
-          <div class="panel-heading">Edc</div>
+          <div class="panel-heading">Edc Administration</div>
             <div class="panel-body">
-              <a href="{% url "edc_metadata_admin:ba_namotswe_crfmetadata_changelist" %}">Metadata</a> |
-              <a href="{% url "edc_registration_admin:ba_namotswe_registeredsubject_changelist" %}">Registration</a>
+              <a role="button" class="btn btn-sm btn-default" href="{% url "ba_namotswe_admin:ba_namotswe_subjectvisit_changelist" %}">Clinic Visit List</a>
+              <a role="button" class="btn btn-sm btn-default" href="{% url "edc-visit-schedule:home-url" visit_schedule='visit_schedule' %}">Visit Schedule</a>
+              <a role="button" class="btn btn-sm btn-default" href="{% url "edc_registration_admin:ba_namotswe_registeredsubject_changelist" %}">Registration List</a>
+              <a role="button" class="btn btn-sm btn-default" href="{% url "edc-consent-url" %}">Consents</a>
+              <a role="button" class="btn btn-sm btn-default" href="{% url "edc_metadata_admin:ba_namotswe_crfmetadata_changelist" %}">Metadata List</a>
+              <a role="button" class="btn btn-sm btn-default" href="{% url "edc_identifier_admin:index" %}">Identifiers</a>
             </div>
         </div>
       </div>

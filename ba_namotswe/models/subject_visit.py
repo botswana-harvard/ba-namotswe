@@ -26,7 +26,7 @@ class SubjectVisit(VisitModelMixin, CreatesMetadataModelMixin, RequiresConsentMi
     def save(self, *args, **kwargs):
         if not self.id:
             self.study_status = ON_STUDY
-            self.reason = SCHEDULED
+            self.reason = self.reason or SCHEDULED
             self.require_crfs = YES
             self.info_source = CHART
         super(SubjectVisit, self).save(*args, **kwargs)
