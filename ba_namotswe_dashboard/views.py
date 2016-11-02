@@ -13,9 +13,7 @@ from edc_base.utils.age import formatted_age
 from django.utils import timezone
 from ba_namotswe.models.death import Death
 from ba_namotswe.models.lost_to_followup import LostToFollowup
-from django.core.exceptions import ObjectDoesNotExist
 from django.urls.exceptions import NoReverseMatch
-# from ba_namotswe.comment_form import CommentForm
 
 
 class SubjectDashboardView(EdcBaseViewMixin, TemplateView):

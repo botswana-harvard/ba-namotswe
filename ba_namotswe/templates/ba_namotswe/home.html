@@ -16,56 +16,59 @@
   {% block main %}
 
    <div class="container">
-      
-   {% if not patient %}
       <div class="col-md-12">
-   {% else %}   
-      <div class="col-md-3">
-   {% endif %}
-      <div class="panel-group">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <span class="pull-left"><a href="{% url 'ba_namotswe_admin:ba_namotswe_enrollment_add' %}?next={% url 'home_url' %}" class="btn btn-sm btn-default" role="button">Enroll Patient</a></span>
-            <span class="pull-right">{% crispy form %}</span>
-            {% if enrollments %}
-              <table class="table table-condensed table-striped table-responsive">
-                <tbody>
-                  {% for enrollment in enrollments %}
-                  <tr>
-                    <td><a href="{% url dashboard_url_name subject_identifier=enrollment.subject_identifier %}" role="button" class="btn btn-sm btn-default">Go</a></td>
-                    <td>{{ enrollment.subject_identifier }} (SLH: {{ enrollment.slh_identifier }} CM: {{ enrollment.cm_identifier }})</td>
-                    <td>{{ enrollment.age }} {{ enrollment.get_gender_display }}</td>
-                    <td>Enrolled {{ enrollment.report_datetime|date:"Y-m-d" }}</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            {% endif %}
-          </div>
-        </div>          
+        <div class="panel-group">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <span class="pull-left"><a title="enroll a new patient" href="{% url 'ba_namotswe_admin:ba_namotswe_enrollment_add' %}?next={% url 'home_url' %}" class="btn btn-sm btn-primary" role="button">Enroll Patient</a></span>
+              <span class="pull-right">{% crispy form %}</span>
+              {% if enrollments %}
+                <table class="table table-condensed table-striped table-responsive">
+                  <tbody>
+                    {% for enrollment in enrollments %}
+                    <tr>
+                      <td><a title="go to patient dashboard" href="{% url dashboard_url_name subject_identifier=enrollment.subject_identifier %}" role="button" class="btn btn-sm btn-primary">Go</a></td>
+                      <td>{{ enrollment.subject_identifier }} (SLH: {{ enrollment.slh_identifier }} CM: {{ enrollment.cm_identifier }})</td>
+                      <td>{{ enrollment.age }} {{ enrollment.get_gender_display }}</td>
+                      <td>Enrolled {{ enrollment.report_datetime|date:"Y-m-d" }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% endif %}
+            </div>
+          </div>          
+        </div>
+      </div>
 
-        <div class="panel panel-warning">
+      <div class="col-md-4">
+        <div class="panel panel-info">
           <div class="panel-heading">Reports</div>
             <div class="panel-body">
             </div>
         </div>
-        <div class="panel panel-warning">
+      </div>
+      <div class="col-md-4">
+        <div class="panel panel-success">
           <div class="panel-heading">Statistics</div>
             <div class="panel-body">
             </div>
         </div>
+      </div>
+      <div class="col-md-4">
         <div class="panel panel-warning">
           <div class="panel-heading">Edc Administration</div>
             <div class="panel-body">
-              <a role="button" class="btn btn-sm btn-default" href="{% url "ba_namotswe_admin:ba_namotswe_subjectvisit_changelist" %}">Clinic Visit List</a>
-              <a role="button" class="btn btn-sm btn-default" href="{% url "edc-visit-schedule:home-url" visit_schedule='visit_schedule' %}">Visit Schedule</a>
-              <a role="button" class="btn btn-sm btn-default" href="{% url "edc_registration_admin:ba_namotswe_registeredsubject_changelist" %}">Registration List</a>
-              <a role="button" class="btn btn-sm btn-default" href="{% url "edc-consent-url" %}">Consents</a>
-              <a role="button" class="btn btn-sm btn-default" href="{% url "edc_metadata_admin:ba_namotswe_crfmetadata_changelist" %}">Metadata List</a>
-              <a role="button" class="btn btn-sm btn-default" href="{% url "edc_identifier_admin:index" %}">Identifiers</a>
+              <a role="button" class="btn btn-sm btn-default btn-block" href="{% url "ba_namotswe_admin:ba_namotswe_subjectvisit_changelist" %}">Clinic Visit List</a>
+              <a role="button" class="btn btn-sm btn-default btn-block" href="{% url "edc-visit-schedule:home-url" visit_schedule='visit_schedule' %}">Visit Schedule</a>
+              <a role="button" class="btn btn-sm btn-default btn-block" href="{% url "edc_registration_admin:ba_namotswe_registeredsubject_changelist" %}">Registration List</a>
+              <a role="button" class="btn btn-sm btn-default btn-block" href="{% url "edc-consent-url" %}">Consents</a>
+              <a role="button" class="btn btn-sm btn-default btn-block" href="{% url "edc_metadata_admin:ba_namotswe_crfmetadata_changelist" %}">Metadata List</a>
+              <a role="button" class="btn btn-sm btn-default btn-block" href="{% url "edc_identifier_admin:index" %}">Identifiers</a>
             </div>
         </div>
       </div>
     </div>
   </div>
+
 {% endblock main %} s
