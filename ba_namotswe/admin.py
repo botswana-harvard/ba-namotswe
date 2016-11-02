@@ -39,8 +39,9 @@ class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsM
     def get_form(self, request, obj=None, **kwargs):
         form = super(BaseModelAdmin, self).get_form(request, obj, **kwargs)
         for _, fld in enumerate(form.base_fields.items()):
-            fld[1].disabled = True
-            fld[1].required = False
+            if fld[0] in self.readonly and request.GET.get('edc_readonly'):
+                fld[1].disabled = True
+                fld[1].required = False
         return form
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
@@ -130,6 +131,7 @@ class LostToFollowupAdmin(BaseModelAdmin):
 @admin.register(EntryToCare, site=ba_namotswe_admin)
 class EntryToCareAdmin(BaseCrfModelAdmin):
     form = EntryToCareForm
+
     readonly = (
         'subject_visit',
         'comment'
@@ -150,6 +152,7 @@ class EntryToCareAdmin(BaseCrfModelAdmin):
         'art_preg_type_other',
         'infant_ppx',
         'infant_ppx_type')
+
     radio_fields = {
         'weight_measured': admin.VERTICAL,
         'height_measured': admin.VERTICAL,
