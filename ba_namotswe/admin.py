@@ -1,8 +1,13 @@
 from django.contrib import admin
 
+from django_revision.modeladmin_mixin import ModelAdminRevisionMixin
+
 from edc_base.modeladmin.mixins import (
     ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin, ModelAdminFormAutoNumberMixin,
-    ModelAdminAuditFieldsMixin, TabularInlineMixin, StackedInlineMixin)
+    ModelAdminAuditFieldsMixin, TabularInlineMixin, StackedInlineMixin, ModelAdminReadOnlyMixin)
+from edc_metadata.admin import edc_metadata_admin
+from edc_metadata.modeladmin_mixins import CrfMetaDataAdminMixin
+from edc_registration.admin import edc_registration_admin
 from edc_visit_tracking.admin import VisitAdminMixin
 
 from .admin_site import ba_namotswe_admin, ba_namotswe_historical_admin
@@ -15,41 +20,20 @@ from .list_filters import VisitCodeListFilter, PendingFieldsListFilter
 from .models import (
     SubjectConsent, SubjectVisit, Enrollment, OiRecord, Oi, EntryToCare,
     Appointment, TbRecord, Tb, AdherenceCounselling, ArtRecord, ArtRegimen, Death, PregnancyHistory, Pregnancy,
-    TransferRecord, Transfer, LabRecord, LabTest, WhoStaging, WhoDiagnosis, LostToFollowup, InCare)
-from django_revision.modeladmin_mixin import ModelAdminRevisionMixin
-from ba_namotswe.models.crf_metadata import CrfMetadata
-from edc_metadata.admin import edc_metadata_admin
-from edc_metadata.modeladmin_mixins import CrfMetaDataAdminMixin
-from ba_namotswe.models.registered_subject import RegisteredSubject
-from edc_registration.admin import edc_registration_admin
+    TransferRecord, Transfer, LabRecord, LabTest, WhoStaging, WhoDiagnosis, LostToFollowup, InCare,
+    CrfMetadata, RegisteredSubject)
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
                      ModelAdminFormAutoNumberMixin, ModelAdminRevisionMixin, ModelAdminAuditFieldsMixin,
-                     admin.ModelAdmin):
+                     ModelAdminReadOnlyMixin, admin.ModelAdmin):
 
     list_per_page = 10
     date_hierarchy = 'modified'
     empty_value_display = '-'
-    readonly = ()
 
     def redirect_url(self, request, obj, post_url_continue=None):
         return request.GET.get('next')
-
-    def get_form(self, request, obj=None, **kwargs):
-        form = super(BaseModelAdmin, self).get_form(request, obj, **kwargs)
-        for _, fld in enumerate(form.base_fields.items()):
-            if request.GET.get('edc_readonly'):
-                fld[1].disabled = True
-                fld[1].required = False
-        return form
-
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        extra_context = extra_context or {}
-        if request.GET.get('edc_readonly'):
-            extra_context.update({'edc_readonly': request.GET.get('edc_readonly')})
-            extra_context.update({'edc_readonly_next': request.GET.get('next')})
-        return super(BaseModelAdmin, self).change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
 
 class BaseCrfModelAdmin(BaseModelAdmin):
