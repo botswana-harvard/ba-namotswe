@@ -104,7 +104,7 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
                                 crf.historical_url = reverse(
                                     'ba_namotswe_historical_admin:{}_changelist'.format(
                                         '_historical'.join(obj._meta.label_lower.split('.'))),)
-                            except AttributeError: #NoReverseMatch:
+                            except NoReverseMatch:
                                 crf.historical_url = None
                             crf.changelist_url = reverse('{}:{}_{}_changelist'.format(
                                 crf.model_class.ADMIN_SITE_NAME, *crf.model_class._meta.label_lower.split('.')))
