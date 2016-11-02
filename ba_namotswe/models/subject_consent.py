@@ -19,11 +19,11 @@ class SubjectConsent(ConsentModelMixin, RegistrationMixin, PersonalFieldsMixin, 
 
     """This is a dummy consent added for schema completeness."""
 
+    objects = models.Manager()
+
     history = HistoricalRecords()
 
     consent = ConsentManager()
-
-    objects = models.Manager()
 
     def __str__(self):
         return '{}'.format(self.subject_identifier)

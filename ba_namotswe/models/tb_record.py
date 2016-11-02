@@ -1,5 +1,7 @@
 from django.db import models
 
+from simple_history.models import HistoricalRecords
+
 from edc_base.model.validators.date import date_not_future
 
 from ..choices import TB_TYPE, TEST_TYPE
@@ -8,6 +10,8 @@ from .crf_model_mixin import CrfModelMixin, CrfInlineModelMixin
 
 
 class TbRecord(CrfModelMixin):
+
+    history = HistoricalRecords()
 
     class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
@@ -38,6 +42,8 @@ class Tb(CrfInlineModelMixin):
         blank=True,
         null=True,
         max_length=50)
+
+    history = HistoricalRecords()
 
     class Meta(CrfInlineModelMixin.Meta):
         app_label = 'ba_namotswe'

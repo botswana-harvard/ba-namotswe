@@ -2,6 +2,8 @@ from datetime import date
 from django.db import models
 from django.core.validators import MinValueValidator
 
+from simple_history.models import HistoricalRecords
+
 from edc_base.model.models.base_uuid_model import BaseUuidModel
 from edc_base.model.validators.date import date_not_future
 from edc_consent.model_mixins import RequiresConsentMixin
@@ -22,6 +24,10 @@ class SubjectVisit(VisitModelMixin, CreatesMetadataModelMixin, RequiresConsentMi
         validators=[
             MinValueValidator(date(2001, 1, 1)),
             date_not_future])
+
+    objects = models.Manager()
+
+    history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
         if not self.id:

@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from simple_history.models import HistoricalRecords
+
 from edc_base.model.models import BaseUuidModel, UrlMixin
 
 from ..model_mixins import DashboardModelMixin
@@ -27,6 +29,10 @@ class Death(DashboardModelMixin, UrlMixin, BaseUuidModel):
         verbose_name='Cause of Death',
         blank=True,
         null=True)
+
+    objects = models.Manager()
+
+    history = HistoricalRecords()
 
     class Meta:
         app_label = 'ba_namotswe'

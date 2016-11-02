@@ -13,6 +13,8 @@ from edc_base.utils.age import formatted_age
 from django.utils import timezone
 from ba_namotswe.models.death import Death
 from ba_namotswe.models.lost_to_followup import LostToFollowup
+from django.core.exceptions import ObjectDoesNotExist
+from django.urls.exceptions import NoReverseMatch
 # from ba_namotswe.comment_form import CommentForm
 
 
@@ -80,6 +82,7 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
                             else:
                                 obj = None
                                 crf.url = None
+                                crf.historical_url = None
                                 crf.instance = None
                         if obj:
                             if self.kwargs.get('selected_crf') == crf.model:
@@ -97,6 +100,12 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
                                     obj.edited = True
                                     obj.save(update_fields=['no_report', 'no_report_datetime', 'edited'])
                             crf.url = obj.get_absolute_url()
+                            try:
+                                crf.historical_url = reverse(
+                                    'ba_namotswe_historical_admin:{}_changelist'.format(
+                                        '_historical'.join(obj._meta.label_lower.split('.'))),)
+                            except AttributeError: #NoReverseMatch:
+                                crf.historical_url = None
                             crf.changelist_url = reverse('{}:{}_{}_changelist'.format(
                                 crf.model_class.ADMIN_SITE_NAME, *crf.model_class._meta.label_lower.split('.')))
                             crf.instance = obj

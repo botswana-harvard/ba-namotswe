@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from simple_history.models import HistoricalRecords
+
 from ..constants import RESOLVED
 from ..choices import OI_STATUS, OI_OPTIONS
 
@@ -10,6 +12,8 @@ from .crf_model_mixin import CrfModelMixin, CrfInlineModelMixin
 class OiRecord(CrfModelMixin):
 
     report_datetime = models.DateTimeField(default=timezone.now, editable=False)
+
+    history = HistoricalRecords()
 
     class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
@@ -35,6 +39,8 @@ class Oi(CrfInlineModelMixin):
         max_length=15,
         default=RESOLVED,
         choices=OI_STATUS)
+
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.oi

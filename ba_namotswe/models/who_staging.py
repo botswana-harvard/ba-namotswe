@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from simple_history.models import HistoricalRecords
+
 from edc_constants.constants import UNKNOWN
 
 from ..choices import WHO_STAGE, WHO_DEFINING_ILLNESSES
@@ -17,6 +19,8 @@ class WhoStaging(CrfModelMixin):
         max_length=25,
         choices=WHO_STAGE,
         default=UNKNOWN)
+
+    history = HistoricalRecords()
 
     class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
@@ -36,6 +40,8 @@ class WhoDiagnosis(CrfInlineModelMixin):
         null=True,
         blank=True,
         help_text='Provide if known')
+
+    history = HistoricalRecords()
 
     class Meta(CrfInlineModelMixin.Meta):
         app_label = 'ba_namotswe'

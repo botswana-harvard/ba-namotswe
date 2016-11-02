@@ -11,3 +11,11 @@ class BaNamotsweAdminSite(AdminSite):
     index_title = app_config.project_name
     site_url = '/'
 ba_namotswe_admin = BaNamotsweAdminSite(name='ba_namotswe_admin')
+
+
+class BaNamotsweHistoricalAdminSite(AdminSite):
+    site_title = app_config.project_name + ' (Historical)'
+    site_header = app_config.project_name + ' (Historical)'
+    index_title = app_config.project_name + ' (Historical)'
+    site_url = '/'
+ba_namotswe_historical_admin = BaNamotsweHistoricalAdminSite(name='ba_namotswe_historical_admin')

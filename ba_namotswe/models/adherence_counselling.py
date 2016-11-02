@@ -1,5 +1,7 @@
 from django.db import models
 
+from simple_history.models import HistoricalRecords
+
 from edc_constants.constants import UNKNOWN
 
 from ..choices import RELATIONSHIP
@@ -25,6 +27,10 @@ class AdherenceCounselling(CrfModelMixin):
         verbose_name='If \'Other\', please specify',
         blank=True,
         null=True)
+
+    history = HistoricalRecords()
+
+    objects = models.Manager()
 
     def get_pending_fields(self):
         pending_fields = super(AdherenceCounselling, self).get_pending_fields()

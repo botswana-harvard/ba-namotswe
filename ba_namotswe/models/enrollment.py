@@ -1,6 +1,8 @@
 from dateutil.relativedelta import relativedelta
 from uuid import uuid4
 
+from simple_history.models import HistoricalRecords
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
@@ -105,6 +107,8 @@ class Enrollment(CreateAppointmentsMixin, UrlMixin, BaseUuidModel):
         verbose_name='Caregiver/Next of Kin Relationship: "Other"',
         blank=True,
         null=True)
+
+    history = HistoricalRecords()
 
     def age(self):
         return formatted_age(self.dob, timezone.now().date())

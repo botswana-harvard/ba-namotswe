@@ -1,11 +1,15 @@
 from django.db import models
 
+from simple_history.models import HistoricalRecords
+
 from ..choices import TRANSFER
 
 from .crf_model_mixin import CrfModelMixin, CrfInlineModelMixin
 
 
 class TransferRecord(CrfModelMixin):
+
+    history = HistoricalRecords()
 
     class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
@@ -43,6 +47,8 @@ class Transfer(CrfInlineModelMixin, models.Model):
         verbose_name='Reason',
         null=True,
         blank=True)
+
+    history = HistoricalRecords()
 
     class Meta(CrfInlineModelMixin.Meta):
         app_label = 'ba_namotswe'

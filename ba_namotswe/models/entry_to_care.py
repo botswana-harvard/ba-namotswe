@@ -4,6 +4,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 
+from simple_history.models import HistoricalRecords
+
 from edc_base.model.validators.date import date_not_future
 from edc_constants.choices import YES_NO_UNKNOWN
 from edc_constants.constants import NOT_APPLICABLE, UNKNOWN
@@ -114,6 +116,8 @@ class EntryToCare(CrfModelMixin):
         max_length=25,
         default=NOT_APPLICABLE,
         choices=INFANT_PROPHYLAXIS)
+
+    history = HistoricalRecords()
 
     def get_pending_fields(self):
         pending_fields = super(EntryToCare, self).get_pending_fields()

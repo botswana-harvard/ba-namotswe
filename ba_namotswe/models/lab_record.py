@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from simple_history.models import HistoricalRecords
+
 from edc_base.model.validators.date import date_not_future
 from edc_lab.choices import UNITS
 
@@ -13,6 +15,8 @@ class LabRecord(CrfModelMixin):
     """A model completed by the user of lab record or assessments."""
 
     report_datetime = models.DateTimeField(default=timezone.now, editable=False)
+
+    history = HistoricalRecords()
 
     class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
@@ -48,6 +52,8 @@ class LabTest(CrfInlineModelMixin):
         choices=UNITS,
         null=True,
         editable=False)
+
+    history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
         if not self.test_date:

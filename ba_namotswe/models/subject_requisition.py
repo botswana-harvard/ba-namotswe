@@ -1,5 +1,7 @@
 from django.core.urlresolvers import reverse
 
+from simple_history.models import HistoricalRecords
+
 from edc_lab.requisition.managers import RequisitionManager
 from edc_lab.requisition.model_mixins import RequisitionModelMixin
 from edc_visit_tracking.managers import CrfModelManager
@@ -16,6 +18,8 @@ class SubjectRequisitionManager(CrfModelManager):
 class SubjectRequisition(RequisitionModelMixin, CrfModelMixin):
 
     objects = RequisitionManager()
+
+    history = HistoricalRecords()
 
     def subject(self):
         return None

@@ -1,9 +1,13 @@
 from django.db import models
 
+from simple_history.models import HistoricalRecords
+
 from .crf_model_mixin import CrfModelMixin, CrfInlineModelMixin
 
 
 class PregnancyHistory(CrfModelMixin):
+
+    history = HistoricalRecords()
 
     class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
@@ -23,6 +27,8 @@ class Pregnancy(CrfInlineModelMixin, models.Model):
     delivery_date = models.DateField(
         null=True,
         blank=True)
+
+    history = HistoricalRecords()
 
     def get_pending_fields(self):
         pending_fields = super(Pregnancy, self).get_pending_fields()

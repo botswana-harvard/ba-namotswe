@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.contrib import admin
 
 from edc_base.modeladmin.mixins import (
@@ -7,7 +5,7 @@ from edc_base.modeladmin.mixins import (
     ModelAdminAuditFieldsMixin, TabularInlineMixin, StackedInlineMixin)
 from edc_visit_tracking.admin import VisitAdminMixin
 
-from .admin_site import ba_namotswe_admin
+from .admin_site import ba_namotswe_admin, ba_namotswe_historical_admin
 from .forms import (
     SubjectVisitForm, TBRecordForm, EnrollmentForm, ArtRecordForm, LabRecordForm, LabTestForm,
     AdherenceCounsellingForm, DeathForm, PregnancyHistoryForm, WhoStagingForm, WhoDiagnosisForm,
@@ -23,7 +21,7 @@ from ba_namotswe.models.crf_metadata import CrfMetadata
 from edc_metadata.admin import edc_metadata_admin
 from edc_metadata.modeladmin_mixins import CrfMetaDataAdminMixin
 from ba_namotswe.models.registered_subject import RegisteredSubject
-from edc_registration.admin import RegisteredSubjectModelAdminMixin, edc_registration_admin
+from edc_registration.admin import edc_registration_admin
 
 
 class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
@@ -36,6 +34,13 @@ class BaseModelAdmin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsM
 
     def redirect_url(self, request, obj, post_url_continue=None):
         return request.GET.get('next')
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        if request.GET.get('edc_readonly'):
+            extra_context.update({'edc_readonly': request.GET.get('edc_readonly')})
+            extra_context.update({'edc_readonly_next': request.GET.get('next')})
+        return super(BaseModelAdmin, self).change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
 
 class BaseCrfModelAdmin(BaseModelAdmin):
@@ -257,3 +262,109 @@ class RegisteredSubjectAdmin(admin.ModelAdmin):
     list_display = ('subject_identifier', 'gender', 'dob', 'registration_datetime', 'user_created', 'created')
     search_fields = ('subject_identifier', )
     list_filter = ('gender', 'created')
+
+
+class HistoricalModelAdmin(admin.ModelAdmin):
+    list_display = ('subject_visit', 'created', 'modified', 'user_created', 'user_modified')
+    list_filter = ('created', 'modified', 'user_created', 'user_modified')
+    search_fields = ('subject_visit__subject_identifier', 'subject_visit__visit_code', )
+    change_form_template = 'admin/ba_namotswe/change_form_historical.html'
+    readonly_fields = ('subject_visit', )
+
+
+class HistoricalInlineModelAdmin(admin.ModelAdmin):
+    # list_display = ('subject_visit', 'created', 'modified', 'user_created', 'user_modified')
+    list_filter = ('created', 'modified', 'user_created', 'user_modified')
+    # search_fields = ('subject_visit__subject_identifier', 'subject_visit__visit_code', )
+    change_form_template = 'admin/ba_namotswe/change_form_historical.html'
+    # readonly_fields = ('subject_visit', )
+
+
+@admin.register(OiRecord.history.model, site=ba_namotswe_historical_admin)
+class HistoricalOiRecordAdmin(HistoricalModelAdmin):
+    pass
+
+
+@admin.register(Oi.history.model, site=ba_namotswe_historical_admin)
+class HistoricalOiAdmin(HistoricalInlineModelAdmin):
+    pass
+
+
+@admin.register(TbRecord.history.model, site=ba_namotswe_historical_admin)
+class HistoricalTbRecordAdmin(HistoricalModelAdmin):
+    pass
+
+
+@admin.register(Tb.history.model, site=ba_namotswe_historical_admin)
+class HistoricalTbAdmin(HistoricalInlineModelAdmin):
+    pass
+
+
+@admin.register(AdherenceCounselling.history.model, site=ba_namotswe_historical_admin)
+class HistoricalAdherenceCounsellingAdmin(HistoricalModelAdmin):
+    pass
+
+
+@admin.register(ArtRecord.history.model, site=ba_namotswe_historical_admin)
+class HistoricalArtRecordAdmin(HistoricalModelAdmin):
+    pass
+
+
+@admin.register(ArtRegimen.history.model, site=ba_namotswe_historical_admin)
+class HistoricalArtRegimenAdmin(HistoricalInlineModelAdmin):
+    pass
+
+
+@admin.register(PregnancyHistory.history.model, site=ba_namotswe_historical_admin)
+class HistoricalPregnancyHistoryAdmin(HistoricalModelAdmin):
+    pass
+
+
+@admin.register(Pregnancy.history.model, site=ba_namotswe_historical_admin)
+class HistoricalPregnancyAdmin(HistoricalInlineModelAdmin):
+    pass
+
+
+@admin.register(TransferRecord.history.model, site=ba_namotswe_historical_admin)
+class HistoricalTransferRecordAdmin(HistoricalModelAdmin):
+    pass
+
+
+@admin.register(Transfer.history.model, site=ba_namotswe_historical_admin)
+class HistoricalTransferAdmin(HistoricalInlineModelAdmin):
+    pass
+
+
+@admin.register(LabRecord.history.model, site=ba_namotswe_historical_admin)
+class HistoricalLabRecordAdmin(HistoricalModelAdmin):
+    pass
+
+
+@admin.register(LabTest.history.model, site=ba_namotswe_historical_admin)
+class HistoricalLabTestAdmin(HistoricalInlineModelAdmin):
+    pass
+
+
+@admin.register(WhoStaging.history.model, site=ba_namotswe_historical_admin)
+class HistoricalWhoStagingAdmin(HistoricalModelAdmin):
+    pass
+
+
+@admin.register(WhoDiagnosis.history.model, site=ba_namotswe_historical_admin)
+class HistoricalWhoDiagnosisAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(LostToFollowup.history.model, site=ba_namotswe_historical_admin)
+class HistoricalLostToFollowupAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(EntryToCare.history.model, site=ba_namotswe_historical_admin)
+class HistoricalEntryToCareAdmin(HistoricalModelAdmin):
+    pass
+
+
+@admin.register(InCare.history.model, site=ba_namotswe_historical_admin)
+class HistoricalInCareAdmin(HistoricalModelAdmin):
+    pass

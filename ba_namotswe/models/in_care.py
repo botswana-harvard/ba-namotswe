@@ -2,6 +2,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 
+from simple_history.models import HistoricalRecords
+
 from edc_constants.choices import YES_NO_UNKNOWN, YES_NO_UNKNOWN_NA
 from edc_constants.constants import UNKNOWN
 
@@ -92,6 +94,8 @@ class InCare(CrfModelMixin):
         choices=YES_NO_UNKNOWN_NA,
         help_text=(
             'If <= 18 years, is there evidence that the caregiver has disclosed the patient\'s HIV status to others?'))
+
+    history = HistoricalRecords()
 
     class Meta(CrfModelMixin.Meta):
         app_label = 'ba_namotswe'
