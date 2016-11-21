@@ -1,9 +1,10 @@
 import pytz
 
 from datetime import datetime
-
+from dateutil.parser import parse
 from django.apps import AppConfig as DjangoAppConfig
 from django.conf import settings
+from django.utils import timezone
 
 from edc_appointment.apps import AppConfig as EdcAppointmentAppConfigParent
 from edc_base.apps import AppConfig as EdcBaseAppConfigParent
@@ -43,6 +44,7 @@ class EdcBaseAppConfig(EdcBaseAppConfigParent):
 
 class EdcProtocolAppConfig(EdcProtocolAppConfigParent):
     enrollment_caps = {'ba_namotswe.enrollment': ('subject', -1)}  # {label_lower: (key, count)}
+    study_open_datetime = parse('01-JUNE-2016 07:00 UTC', tzinfos={'UTC': timezone.get_current_timezone()})
 
 
 class EdcTimepointAppConfig(EdcTimepointAppConfigParent):

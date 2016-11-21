@@ -8,7 +8,7 @@ from edc_base.modeladmin.mixins import (
 from edc_metadata.admin import edc_metadata_admin
 from edc_metadata.modeladmin_mixins import CrfMetaDataAdminMixin
 from edc_registration.admin import edc_registration_admin
-from edc_visit_tracking.admin import VisitAdminMixin
+from edc_visit_tracking.modeladmin_mixins import VisitModelAdminMixin
 
 from .admin_site import ba_namotswe_admin, ba_namotswe_historical_admin
 from .forms import (
@@ -94,7 +94,7 @@ class AppointmentAdmin(BaseModelAdmin):
 
 
 @admin.register(SubjectVisit, site=ba_namotswe_admin)
-class SubjectVisitAdmin(VisitAdminMixin, BaseModelAdmin):
+class SubjectVisitAdmin(VisitModelAdminMixin, BaseModelAdmin):
 
     form = SubjectVisitForm
     list_filter = ('subject_identifier', 'visit_datetime', 'visit_code')

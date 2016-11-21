@@ -2,8 +2,8 @@ from django.core.urlresolvers import reverse
 
 from simple_history.models import HistoricalRecords
 
-from edc_lab.requisition.managers import RequisitionManager
-from edc_lab.requisition.model_mixins import RequisitionModelMixin
+from edc_lab.managers import RequisitionManager
+from edc_lab.model_mixins import RequisitionModelMixin
 from edc_visit_tracking.managers import CrfModelManager
 
 from .crf_model_mixin import CrfModelMixin

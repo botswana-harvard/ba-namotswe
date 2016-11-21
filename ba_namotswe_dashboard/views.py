@@ -1,19 +1,21 @@
 from collections import OrderedDict
 
-from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 from django.urls.base import reverse
+from django.urls.exceptions import NoReverseMatch
+from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 
+from edc_base.utils.age import formatted_age
 from edc_base.view_mixins import EdcBaseViewMixin
+from edc_constants.constants import OTHER, MALE
+from edc_metadata.constants import REQUIRED, NOT_REQUIRED
 
 from ba_namotswe.models import RequisitionMetadata, CrfMetadata, Enrollment, Appointment, SubjectVisit
-from ba_namotswe.models.entry_to_care import EntryToCare
-from edc_metadata.constants import REQUIRED, NOT_REQUIRED
-from edc_constants.constants import OTHER, MALE
-from edc_base.utils.age import formatted_age
-from django.utils import timezone
 from ba_namotswe.models.death import Death
+from ba_namotswe.models.entry_to_care import EntryToCare
 from ba_namotswe.models.lost_to_followup import LostToFollowup
-from django.urls.exceptions import NoReverseMatch
 
 
 class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
@@ -28,6 +30,10 @@ class SubjectDashboardView(EdcBaseViewMixin, TemplateView):
         self._crfs = None
         self._selected_appointment = None
         self._subject_visit = None
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(SubjectDashboardView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         self.context = super(SubjectDashboardView, self).get_context_data(**kwargs)

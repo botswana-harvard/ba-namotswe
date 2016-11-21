@@ -3,6 +3,7 @@ from .appointment import Appointment
 from .art_record import ArtRecord, ArtRegimen
 from .crf_metadata import CrfMetadata
 from .death import Death
+from .disenrollment import Disenrollment
 from .enrollment import Enrollment
 from .entry_to_care import EntryToCare
 from .in_care import InCare
@@ -13,6 +14,7 @@ from .pregnancy import Pregnancy, PregnancyHistory
 from .registered_subject import RegisteredSubject
 from .requisition_meta_data import RequisitionMetadata
 from .subject_consent import SubjectConsent
+from .subject_offstudy import SubjectOffstudy
 from .subject_requisition import SubjectRequisition
 from .subject_visit import SubjectVisit
 from .tb_record import Tb, TbRecord

@@ -17,6 +17,7 @@ from edc_base.model.models.url_mixin import UrlMixin
 from edc_base.utils.age import formatted_age
 from edc_constants.choices import GENDER, YES_NO
 from edc_constants.constants import UNKNOWN, YES
+from edc_visit_schedule.model_mixins import EnrollmentModelMixin
 
 from ..choices import RELATIONSHIP
 
@@ -42,7 +43,7 @@ def validate_dob(value):
             )
 
 
-class Enrollment(CreateAppointmentsMixin, UrlMixin, BaseUuidModel):
+class Enrollment(EnrollmentModelMixin, CreateAppointmentsMixin, UrlMixin, BaseUuidModel):
 
     ADMIN_SITE_NAME = 'ba_namotswe_admin'
 

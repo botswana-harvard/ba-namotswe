@@ -33,10 +33,13 @@ visit_schedule = VisitSchedule(
     verbose_name='Ba Namotswe Visit Schedule',
     app_label='ba_namotswe',
     visit_model='ba_namotswe.subjectvisit',
+    enrollment_model='ba_namotswe.enrollment',
+    disenrollment_model='ba_namotswe.disenrollment',
+    offstudy_model='ba_namotswe.subjectoffstudy',
 )
 
 # add schedules
-schedule = Schedule(name='schedule', enrollment_model='ba_namotswe.enrollment')
+schedule = Schedule(name='schedule')
 
 schedule.add_visit(
     code='1000',

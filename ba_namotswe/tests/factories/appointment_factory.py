@@ -11,7 +11,7 @@ class AppointmentFactory(factory.DjangoModelFactory):
         model = Appointment
 
     appt_datetime = timezone.now()
-    best_appt_datetime = timezone.now()
+    timepoint_datetime = timezone.now()
     appt_close_datetime = timezone.now()
     subject_identifier = '084-10000001-4'
     visit_instance = '0'
